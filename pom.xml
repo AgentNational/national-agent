@@ -27,6 +27,8 @@
 		<commons-codec.version>1.9</commons-codec.version>
 		<hibernate.validator.version>5.0.2.Final</hibernate.validator.version>
 		<c3p0.version>0.9.1.2</c3p0.version>
+		
+		
 	</properties>
 	
 	<!-- maven插件配置 -->
