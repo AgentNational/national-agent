@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.portal.dao.common.AppMessageInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.AppMessageInfo" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+		<result column="OPERATOR" property="operator" jdbcType="VARCHAR" />
+		<result column="MSG_TYPE" property="msgType" jdbcType="VARCHAR" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="TITLE" property="title" jdbcType="VARCHAR" />
+		<result column="CONTENT" property="content" jdbcType="VARCHAR" />
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+		<result column="IS_READ" property="isRead" jdbcType="VARCHAR" />
+		<result column="ABLE_STATUS" property="ableStatus" jdbcType="VARCHAR" />
+		<result column="BRIEF_CONTENT" property="briefContent" jdbcType="VARCHAR" />
+		<result column="IS_POP" property="isPop" jdbcType="BIT" />
+		<result column="LAST_UPDATE_TIME" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+		<result column="END_TIME" property="endTime" jdbcType="TIMESTAMP" />
+		<result column="PUSH_ID" property="pushId" jdbcType="INTEGER" />
+		<result column="BEGIN_TIME" property="beginTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    	ID, OPTIMISTIC, OPERATOR, MSG_TYPE, CREATE_TIME, TITLE,
+		CONTENT, USER_NAME, IS_READ,
+		ABLE_STATUS, BRIEF_CONTENT, IS_POP,
+		LAST_UPDATE_TIME,END_TIME,PUSH_ID,BEGIN_TIME
+  </sql>
+  <insert id="saveMessage" parameterType="com.pay.national.agent.model.entity.AppMessageInfo">
+  	insert into app_message_info
+	 		(ID, OPERATOR, MSG_TYPE, CREATE_TIME, TITLE,CONTENT, USER_NAME,
+	 		 IS_READ,ABLE_STATUS, BRIEF_CONTENT,IS_POP,LAST_UPDATE_TIME,END_TIME,PUSH_ID,BEGIN_TIME)
+		values
+			(#{id,jdbcType=VARCHAR},#{operator,jdbcType=VARCHAR},#{msgType,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP},
+			#{title,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},
+			#{isRead,jdbcType=VARCHAR},#{ableStatus,jdbcType=VARCHAR},#{briefContent,jdbcType=VARCHAR},
+			#{isPop,jdbcType=BIT},#{lastUpdateTime,jdbcType=TIMESTAMP},
+			#{endTime,jdbcType=TIMESTAMP},#{pushId,jdbcType=INTEGER},#{beginTime,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <select id="getMessageById" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/>
+  	from app_message_info
+  	where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findAllMessage"  resultType="java.util.Map">
+  	SELECT id,title,able_status 'ableStatus',user_name 'userName',IS_READ 'isRead',MSG_TYPE 'msgType'
+  	FROM app_message_info
+  	WHERE 1=1
+  	<if test="queryParams.userName != '' and queryParams.userName != null">
+  		AND USER_NAME = #{queryParams.userName}
+  	</if>
+  	<if test="queryParams.msgType != '' and queryParams.msgType != null">
+  		AND MSG_TYPE = #{queryParams.msgType}
+  	</if>
+  	<if test="queryParams.ableStatus != '' and queryParams.ableStatus != null">
+  		AND able_status = #{queryParams.ableStatus}
+  	</if>
+  	<if test="queryParams.title != '' and queryParams.title != null">
+  		AND title like CONCAT('%',#{queryParams.title},'%' )
+  	</if>
+  	<if test="queryParams.startDate != null and queryParams.startDate != ''">
+		and CREATE_TIME
+		<![CDATA[
+			  >=
+		]]>
+		CONCAT(#{queryParams.startDate},' 00:00:00')
+	</if>
+	<if test="queryParams.endDate != null and queryParams.endDate != ''">
+		and CREATE_TIME
+		<![CDATA[
+			  <=
+		]]>
+		CONCAT(#{queryParams.endDate},' 23:59:59')
+	</if>
+  	order by create_time desc
+  </select>
+  
+  <delete id="deleteMessage">
+  	delete from app_message_info where id = #{messageId,jdbcType=VARCHAR}
+  </delete>
+  
+  <update id="update">
+  	update app_message_info 
+  	set  OPTIMISTIC = OPTIMISTIC + 1,
+  		 OPERATOR = #{message.operator},
+  		 MSG_TYPE = #{message.msgType},
+  		 CREATE_TIME = #{message.createTime,jdbcType=TIMESTAMP},
+  		 TITLE = #{message.title},
+  		 CONTENT = #{message.content},
+  		 USER_NAME = #{message.userName},
+  		 IS_READ = #{message.isRead},
+  		 ABLE_STATUS = #{message.ableStatus},
+  		 BRIEF_CONTENT = #{message.briefContent},
+  		 IS_POP = #{message.isPop,jdbcType=BIT},
+  		 LAST_UPDATE_TIME = #{message.lastUpdateTime,jdbcType=TIMESTAMP},
+  		 END_TIME = #{message.endTime,jdbcType=TIMESTAMP},
+  		 PUSH_ID = #{message.pushId,jdbcType=INTEGER},
+  		 BEGIN_TIME = #{message.beginTime,jdbcType=TIMESTAMP}
+  	where ID = #{message.id}
+  </update>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.PushUserMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.PushUser" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="USER_NO" property="userNo" jdbcType="VARCHAR" />
+    <result column="PUSH_ID" property="pushId" jdbcType="VARCHAR" />
+    <result column="CLIENT_TYPE" property="clientType" jdbcType="VARCHAR" />
+    <result column="APP_ID" property="appId" jdbcType="VARCHAR" />
+    <result column="DEVICE_TOKEN" property="deviceToken" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="LAST_UPDATE_TIME" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, OPTIMISTIC, USER_NO, PUSH_ID, CLIENT_TYPE, APP_ID, DEVICE_TOKEN, STATUS, CREATE_TIME, 
+    LAST_UPDATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from push_user
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from push_user
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.PushUser" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into push_user (USER_NO, PUSH_ID, 
+      CLIENT_TYPE, APP_ID, DEVICE_TOKEN, 
+      STATUS, CREATE_TIME, LAST_UPDATE_TIME
+      )
+    values (#{userNo,jdbcType=VARCHAR}, #{pushId,jdbcType=VARCHAR}, 
+      #{clientType,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{deviceToken,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.PushUser" >
+    update push_user
+    set OPTIMISTIC = OPTIMISTIC +1,
+      USER_NO = #{userNo,jdbcType=VARCHAR},
+      PUSH_ID = #{pushId,jdbcType=VARCHAR},
+      CLIENT_TYPE = #{clientType,jdbcType=VARCHAR},
+      APP_ID = #{appId,jdbcType=VARCHAR},
+      DEVICE_TOKEN = #{deviceToken,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="findByUser" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from push_user
+    where USER_NO = #{userNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

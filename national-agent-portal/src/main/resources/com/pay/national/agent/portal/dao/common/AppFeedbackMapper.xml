@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.portal.dao.common.AppFeedbackMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.AppFeedback" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="is_read" property="isRead" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="operator_time" property="operatorTime" jdbcType="TIMESTAMP" />
+    <result column="return_type" property="returnType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, phone, status, type, content, is_read, operator, remark, create_time,
+    operator_time,return_type
+  </sql>
+  <select id="findAppFeedbackById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from app_feedback
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="findAllFeedback" resultType="java.util.Map" parameterType="java.util.Map"  >
+	    SELECT
+		a.id as "id",
+		a.user_id as "userId",
+		a.phone as "phone",
+		a.status as "status",
+		a.type as "type",
+		a.content as "content",
+		a.is_read as "isRead",
+		a.operator as "operator",
+		a.remark as "remark",
+		a.create_time as "createTime",
+		a.operator_time as "operatorTime",
+		a.return_type as "returnType",
+		a.client_type as "clientType"
+		 <!-- (CASE when b.SOURCE = 'ANDROID' then 'Android'
+		else b.SOURCE  end) as "source" -->
+	FROM
+		app_feedback a
+	<!-- LEFT JOIN app_user b ON a.phone = b.USER_NAME -->
+     where 1=1
+    <if test="queryParams.createTimeStart != null and queryParams.createTimeStart != ''  ">
+		and a.CREATE_TIME
+		<![CDATA[
+			  >=
+		]]>
+		CONCAT('${queryParams.createTimeStart}',' 00:00:00')
+	</if>
+	<if test=" queryParams.createTimeEnd != null and queryParams.createTimeEnd!= '' ">
+		and a.CREATE_TIME
+		<![CDATA[
+			  <=
+		]]>
+		CONCAT('${queryParams.createTimeEnd}',' 23:59:59')
+  	</if>
+	<if test="queryParams.status != null and queryParams.status != '' ">
+			and a.status = #{queryParams.status}
+	</if>
+	<if test="queryParams.phone != null and queryParams.phone != '' ">
+			and a.phone = #{queryParams.phone}
+	</if>
+	<if test="queryParams.content != null and queryParams.content != '' ">
+			and a.content like  CONCAT('%',#{queryParams.content},'%')
+	</if>
+	<if test="queryParams.operator != null and queryParams.operator != '' ">
+		and	a.operator = #{queryParams.operator}
+	</if>
+	<!-- 系统类型（现无法取得，注释掉） -->
+	<if test="queryParams.source != null and queryParams.source!= '' ">
+		and	a.client_type = #{queryParams.source}
+	</if>
+	ORDER BY a.CREATE_TIME DESC
+  </select>
+
+  <update id="modify" parameterType="com.pay.national.agent.model.entity.AppFeedback" >
+    update app_feedback
+    set user_id = #{userId,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      is_read = #{isRead,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      operator_time = #{operatorTime,jdbcType=TIMESTAMP},
+      return_type = #{returnType,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

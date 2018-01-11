@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.portal.dao.common.AppNoticeInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.AppNoticeInfo" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="VARCHAR" />
+    <result column="NOTICE_TYPE" property="noticeType" jdbcType="VARCHAR" />
+    <result column="BEGIN_TIME" property="beginTime" jdbcType="TIMESTAMP" />
+    <result column="END_TIME" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="IS_POP" property="isPop" jdbcType="BIT" />
+    <result column="USABLE_STATUS" property="usableStatus" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="BRIEF_CONTENT" property="briefContent" jdbcType="VARCHAR" />
+    <result column="OPERATOR" property="operator" jdbcType="VARCHAR" />
+    <result column="USER_GROUP" property="userGroup" jdbcType="VARCHAR" />
+    <result column="LAST_UPDATE_TIME" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+   ID, OPTIMISTIC, TITLE, CONTENT, NOTICE_TYPE, BEGIN_TIME, END_TIME, IS_POP, USABLE_STATUS, 
+    CREATE_TIME, BRIEF_CONTENT, OPERATOR, 
+    USER_GROUP,LAST_UPDATE_TIME
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from app_notice_info
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.AppNoticeInfo" >
+    insert into app_notice_info (ID, TITLE, CONTENT, NOTICE_TYPE, BEGIN_TIME, END_TIME, IS_POP, USABLE_STATUS, 
+    CREATE_TIME, BRIEF_CONTENT, OPERATOR, 
+    USER_GROUP,LAST_UPDATE_TIME) 
+    values 
+      (#{id,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{noticeType,jdbcType=VARCHAR}, #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{isPop,jdbcType=BIT}, #{usableStatus,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{briefContent,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR},
+      #{userGroup,jdbcType=VARCHAR}, #{lastUpdateTime,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.AppNoticeInfo" >
+    update app_notice_info
+    set OPTIMISTIC = OPTIMISTIC+1,
+      TITLE = #{title,jdbcType=VARCHAR},
+      CONTENT = #{content,jdbcType=VARCHAR},
+      NOTICE_TYPE = #{noticeType,jdbcType=VARCHAR},
+      BEGIN_TIME = #{beginTime,jdbcType=TIMESTAMP},
+      END_TIME = #{endTime,jdbcType=TIMESTAMP},
+      IS_POP = #{isPop,jdbcType=BIT},
+      USABLE_STATUS = #{usableStatus,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      BRIEF_CONTENT = #{briefContent,jdbcType=VARCHAR},
+      OPERATOR = #{operator,jdbcType=VARCHAR},
+      USER_GROUP = #{userGroup,jdbcType=VARCHAR},
+      LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="findAllAppNotice" resultType="java.util.Map">
+  	SELECT id,title,NOTICE_TYPE 'noticeType',USER_GROUP 'userGroup',USABLE_STATUS 'usableStatus'
+  	FROM app_notice_info
+  	WHERE 1=1
+  	<if test="queryParams.noticeType != '' and queryParams.noticeType != null">
+  		AND NOTICE_TYPE = #{queryParams.noticeType}
+  	</if>
+  	<if test="queryParams.usableStatus != '' and queryParams.usableStatus != null">
+  		AND USABLE_STATUS = #{queryParams.usableStatus}
+  	</if>
+  	<if test="queryParams.title != '' and queryParams.title != null">
+  		AND TITLE like CONCAT('%',#{queryParams.title},'%' )
+  	</if>
+  	<if test="queryParams.startDate != null and queryParams.startDate != ''">
+		and CREATE_TIME
+		<![CDATA[
+			  >=
+		]]>
+		CONCAT(#{queryParams.startDate},' 00:00:00')
+	</if>
+	<if test="queryParams.endDate != null and queryParams.endDate != ''">
+		and CREATE_TIME
+		<![CDATA[
+			  <=
+		]]>
+		CONCAT(#{queryParams.endDate},' 23:59:59')
+	</if>
+  	order by create_time desc
+  </select>
+  
+  <delete id="deleteReadRecord">
+  	delete from app_notice_read where NOTICE_ID = #{noticeId,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteNotice">
+  	delete from app_notice_info where ID = #{noticeId,jdbcType=VARCHAR}
+  </delete>
+</mapper>

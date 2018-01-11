@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.RemitPaymentMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.RemitPayment" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="USER_NO" property="userNo" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="SETTLE_ACCOUNT" property="settleAccount" jdbcType="VARCHAR" />
+    <result column="SETTLE_RULE_ID" property="settleRuleId" jdbcType="VARCHAR" />
+    <result column="SETTLE_CARD_ID" property="settleCardId" jdbcType="VARCHAR" />
+    <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
+    <result column="CITY" property="city" jdbcType="VARCHAR" />
+    <result column="BANK_CODE" property="bankCode" jdbcType="VARCHAR" />
+    <result column="ALLIED_BANK_CODE" property="alliedBankCode" jdbcType="VARCHAR" />
+    <result column="SABK_CODE" property="sabkCode" jdbcType="VARCHAR" />
+    <result column="OPEN_BANK_NAME" property="openBankName" jdbcType="VARCHAR" />
+    <result column="OWN_BANK_CODE" property="ownBankCode" jdbcType="VARCHAR" />
+    <result column="BANK_ACCOUNT_TYPE" property="bankAccountType" jdbcType="VARCHAR" />
+    <result column="BANK_ACCOUNT_NAME" property="bankAccountName" jdbcType="VARCHAR" />
+    <result column="BANK_CARD_NO" property="bankCardNo" jdbcType="VARCHAR" />
+    <result column="SETTLE_AMOUNT" property="settleAmount" jdbcType="DOUBLE" />
+    <result column="REMIT_AMOUNT" property="remitAmount" jdbcType="DOUBLE" />
+    <result column="REMIT_FEE" property="remitFee" jdbcType="DOUBLE" />
+    <result column="FEE_TYPE" property="feeType" jdbcType="VARCHAR" />
+    <result column="REMIT_BUS_CODE" property="remitBusCode" jdbcType="VARCHAR" />
+    <result column="FEE_BUS_CODE" property="feeBusCode" jdbcType="VARCHAR" />
+    <result column="IS_URGENT" property="isUrgent" jdbcType="VARCHAR" />
+    <result column="REMIT_STATUS" property="remitStatus" jdbcType="VARCHAR" />
+    <result column="REMIT_PAYMENT_ID" property="remitPaymentId" jdbcType="VARCHAR" />
+    <result column="REMIT_REQUEST_ID" property="remitRequestId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="LAST_UPDATE_TIME" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, OPTIMISTIC, USER_NO, STATUS, SETTLE_ACCOUNT, SETTLE_RULE_ID, SETTLE_CARD_ID, 
+    PROVINCE, CITY, BANK_CODE, ALLIED_BANK_CODE, SABK_CODE, OPEN_BANK_NAME, OWN_BANK_CODE, 
+    BANK_ACCOUNT_TYPE, BANK_ACCOUNT_NAME, BANK_CARD_NO, SETTLE_AMOUNT, REMIT_AMOUNT, 
+    REMIT_FEE, FEE_TYPE, REMIT_BUS_CODE, FEE_BUS_CODE, IS_URGENT, REMIT_STATUS, REMIT_PAYMENT_ID, 
+    REMIT_REQUEST_ID, CREATE_TIME, LAST_UPDATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from remit_payment
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from remit_payment
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.RemitPayment" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into remit_payment (USER_NO, STATUS, 
+      SETTLE_ACCOUNT, SETTLE_RULE_ID, SETTLE_CARD_ID, 
+      PROVINCE, CITY, BANK_CODE, 
+      ALLIED_BANK_CODE, SABK_CODE, OPEN_BANK_NAME, 
+      OWN_BANK_CODE, BANK_ACCOUNT_TYPE, BANK_ACCOUNT_NAME, 
+      BANK_CARD_NO, SETTLE_AMOUNT, REMIT_AMOUNT, 
+      REMIT_FEE, FEE_TYPE, REMIT_BUS_CODE, 
+      FEE_BUS_CODE, IS_URGENT, REMIT_STATUS, 
+      REMIT_PAYMENT_ID, REMIT_REQUEST_ID, CREATE_TIME, 
+      LAST_UPDATE_TIME)
+    values (#{userNo,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{settleAccount,jdbcType=VARCHAR}, #{settleRuleId,jdbcType=VARCHAR}, #{settleCardId,jdbcType=VARCHAR}, 
+      #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{bankCode,jdbcType=VARCHAR}, 
+      #{alliedBankCode,jdbcType=VARCHAR}, #{sabkCode,jdbcType=VARCHAR}, #{openBankName,jdbcType=VARCHAR}, 
+      #{ownBankCode,jdbcType=VARCHAR}, #{bankAccountType,jdbcType=VARCHAR}, #{bankAccountName,jdbcType=VARCHAR}, 
+      #{bankCardNo,jdbcType=VARCHAR}, #{settleAmount,jdbcType=DOUBLE}, #{remitAmount,jdbcType=DOUBLE}, 
+      #{remitFee,jdbcType=DOUBLE}, #{feeType,jdbcType=VARCHAR}, #{remitBusCode,jdbcType=VARCHAR}, 
+      #{feeBusCode,jdbcType=VARCHAR}, #{isUrgent,jdbcType=VARCHAR}, #{remitStatus,jdbcType=VARCHAR}, 
+      #{remitPaymentId,jdbcType=VARCHAR}, #{remitRequestId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{lastUpdateTime,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.RemitPayment" >
+    update remit_payment
+    set OPTIMISTIC = OPTIMISTIC +1,
+      USER_NO = #{userNo,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      SETTLE_ACCOUNT = #{settleAccount,jdbcType=VARCHAR},
+      SETTLE_RULE_ID = #{settleRuleId,jdbcType=VARCHAR},
+      SETTLE_CARD_ID = #{settleCardId,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      BANK_CODE = #{bankCode,jdbcType=VARCHAR},
+      ALLIED_BANK_CODE = #{alliedBankCode,jdbcType=VARCHAR},
+      SABK_CODE = #{sabkCode,jdbcType=VARCHAR},
+      OPEN_BANK_NAME = #{openBankName,jdbcType=VARCHAR},
+      OWN_BANK_CODE = #{ownBankCode,jdbcType=VARCHAR},
+      BANK_ACCOUNT_TYPE = #{bankAccountType,jdbcType=VARCHAR},
+      BANK_ACCOUNT_NAME = #{bankAccountName,jdbcType=VARCHAR},
+      BANK_CARD_NO = #{bankCardNo,jdbcType=VARCHAR},
+      SETTLE_AMOUNT = #{settleAmount,jdbcType=DOUBLE},
+      REMIT_AMOUNT = #{remitAmount,jdbcType=DOUBLE},
+      REMIT_FEE = #{remitFee,jdbcType=DOUBLE},
+      FEE_TYPE = #{feeType,jdbcType=VARCHAR},
+      REMIT_BUS_CODE = #{remitBusCode,jdbcType=VARCHAR},
+      FEE_BUS_CODE = #{feeBusCode,jdbcType=VARCHAR},
+      IS_URGENT = #{isUrgent,jdbcType=VARCHAR},
+      REMIT_STATUS = #{remitStatus,jdbcType=VARCHAR},
+      REMIT_PAYMENT_ID = #{remitPaymentId,jdbcType=VARCHAR},
+      REMIT_REQUEST_ID = #{remitRequestId,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="findByRequestId" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/>
+  	from remit_payment
+  	where REMIT_REQUEST_ID = #{requestId,jdbcType=VARCHAR}
+  </select>
+</mapper>

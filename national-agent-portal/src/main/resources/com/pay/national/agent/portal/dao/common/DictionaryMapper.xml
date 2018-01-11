@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.portal.dao.common.DictionaryMapper">
+<resultMap id="typeMap" type="com.pay.national.agent.common.jedis.bean.DictionaryType">
+  	<id property="code" column="DICT_TYPE_ID" />
+  	<result property="name" column="DICT_TYPE_NAME" />
+  	<result property="remark" column="REMARK" />
+  	<collection property="dictionaries" column="DICT_TYPE_ID" javaType="ArrayList" ofType="com.pay.common.jedis.bean.Dictionary" select="getAllDictById" />
+</resultMap>
+<resultMap id="itemMap" type="com.pay.national.agent.common.jedis.bean.Dictionary">
+  	<id property="key" column="DICT_ID" />
+  	<result property="id" column="id" />
+  	<result property="dictTypeId" column="DICT_TYPE_ID" />
+  	<result property="value" column="DICT_NAME" />
+  	<result property="status" column="STATUS" />
+  	<result property="order" column="DISPLAY_ORDER" />
+</resultMap>
+
+<select id="getAllDict" parameterType="com.pay.national.agent.common.jedis.bean.DictionaryType"  resultMap="typeMap">
+     select dict_type_id, dict_type_name, remark from dictionary_type where 1=1
+     <if test="code !=null and code!='' ">
+       and dict_type_id = #{code}
+     </if>
+</select>
+<select id="getAllDictById" parameterType="java.lang.String" resultMap="itemMap">
+	     select id,dict_type_id, dict_id, dict_name, status, display_order
+  	from dictionary where status ='TRUE'
+       and dict_type_id = #{id}
+</select>
+
+<select id="findByDictTypeIdAndDictId" parameterType="java.lang.String" resultMap="itemMap">
+	     select id,dict_type_id, dict_id, dict_name, status, display_order
+  	from dictionary where status ='TRUE'
+       and dict_type_id = #{dictTypeId}
+	   and dict_id = #{dictId}
+</select>
+
+<select id="findAllDictionaryTypeInfo" parameterType="java.util.Map" resultMap="typeMap">
+     select dict_type_id, dict_type_name, remark from dictionary_type where 1=1
+     <if test="queryParams.code !=null and queryParams.code!='' ">
+       and dict_type_id = #{queryParams.code}
+     </if>
+</select>
+
+<select id="findAllDictionaryInfo" parameterType="java.util.Map" resultMap="itemMap">
+     select dict_type_id, dict_id, dict_name, status, display_order
+  	from dictionary where status ='TRUE'
+       and dict_type_id = #{queryParams.dictTypeId}
+</select>
+
+<select id="findDictTypeByDictTypeId" parameterType="java.lang.String" resultMap="typeMap">
+     select dict_type_id, dict_type_name, remark from dictionary_type where 1=1
+       and dict_type_id = #{dictTypeId}
+</select>
+
+<insert id="insertDictType" parameterType="java.util.Map" >
+	insert into dictionary_type(dict_type_id,dict_type_name,remark)
+
+	values(#{insertParams.code},#{insertParams.name},#{insertParams.remark})
+</insert>
+
+<insert id="insertDictionary" parameterType="com.pay.national.agent.common.jedis.bean.Dictionary" useGeneratedKeys="true" keyProperty="id">
+	insert into dictionary(status,dict_id,dict_name,remark,display_order,dict_type_id)
+	values(#{status},#{key},#{value},
+			#{remark},#{order},#{dictTypeId})
+</insert>
+
+<update id="updateDictionary" parameterType="com.pay.national.agent.common.jedis.bean.Dictionary">
+	update dictionary set dict_id=#{key},dict_name=#{value},status=#{status},display_order=#{order},remark=#{remark}
+	where id=#{id}
+</update>
+
+<update id="updateDictionaryType" parameterType="com.pay.national.agent.common.jedis.bean.DictionaryType">
+	update dictionary_type set DICT_TYPE_ID=#{code},DICT_TYPE_NAME=#{name},REMARK=#{remark}
+	where DICT_TYPE_ID=#{code}
+</update>
+</mapper>

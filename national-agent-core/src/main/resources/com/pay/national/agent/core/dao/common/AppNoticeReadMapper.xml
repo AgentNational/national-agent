@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.AppNoticeReadMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.AppNoticeRead" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="NOTICE_ID" property="noticeId" jdbcType="VARCHAR" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="READ_TIME" property="readTime" jdbcType="TIMESTAMP" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, OPTIMISTIC, NOTICE_ID, USER_NAME, READ_TIME, STATUS
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from app_notice_read
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from app_notice_read
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.AppNoticeRead" >
+    insert into app_notice_read( ID, NOTICE_ID, USER_NAME, READ_TIME, STATUS)
+    values (#{id,jdbcType=VARCHAR}, #{noticeId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{readTime,jdbcType=TIMESTAMP},#{status,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.AppNoticeRead" >
+    update app_notice_read
+    set OPTIMISTIC = OPTIMISTIC +1,
+      NOTICE_ID = #{noticeId,jdbcType=VARCHAR},
+      USER_NAME = #{userName,jdbcType=VARCHAR},
+      READ_TIME = #{readTime,jdbcType=TIMESTAMP},
+      STATUS = #{status,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="getByNotice" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/>
+  	from app_notice_read 
+  	where NOTICE_ID = #{noticeId,jdbcType=VARCHAR}
+    and  USER_NAME = #{userName,jdbcType=VARCHAR}
+  </select>
+</mapper>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.AppMenuMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.AppMenu" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="PARENT_MENU_ID" property="parentMenuId" jdbcType="BIGINT" />
+    <result column="MENU_NAME" property="menuName" jdbcType="VARCHAR" />
+    <result column="MENU_LEVEL" property="menuLevel" jdbcType="VARCHAR" />
+    <result column="JUMP_TYPE" property="jumpType" jdbcType="VARCHAR" />
+    <result column="IMG_URL" property="imgUrl" jdbcType="VARCHAR" />
+    <result column="H5_URL" property="h5Url" jdbcType="VARCHAR" />
+    <result column="ANDROID_URL" property="androidUrl" jdbcType="VARCHAR" />
+    <result column="IOS_URL" property="iosUrl" jdbcType="VARCHAR" />
+    <result column="MENU_ORDER" property="menuOrder" jdbcType="INTEGER" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, PARENT_MENU_ID, MENU_NAME, MENU_LEVEL, JUMP_TYPE, IMG_URL, H5_URL, ANDROID_URL, 
+    IOS_URL, MENU_ORDER, REMARK, STATUS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from app_menu
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from app_menu
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.AppMenu" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into app_menu (PARENT_MENU_ID, MENU_NAME, MENU_LEVEL, 
+      JUMP_TYPE, IMG_URL, H5_URL, 
+      ANDROID_URL, IOS_URL, MENU_ORDER, 
+      REMARK, STATUS)
+    values (#{parentMenuId,jdbcType=BIGINT}, #{menuName,jdbcType=VARCHAR}, #{menuLevel,jdbcType=VARCHAR}, 
+      #{jumpType,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{h5Url,jdbcType=VARCHAR}, 
+      #{androidUrl,jdbcType=VARCHAR}, #{iosUrl,jdbcType=VARCHAR}, #{menuOrder,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.AppMenu" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into app_menu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="parentMenuId != null" >
+        PARENT_MENU_ID,
+      </if>
+      <if test="menuName != null" >
+        MENU_NAME,
+      </if>
+      <if test="menuLevel != null" >
+        MENU_LEVEL,
+      </if>
+      <if test="jumpType != null" >
+        JUMP_TYPE,
+      </if>
+      <if test="imgUrl != null" >
+        IMG_URL,
+      </if>
+      <if test="h5Url != null" >
+        H5_URL,
+      </if>
+      <if test="androidUrl != null" >
+        ANDROID_URL,
+      </if>
+      <if test="iosUrl != null" >
+        IOS_URL,
+      </if>
+      <if test="menuOrder != null" >
+        MENU_ORDER,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="parentMenuId != null" >
+        #{parentMenuId,jdbcType=BIGINT},
+      </if>
+      <if test="menuName != null" >
+        #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuLevel != null" >
+        #{menuLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="jumpType != null" >
+        #{jumpType,jdbcType=VARCHAR},
+      </if>
+      <if test="imgUrl != null" >
+        #{imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="h5Url != null" >
+        #{h5Url,jdbcType=VARCHAR},
+      </if>
+      <if test="androidUrl != null" >
+        #{androidUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="iosUrl != null" >
+        #{iosUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="menuOrder != null" >
+        #{menuOrder,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.AppMenu" >
+    update app_menu
+    <set >
+      <if test="parentMenuId != null" >
+        PARENT_MENU_ID = #{parentMenuId,jdbcType=BIGINT},
+      </if>
+      <if test="menuName != null" >
+        MENU_NAME = #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuLevel != null" >
+        MENU_LEVEL = #{menuLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="jumpType != null" >
+        JUMP_TYPE = #{jumpType,jdbcType=VARCHAR},
+      </if>
+      <if test="imgUrl != null" >
+        IMG_URL = #{imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="h5Url != null" >
+        H5_URL = #{h5Url,jdbcType=VARCHAR},
+      </if>
+      <if test="androidUrl != null" >
+        ANDROID_URL = #{androidUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="iosUrl != null" >
+        IOS_URL = #{iosUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="menuOrder != null" >
+        MENU_ORDER = #{menuOrder,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.AppMenu" >
+    update app_menu
+    set PARENT_MENU_ID = #{parentMenuId,jdbcType=BIGINT},
+      MENU_NAME = #{menuName,jdbcType=VARCHAR},
+      MENU_LEVEL = #{menuLevel,jdbcType=VARCHAR},
+      JUMP_TYPE = #{jumpType,jdbcType=VARCHAR},
+      IMG_URL = #{imgUrl,jdbcType=VARCHAR},
+      H5_URL = #{h5Url,jdbcType=VARCHAR},
+      ANDROID_URL = #{androidUrl,jdbcType=VARCHAR},
+      IOS_URL = #{iosUrl,jdbcType=VARCHAR},
+      MENU_ORDER = #{menuOrder,jdbcType=INTEGER},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="findMenuByRole" resultMap="BaseResultMap" parameterType="java.util.List" >
+    select 
+    am.ID, am.PARENT_MENU_ID, am.MENU_NAME, am.MENU_LEVEL, am.JUMP_TYPE, am.IMG_URL, am.H5_URL, am.ANDROID_URL, 
+    am.IOS_URL, am.MENU_ORDER, am.REMARK, am.STATUS 
+    from app_menu am left join menu_role_link mrl on am.id=mrl.menu_id
+    where 
+    1=1 and 
+    mrl.role_id in
+    <foreach collection="list" open="(" close=")" item="item"  separator=",">
+       #{item.id,jdbcType=BIGINT}
+    </foreach>
+    group by 
+    am.ID, am.PARENT_MENU_ID, am.MENU_NAME, am.MENU_LEVEL, am.JUMP_TYPE, am.IMG_URL, am.H5_URL, am.ANDROID_URL, 
+    am.IOS_URL, am.MENU_ORDER, am.REMARK, am.STATUS
+    order by am.MENU_ORDER
+  </select>
+</mapper>

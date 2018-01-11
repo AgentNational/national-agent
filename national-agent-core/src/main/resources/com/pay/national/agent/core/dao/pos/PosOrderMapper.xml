@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.pos.PosOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.PosOrder" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="USER_NO" property="userNo" jdbcType="VARCHAR" />
+    <result column="POS_TYPE" property="posType" jdbcType="VARCHAR" />
+    <result column="BUSINESS_CODE" property="businessCode" jdbcType="VARCHAR" />
+    <result column="REWARD_AMOUNT_TOTAL" property="rewardAmountTotal" jdbcType="DOUBLE" />
+    <result column="REWARD_AMOUNT" property="rewardAmount" jdbcType="DOUBLE" />
+    <result column="CUSTOMER_NO" property="customerNo" jdbcType="VARCHAR" />
+    <result column="CUSTOMER_NAME" property="customerName" jdbcType="VARCHAR" />
+    <result column="SALES_BILL_NO" property="salesBillNo" jdbcType="VARCHAR" />
+    <result column="STORE_OUT_NO" property="storeOutNo" jdbcType="VARCHAR" />
+    <result column="POS_SN" property="posSn" jdbcType="VARCHAR" />
+    <result column="DEAL_TOTAL" property="dealTotal" jdbcType="DOUBLE" />
+    <result column="POS_STATUS" property="posStatus" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="CUSTOMER_PHONE" property="customerPhone" jdbcType="VARCHAR" />
+    <result column="RECEIVE_ADDRESS" property="receiveAddress" jdbcType="VARCHAR" />
+    <result column="LINKMAN" property="linkman" jdbcType="VARCHAR" />
+    <result column="INVALID_TIME" property="invalidTime" jdbcType="TIMESTAMP" />
+    <result column="LAST_UPDATE_TIME" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, OPTIMISTIC, ORDER_NO, USER_NO, POS_TYPE, BUSINESS_CODE, REWARD_AMOUNT_TOTAL, 
+    REWARD_AMOUNT, CUSTOMER_NO, CUSTOMER_NAME, SALES_BILL_NO, STORE_OUT_NO, POS_SN, DEAL_TOTAL, 
+    POS_STATUS, STATUS, CREATE_TIME, CUSTOMER_PHONE, RECEIVE_ADDRESS, LINKMAN, INVALID_TIME, 
+    LAST_UPDATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from pos_order
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from pos_order
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.PosOrder" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pos_order (OPTIMISTIC, ORDER_NO, USER_NO, 
+      POS_TYPE, BUSINESS_CODE, REWARD_AMOUNT_TOTAL, 
+      REWARD_AMOUNT, CUSTOMER_NO, CUSTOMER_NAME, 
+      SALES_BILL_NO, STORE_OUT_NO, POS_SN, 
+      DEAL_TOTAL, POS_STATUS, STATUS, 
+      CREATE_TIME, CUSTOMER_PHONE, RECEIVE_ADDRESS, 
+      LINKMAN, INVALID_TIME, LAST_UPDATE_TIME
+      )
+    values (#{optimistic,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{userNo,jdbcType=VARCHAR}, 
+      #{posType,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR}, #{rewardAmountTotal,jdbcType=DOUBLE}, 
+      #{rewardAmount,jdbcType=DOUBLE}, #{customerNo,jdbcType=VARCHAR}, #{customerName,jdbcType=VARCHAR}, 
+      #{salesBillNo,jdbcType=VARCHAR}, #{storeOutNo,jdbcType=VARCHAR}, #{posSn,jdbcType=VARCHAR}, 
+      #{dealTotal,jdbcType=DOUBLE}, #{posStatus,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{customerPhone,jdbcType=VARCHAR}, #{receiveAddress,jdbcType=VARCHAR}, 
+      #{linkman,jdbcType=VARCHAR}, #{invalidTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.PosOrder" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pos_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        OPTIMISTIC,
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="userNo != null" >
+        USER_NO,
+      </if>
+      <if test="posType != null" >
+        POS_TYPE,
+      </if>
+      <if test="businessCode != null" >
+        BUSINESS_CODE,
+      </if>
+      <if test="rewardAmountTotal != null" >
+        REWARD_AMOUNT_TOTAL,
+      </if>
+      <if test="rewardAmount != null" >
+        REWARD_AMOUNT,
+      </if>
+      <if test="customerNo != null" >
+        CUSTOMER_NO,
+      </if>
+      <if test="customerName != null" >
+        CUSTOMER_NAME,
+      </if>
+      <if test="salesBillNo != null" >
+        SALES_BILL_NO,
+      </if>
+      <if test="storeOutNo != null" >
+        STORE_OUT_NO,
+      </if>
+      <if test="posSn != null" >
+        POS_SN,
+      </if>
+      <if test="dealTotal != null" >
+        DEAL_TOTAL,
+      </if>
+      <if test="posStatus != null" >
+        POS_STATUS,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="customerPhone != null" >
+        CUSTOMER_PHONE,
+      </if>
+      <if test="receiveAddress != null" >
+        RECEIVE_ADDRESS,
+      </if>
+      <if test="linkman != null" >
+        LINKMAN,
+      </if>
+      <if test="invalidTime != null" >
+        INVALID_TIME,
+      </if>
+      <if test="lastUpdateTime != null" >
+        LAST_UPDATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userNo != null" >
+        #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="posType != null" >
+        #{posType,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null" >
+        #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardAmountTotal != null" >
+        #{rewardAmountTotal,jdbcType=DOUBLE},
+      </if>
+      <if test="rewardAmount != null" >
+        #{rewardAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="customerNo != null" >
+        #{customerNo,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null" >
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="salesBillNo != null" >
+        #{salesBillNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeOutNo != null" >
+        #{storeOutNo,jdbcType=VARCHAR},
+      </if>
+      <if test="posSn != null" >
+        #{posSn,jdbcType=VARCHAR},
+      </if>
+      <if test="dealTotal != null" >
+        #{dealTotal,jdbcType=DOUBLE},
+      </if>
+      <if test="posStatus != null" >
+        #{posStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerPhone != null" >
+        #{customerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveAddress != null" >
+        #{receiveAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="linkman != null" >
+        #{linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="invalidTime != null" >
+        #{invalidTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.PosOrder" >
+    update pos_order
+    <set >
+      <if test="optimistic != null" >
+        OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userNo != null" >
+        USER_NO = #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="posType != null" >
+        POS_TYPE = #{posType,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null" >
+        BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardAmountTotal != null" >
+        REWARD_AMOUNT_TOTAL = #{rewardAmountTotal,jdbcType=DOUBLE},
+      </if>
+      <if test="rewardAmount != null" >
+        REWARD_AMOUNT = #{rewardAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="customerNo != null" >
+        CUSTOMER_NO = #{customerNo,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null" >
+        CUSTOMER_NAME = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="salesBillNo != null" >
+        SALES_BILL_NO = #{salesBillNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeOutNo != null" >
+        STORE_OUT_NO = #{storeOutNo,jdbcType=VARCHAR},
+      </if>
+      <if test="posSn != null" >
+        POS_SN = #{posSn,jdbcType=VARCHAR},
+      </if>
+      <if test="dealTotal != null" >
+        DEAL_TOTAL = #{dealTotal,jdbcType=DOUBLE},
+      </if>
+      <if test="posStatus != null" >
+        POS_STATUS = #{posStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerPhone != null" >
+        CUSTOMER_PHONE = #{customerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveAddress != null" >
+        RECEIVE_ADDRESS = #{receiveAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="linkman != null" >
+        LINKMAN = #{linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="invalidTime != null" >
+        INVALID_TIME = #{invalidTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.PosOrder" >
+    update pos_order
+    set OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      USER_NO = #{userNo,jdbcType=VARCHAR},
+      POS_TYPE = #{posType,jdbcType=VARCHAR},
+      BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
+      REWARD_AMOUNT_TOTAL = #{rewardAmountTotal,jdbcType=DOUBLE},
+      REWARD_AMOUNT = #{rewardAmount,jdbcType=DOUBLE},
+      CUSTOMER_NO = #{customerNo,jdbcType=VARCHAR},
+      CUSTOMER_NAME = #{customerName,jdbcType=VARCHAR},
+      SALES_BILL_NO = #{salesBillNo,jdbcType=VARCHAR},
+      STORE_OUT_NO = #{storeOutNo,jdbcType=VARCHAR},
+      POS_SN = #{posSn,jdbcType=VARCHAR},
+      DEAL_TOTAL = #{dealTotal,jdbcType=DOUBLE},
+      POS_STATUS = #{posStatus,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      CUSTOMER_PHONE = #{customerPhone,jdbcType=VARCHAR},
+      RECEIVE_ADDRESS = #{receiveAddress,jdbcType=VARCHAR},
+      LINKMAN = #{linkman,jdbcType=VARCHAR},
+      INVALID_TIME = #{invalidTime,jdbcType=TIMESTAMP},
+      LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="findAllPosOrder" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    
+    select 
+    <include refid="Base_Column_List" />
+    from pos_order 
+  	where 1=1
+  	<if test="posOrderQueryBean.userNo != null and posOrderQueryBean.userNo != ''">
+  	and USER_NO = #{posOrderQueryBean.userNo,jdbcType=VARCHAR}
+  	</if>
+  	<![CDATA[
+  	and STATUS <> 'DELETE'
+  	order by CREATE_TIME desc
+  	]]>
+  </select>
+  
+  <select id="findOrderByPhoneNoAndBusinessCode" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pos_order 
+  	where 1=1
+  	and BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR} 
+  	and CUSTOMER_PHONE = #{phoneNo,jdbcType=VARCHAR} 
+  	<![CDATA[
+  	and STATUS <> 'DELETE'
+  	order by CREATE_TIME desc
+  	]]>
+  </select>
+  
+  <select id="findTrueOrders" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pos_order 
+  	where STATUS = 'TRUE'
+  </select>
+  
+  <update id="updateBySalesBillNoSelective" parameterType="com.pay.national.agent.model.entity.PosOrder" >
+    update pos_order
+    <set >
+      <if test="optimistic != null" >
+        OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userNo != null" >
+        USER_NO = #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="posType != null" >
+        POS_TYPE = #{posType,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null" >
+        BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardAmountTotal != null" >
+        REWARD_AMOUNT_TOTAL = #{rewardAmountTotal,jdbcType=DOUBLE},
+      </if>
+      <if test="rewardAmount != null" >
+        REWARD_AMOUNT = #{rewardAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="customerNo != null" >
+        CUSTOMER_NO = #{customerNo,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null" >
+        CUSTOMER_NAME = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="salesBillNo != null" >
+        SALES_BILL_NO = #{salesBillNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeOutNo != null" >
+        STORE_OUT_NO = #{storeOutNo,jdbcType=VARCHAR},
+      </if>
+      <if test="posSn != null" >
+        POS_SN = #{posSn,jdbcType=VARCHAR},
+      </if>
+      <if test="dealTotal != null" >
+        DEAL_TOTAL = #{dealTotal,jdbcType=DOUBLE},
+      </if>
+      <if test="posStatus != null" >
+        POS_STATUS = #{posStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerPhone != null" >
+        CUSTOMER_PHONE = #{customerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveAddress != null" >
+        RECEIVE_ADDRESS = #{receiveAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="linkman != null" >
+        LINKMAN = #{linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="invalidTime != null" >
+        INVALID_TIME = #{invalidTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where SALES_BILL_NO = #{salesBillNo,jdbcType=INTEGER}
+  </update>
+</mapper>

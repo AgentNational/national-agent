@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.AppAdVertiseInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.AppAdVertiseInfo" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
+    <result column="IMAGES_URL" property="imagesUrl" jdbcType="VARCHAR" />
+    <result column="LINK_URL" property="linkUrl" jdbcType="VARCHAR" />
+    <result column="INDEX_NO" property="indexNo" jdbcType="INTEGER" />
+    <result column="ADVERTISE_TYPE" property="advertiseType" jdbcType="VARCHAR" />
+    <result column="CLASS_NAME" property="className" jdbcType="VARCHAR" />
+    <result column="PROPERTIES" property="properties" jdbcType="VARCHAR" />
+    <result column="APP_TYPE" property="appType" jdbcType="VARCHAR" />
+    <result column="OPERATOR_FLAG" property="operatorFlag" jdbcType="VARCHAR"/>
+    <result column="USE_TYPE" property="useType" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, OPTIMISTIC, DESCRIPTION, IMAGES_URL, LINK_URL, INDEX_NO, ADVERTISE_TYPE, CLASS_NAME,
+    PROPERTIES, APP_TYPE,OPERATOR_FLAG, USE_TYPE, STATUS, CREATE_TIME
+  </sql>
+
+  <select id="getAppAdVertiseInfos" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from app_advertise_info
+  	where STATUS = 'ENABLE'
+  	<if test="appType != null and appType != ''">
+  	and APP_TYPE = #{appType,jdbcType=VARCHAR}
+  	</if>
+  	<if test="advertiseType != null and advertiseType != ''">
+  	and ADVERTISE_TYPE = #{advertiseType,jdbcType=VARCHAR}
+  	</if>
+  </select>
+</mapper>

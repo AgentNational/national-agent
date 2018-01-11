@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.RewardRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.RewardRule" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="REWARD_AMOUNT" property="rewardAmount" jdbcType="DOUBLE" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="CHILD_BUSINESS_CODE" property="childBusinessCode" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="LAST_UPDATE_TIME" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="TRANS_AMOUNT" property="transAmount" jdbcType="DOUBLE" />
+    <result column="REMARK1" property="remark1" jdbcType="VARCHAR" />
+    <result column="REMARK2" property="remark2" jdbcType="VARCHAR" />
+    <result column="REMARK3" property="remark3" jdbcType="VARCHAR" />
+    <result column="REMARK4" property="remark4" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, OPTIMISTIC, REWARD_AMOUNT, STATUS, CHILD_BUSINESS_CODE, CREATE_TIME, LAST_UPDATE_TIME, 
+    TRANS_AMOUNT, REMARK1, REMARK2, REMARK3, REMARK4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from reward_rule
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from reward_rule
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.RewardRule" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into reward_rule (OPTIMISTIC, REWARD_AMOUNT, STATUS, 
+      CHILD_BUSINESS_CODE, CREATE_TIME, LAST_UPDATE_TIME, 
+      TRANS_AMOUNT, REMARK1, REMARK2, 
+      REMARK3, REMARK4)
+    values (#{optimistic,jdbcType=INTEGER}, #{rewardAmount,jdbcType=DOUBLE}, #{status,jdbcType=VARCHAR}, 
+      #{childBusinessCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}, 
+      #{transAmount,jdbcType=DOUBLE}, #{remark1,jdbcType=VARCHAR}, #{remark2,jdbcType=VARCHAR}, 
+      #{remark3,jdbcType=VARCHAR}, #{remark4,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.RewardRule" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into reward_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        OPTIMISTIC,
+      </if>
+      <if test="rewardAmount != null" >
+        REWARD_AMOUNT,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="childBusinessCode != null" >
+        CHILD_BUSINESS_CODE,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="lastUpdateTime != null" >
+        LAST_UPDATE_TIME,
+      </if>
+      <if test="transAmount != null" >
+        TRANS_AMOUNT,
+      </if>
+      <if test="remark1 != null" >
+        REMARK1,
+      </if>
+      <if test="remark2 != null" >
+        REMARK2,
+      </if>
+      <if test="remark3 != null" >
+        REMARK3,
+      </if>
+      <if test="remark4 != null" >
+        REMARK4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="rewardAmount != null" >
+        #{rewardAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="childBusinessCode != null" >
+        #{childBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transAmount != null" >
+        #{transAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="remark1 != null" >
+        #{remark1,jdbcType=VARCHAR},
+      </if>
+      <if test="remark2 != null" >
+        #{remark2,jdbcType=VARCHAR},
+      </if>
+      <if test="remark3 != null" >
+        #{remark3,jdbcType=VARCHAR},
+      </if>
+      <if test="remark4 != null" >
+        #{remark4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.RewardRule" >
+    update reward_rule
+    <set >
+      <if test="optimistic != null" >
+        OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="rewardAmount != null" >
+        REWARD_AMOUNT = #{rewardAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="childBusinessCode != null" >
+        CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transAmount != null" >
+        TRANS_AMOUNT = #{transAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="remark1 != null" >
+        REMARK1 = #{remark1,jdbcType=VARCHAR},
+      </if>
+      <if test="remark2 != null" >
+        REMARK2 = #{remark2,jdbcType=VARCHAR},
+      </if>
+      <if test="remark3 != null" >
+        REMARK3 = #{remark3,jdbcType=VARCHAR},
+      </if>
+      <if test="remark4 != null" >
+        REMARK4 = #{remark4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.RewardRule" >
+    update reward_rule
+    set OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      REWARD_AMOUNT = #{rewardAmount,jdbcType=DOUBLE},
+      STATUS = #{status,jdbcType=VARCHAR},
+      CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      TRANS_AMOUNT = #{transAmount,jdbcType=DOUBLE},
+      REMARK1 = #{remark1,jdbcType=VARCHAR},
+      REMARK2 = #{remark2,jdbcType=VARCHAR},
+      REMARK3 = #{remark3,jdbcType=VARCHAR},
+      REMARK4 = #{remark4,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getRewardRules" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select <include refid="Base_Column_List"/>
+  	from reward_rule
+  	where CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR}
+  	and STATUS = 'ENABLE'
+  </select>
+</mapper>

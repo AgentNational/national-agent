@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://code.alibabatech.com/schema/dubbo
+		http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+		">
+    <!-- 商户费率信息变更核心服务 -->
+	<!-- <dubbo:service interface="com.pay.alliance.api.inner.dubbo.CustomerFeeUpdateFacade" ref="customerFeeUpdateCoreFacade" group="core" retries="0" /> -->
+
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.TestFacade" ref="testFacade" retries="0" />
+
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.UserFacade" ref="userFacade" retries="0" />
+
+	<!-- app公告 -->
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.AppNoticeInfoFacade" ref="appNoticeInfoFacade" retries="0"/>
+
+	<!-- app消息 -->
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.AppMessageInfoFacade" ref="appMessageInfoFacade" retries="0"/>
+
+	<!-- 账户 -->
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.AccountFacade" ref="accountFacade" retries="0"/>
+
+	<!-- 消息推送 -->
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.PushMsgServiceFacade" ref="pushMsgServiceFacade" retries="0"/>
+
+	<!--信用卡服务-->
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.CreditCardFacade" ref="creditCardFacade" retries="0"/>
+
+	<!-- 银行信息查询服务 -->
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.BankCardFacade" ref="bankCardFacade" retries="0"/>
+
+	<!--意见反馈-->
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.AppFeedbackFacade" ref="appFeedbackFacade" retries="0"/>
+	<!--版本更新-->
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.AppVersionInfoFacade" ref="appVersionInfoFacade" retries="0"/>
+	<!--banner-->
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.AppAdVertiseInfoFacade" ref="appAdVertiseInfoFacade" retries="0"/>
+	<!--奖励服务-->
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.RewardFacade" ref="rewardFacade" retries="0"/>
+	
+	
+
+	<!-- app菜单 -->
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.AppMenuFacade" ref="appMenuFacade" retries="0"/>
+	
+	<!-- pos业务 -->
+	<dubbo:service interface="com.pay.national.agent.api.dubbo.PosFacade" ref="posFacade" retries="0"/>
+</beans>

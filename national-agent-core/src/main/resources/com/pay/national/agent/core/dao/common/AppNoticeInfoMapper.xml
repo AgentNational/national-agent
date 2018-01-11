@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.AppNoticeInfoMapper" >
+  <resultMap id="AllResultMap" type="com.pay.national.agent.model.entity.AppNoticeInfo" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="VARCHAR" />
+    <result column="NOTICE_TYPE" property="noticeType" jdbcType="VARCHAR" />
+    <result column="BEGIN_TIME" property="beginTime" jdbcType="TIMESTAMP" />
+    <result column="END_TIME" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="IS_POP" property="isPop" jdbcType="BIT" />
+    <result column="USABLE_STATUS" property="usableStatus" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="BRIEF_CONTENT" property="briefContent" jdbcType="VARCHAR" />
+    <result column="OPERATOR" property="operator" jdbcType="VARCHAR" />
+    <result column="USER_GROUP" property="userGroup" jdbcType="VARCHAR" />
+    <result column="LAST_UPDATE_TIME" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+   <resultMap id="DetailResultMap" type="com.pay.national.agent.model.beans.results.AppNoticeDetailBean" >
+  	<id column="ID" property="id" jdbcType="VARCHAR" />
+  	 <result column="TITLE" property="title" jdbcType="VARCHAR" />
+  	 <result column="CONTENT" property="content" jdbcType="VARCHAR" />
+  	 <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="ListResultMap" type="com.pay.national.agent.model.beans.results.AppNoticeListBean" >
+  	<id column="ID" property="id" jdbcType="VARCHAR" />
+  	<result column="NOTICE_TYPE" property="noticeType" jdbcType="VARCHAR" />
+  	<result column="USER_GROUP" property="userGroup" jdbcType="VARCHAR" />
+  	<result column="USABLE_STATUS" property="usableStatus" jdbcType="VARCHAR" />
+  	<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  	<result column="TITLE" property="title" jdbcType="VARCHAR" />
+  	<result column="BRIEF_CONTENT" property="briefContent" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, OPTIMISTIC, TITLE, CONTENT, NOTICE_TYPE, BEGIN_TIME, END_TIME, IS_POP, USABLE_STATUS, 
+    CREATE_TIME, BRIEF_CONTENT, OPERATOR, 
+    USER_GROUP,LAST_UPDATE_TIME
+  </sql>
+  
+  <select id="findAllNotice" resultMap="ListResultMap">
+  	select ID,NOTICE_TYPE,USER_GROUP,USABLE_STATUS,CREATE_TIME,TITLE,BRIEF_CONTENT
+  	from app_notice_info
+  	where 1=1
+  	<if test="queryBean.noticeType != null and queryBean.noticeType != ''">
+  		and NOTICE_TYPE = #{queryBean.noticeType,jdbcType=VARCHAR}
+  	</if>
+  	<if test="queryBean.userGroup != null and queryBean.userGroup != ''">
+  		and USER_GROUP = #{queryBean.userGroup,jdbcType=VARCHAR}
+  	</if>
+  	and USABLE_STATUS = 'ENABLE'
+  	order by CREATE_TIME desc
+  </select>
+  
+  <select id="findIds" resultType="java.lang.String">
+  	select ID
+  	from app_notice_info
+  	where USER_GROUP = #{userGroup,jdbcType=VARCHAR}
+  	and USABLE_STATUS = 'ENABLE'
+  </select>
+  
+  <select id="getNoticeDetail" resultMap="DetailResultMap">
+  	select ID,TITLE,CONTENT,CREATE_TIME
+  	from app_notice_info
+  	where ID = #{noticeId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findPopNotice" resultMap="AllResultMap">
+  	select <include refid="Base_Column_List"/>
+  	from app_notice_info
+  	where USER_GROUP = #{userGroup,jdbcType=VARCHAR}
+  	and IS_POP = 1
+  	and USABLE_STATUS = 'ENABLE'
+  </select>
+  
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.AppNoticeInfo" >
+    insert into app_notice_info (ID, TITLE, CONTENT, NOTICE_TYPE, BEGIN_TIME, END_TIME, IS_POP, USABLE_STATUS, 
+    CREATE_TIME, BRIEF_CONTENT, OPERATOR, 
+    USER_GROUP,LAST_UPDATE_TIME) 
+    values 
+      (#{id,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{noticeType,jdbcType=VARCHAR}, #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{isPop,jdbcType=BIT}, #{usableStatus,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{briefContent,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR},
+      #{userGroup,jdbcType=VARCHAR}, #{lastUpdateTime,jdbcType=TIMESTAMP})
+  </insert>
+  
+</mapper>

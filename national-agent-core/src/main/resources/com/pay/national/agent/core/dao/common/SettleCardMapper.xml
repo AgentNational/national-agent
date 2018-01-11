@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.SettleCardMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.SettleCard" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="OWNER_ID" property="ownerId" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="SETTLE_ACCOUNT_TYPE" property="settleAccountType" jdbcType="VARCHAR" />
+    <result column="BANK_ACCOUNT_NAME" property="bankAccountName" jdbcType="VARCHAR" />
+    <result column="BANK_ACCOUNT_NO" property="bankAccountNo" jdbcType="VARCHAR" />
+    <result column="BANK_CODE" property="bankCode" jdbcType="VARCHAR" />
+    <result column="BANK_NAME" property="bankName" jdbcType="VARCHAR" />
+    <result column="ALLIED_BANK_CODE" property="alliedBankCode" jdbcType="VARCHAR" />
+    <result column="SABK_CODE" property="sabkCode" jdbcType="VARCHAR" />
+    <result column="OWN_BANK_CODE" property="ownBankCode" jdbcType="VARCHAR" />
+    <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
+    <result column="CITY" property="city" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="LAST_UPDATE_TIME" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, OPTIMISTIC, OWNER_ID, STATUS, SETTLE_ACCOUNT_TYPE, BANK_ACCOUNT_NAME, BANK_ACCOUNT_NO, 
+    BANK_CODE, BANK_NAME, ALLIED_BANK_CODE, SABK_CODE, OWN_BANK_CODE, PROVINCE, CITY, 
+    CREATE_TIME, LAST_UPDATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from settle_card
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from settle_card
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.SettleCard" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into settle_card (OPTIMISTIC, OWNER_ID, STATUS, 
+      SETTLE_ACCOUNT_TYPE, BANK_ACCOUNT_NAME, BANK_ACCOUNT_NO, 
+      BANK_CODE, BANK_NAME, ALLIED_BANK_CODE, 
+      SABK_CODE, OWN_BANK_CODE, PROVINCE, 
+      CITY, CREATE_TIME, LAST_UPDATE_TIME
+      )
+    values (#{optimistic,jdbcType=INTEGER}, #{ownerId,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{settleAccountType,jdbcType=VARCHAR}, #{bankAccountName,jdbcType=VARCHAR}, #{bankAccountNo,jdbcType=VARCHAR}, 
+      #{bankCode,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR}, #{alliedBankCode,jdbcType=VARCHAR}, 
+      #{sabkCode,jdbcType=VARCHAR}, #{ownBankCode,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.SettleCard" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into settle_card
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        OPTIMISTIC,
+      </if>
+      <if test="ownerId != null" >
+        OWNER_ID,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="settleAccountType != null" >
+        SETTLE_ACCOUNT_TYPE,
+      </if>
+      <if test="bankAccountName != null" >
+        BANK_ACCOUNT_NAME,
+      </if>
+      <if test="bankAccountNo != null" >
+        BANK_ACCOUNT_NO,
+      </if>
+      <if test="bankCode != null" >
+        BANK_CODE,
+      </if>
+      <if test="bankName != null" >
+        BANK_NAME,
+      </if>
+      <if test="alliedBankCode != null" >
+        ALLIED_BANK_CODE,
+      </if>
+      <if test="sabkCode != null" >
+        SABK_CODE,
+      </if>
+      <if test="ownBankCode != null" >
+        OWN_BANK_CODE,
+      </if>
+      <if test="province != null" >
+        PROVINCE,
+      </if>
+      <if test="city != null" >
+        CITY,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="lastUpdateTime != null" >
+        LAST_UPDATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null" >
+        #{ownerId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="settleAccountType != null" >
+        #{settleAccountType,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccountName != null" >
+        #{bankAccountName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccountNo != null" >
+        #{bankAccountNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCode != null" >
+        #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null" >
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="alliedBankCode != null" >
+        #{alliedBankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sabkCode != null" >
+        #{sabkCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ownBankCode != null" >
+        #{ownBankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.SettleCard" >
+    update settle_card
+    <set >
+      <if test="optimistic != null" >
+        OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null" >
+        OWNER_ID = #{ownerId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="settleAccountType != null" >
+        SETTLE_ACCOUNT_TYPE = #{settleAccountType,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccountName != null" >
+        BANK_ACCOUNT_NAME = #{bankAccountName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccountNo != null" >
+        BANK_ACCOUNT_NO = #{bankAccountNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCode != null" >
+        BANK_CODE = #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null" >
+        BANK_NAME = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="alliedBankCode != null" >
+        ALLIED_BANK_CODE = #{alliedBankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sabkCode != null" >
+        SABK_CODE = #{sabkCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ownBankCode != null" >
+        OWN_BANK_CODE = #{ownBankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        PROVINCE = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        CITY = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.SettleCard" >
+    update settle_card
+    set OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      OWNER_ID = #{ownerId,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      SETTLE_ACCOUNT_TYPE = #{settleAccountType,jdbcType=VARCHAR},
+      BANK_ACCOUNT_NAME = #{bankAccountName,jdbcType=VARCHAR},
+      BANK_ACCOUNT_NO = #{bankAccountNo,jdbcType=VARCHAR},
+      BANK_CODE = #{bankCode,jdbcType=VARCHAR},
+      BANK_NAME = #{bankName,jdbcType=VARCHAR},
+      ALLIED_BANK_CODE = #{alliedBankCode,jdbcType=VARCHAR},
+      SABK_CODE = #{sabkCode,jdbcType=VARCHAR},
+      OWN_BANK_CODE = #{ownBankCode,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="findByownerId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from settle_card
+    where OWNER_ID = #{userNo,jdbcType=BIGINT}
+  </select>
+</mapper>

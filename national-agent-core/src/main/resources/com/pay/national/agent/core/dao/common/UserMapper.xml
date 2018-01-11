@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.User" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="ABLE_STATUS" property="ableStatus" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="MAX_ERROR_TIMES" property="maxErrorTimes" jdbcType="INTEGER" />
+    <result column="LAST_LOGIN_ERR_TIME" property="lastLoginErrTime" jdbcType="TIMESTAMP" />
+    <result column="MODIFY_PASSWD_CYCLE" property="modifyPasswdCycle" jdbcType="INTEGER" />
+    <result column="PASSWD_MODIFY_TIME" property="passwdModifyTime" jdbcType="TIMESTAMP" />
+    <result column="ALLOW_BEGIN_TIME" property="allowBeginTime" jdbcType="VARCHAR" />
+    <result column="ALLOW_END_TIME" property="allowEndTime" jdbcType="VARCHAR" />
+    <result column="REALNAME" property="realname" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="LAST_UPDATE_TIME" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="PASSWD_EXPIRE_TIME" property="passwdExpireTime" jdbcType="DATE" />
+    <result column="PASSWD_EFFECT_TIME" property="passwdEffectTime" jdbcType="DATE" />
+    <result column="USER_NO" property="userNo" jdbcType="VARCHAR" />
+    <result column="PARENT_USER_NO" property="parentUserNo" jdbcType="VARCHAR" />
+    <result column="PHONE_NO" property="phoneNo" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="IDENTITY_NO" property="identityNo" jdbcType="VARCHAR" />
+    <result column="SOURCE" property="source" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap type="com.pay.national.agent.model.entity.User" id="UserMap" extends="BaseResultMap">  
+        <collection property="appRoles" ofType="com.pay.national.agent.model.entity.AppRole">  
+            <id property="id" column="GROUP_ID" />  
+            <result property="roleName" column="ROLE_NAME" />
+            <result property="roleType" column="ROLE_TYPE" />  
+            <result property="remark" column="REMARK" />  
+        </collection>  
+    </resultMap> 
+  <sql id="Base_Column_List" >
+    ID, OPTIMISTIC, USER_NAME, ABLE_STATUS,STATUS, PASSWORD, MAX_ERROR_TIMES, LAST_LOGIN_ERR_TIME, 
+    MODIFY_PASSWD_CYCLE, PASSWD_MODIFY_TIME, ALLOW_BEGIN_TIME, ALLOW_END_TIME, REALNAME, 
+    CREATE_TIME, LAST_UPDATE_TIME, PASSWD_EXPIRE_TIME, PASSWD_EFFECT_TIME, USER_NO, PARENT_USER_NO, 
+    PHONE_NO, EMAIL,IDENTITY_NO,SOURCE
+  </sql>
+  <sql id="Base_Column_List_New" >
+    u.ID, u.OPTIMISTIC, u.USER_NAME,u.ABLE_STATUS, u.STATUS, u.PASSWORD, u.MAX_ERROR_TIMES, u.LAST_LOGIN_ERR_TIME, 
+    u.MODIFY_PASSWD_CYCLE, u.PASSWD_MODIFY_TIME, u.ALLOW_BEGIN_TIME, u.ALLOW_END_TIME, REALNAME, 
+    u.CREATE_TIME, u.LAST_UPDATE_TIME, u.PASSWD_EXPIRE_TIME, u.PASSWD_EFFECT_TIME, u.USER_NO, u.PARENT_USER_NO, 
+    u.PHONE_NO, u.EMAIL,u.IDENTITY_NO,u.SOURCE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from app_user
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from app_user
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.User" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into app_user (OPTIMISTIC, USER_NAME, ABLE_STATUS,STATUS, 
+      PASSWORD, MAX_ERROR_TIMES, LAST_LOGIN_ERR_TIME, 
+      MODIFY_PASSWD_CYCLE, PASSWD_MODIFY_TIME, 
+      ALLOW_BEGIN_TIME, ALLOW_END_TIME, REALNAME, 
+      CREATE_TIME, LAST_UPDATE_TIME, PASSWD_EXPIRE_TIME, 
+      PASSWD_EFFECT_TIME, USER_NO, PARENT_USER_NO, 
+      PHONE_NO, EMAIL,IDENTITY_NO,SOURCE)
+    values (#{optimistic,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{ableStatus,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{maxErrorTimes,jdbcType=INTEGER}, #{lastLoginErrTime,jdbcType=TIMESTAMP}, 
+      #{modifyPasswdCycle,jdbcType=INTEGER}, #{passwdModifyTime,jdbcType=TIMESTAMP}, 
+      #{allowBeginTime,jdbcType=VARCHAR}, #{allowEndTime,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}, #{passwdExpireTime,jdbcType=DATE}, 
+      #{passwdEffectTime,jdbcType=DATE}, #{userNo,jdbcType=VARCHAR}, #{parentUserNo,jdbcType=VARCHAR}, 
+      #{phoneNo,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},#{identityNo,jdbcType=VARCHAR},
+      #{source,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.User" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into app_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        OPTIMISTIC,
+      </if>
+      <if test="userName != null" >
+        USER_NAME,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="password != null" >
+        PASSWORD,
+      </if>
+      <if test="maxErrorTimes != null" >
+        MAX_ERROR_TIMES,
+      </if>
+      <if test="lastLoginErrTime != null" >
+        LAST_LOGIN_ERR_TIME,
+      </if>
+      <if test="modifyPasswdCycle != null" >
+        MODIFY_PASSWD_CYCLE,
+      </if>
+      <if test="passwdModifyTime != null" >
+        PASSWD_MODIFY_TIME,
+      </if>
+      <if test="allowBeginTime != null" >
+        ALLOW_BEGIN_TIME,
+      </if>
+      <if test="allowEndTime != null" >
+        ALLOW_END_TIME,
+      </if>
+      <if test="realname != null" >
+        REALNAME,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="lastUpdateTime != null" >
+        LAST_UPDATE_TIME,
+      </if>
+      <if test="passwdExpireTime != null" >
+        PASSWD_EXPIRE_TIME,
+      </if>
+      <if test="passwdEffectTime != null" >
+        PASSWD_EFFECT_TIME,
+      </if>
+      <if test="userNo != null" >
+        USER_NO,
+      </if>
+      <if test="parentUserNo != null" >
+        PARENT_USER_NO,
+      </if>
+      <if test="phoneNo != null" >
+        PHONE_NO,
+      </if>
+      <if test="email != null" >
+        EMAIL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="maxErrorTimes != null" >
+        #{maxErrorTimes,jdbcType=INTEGER},
+      </if>
+      <if test="lastLoginErrTime != null" >
+        #{lastLoginErrTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyPasswdCycle != null" >
+        #{modifyPasswdCycle,jdbcType=INTEGER},
+      </if>
+      <if test="passwdModifyTime != null" >
+        #{passwdModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="allowBeginTime != null" >
+        #{allowBeginTime,jdbcType=VARCHAR},
+      </if>
+      <if test="allowEndTime != null" >
+        #{allowEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null" >
+        #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="passwdExpireTime != null" >
+        #{passwdExpireTime,jdbcType=DATE},
+      </if>
+      <if test="passwdEffectTime != null" >
+        #{passwdEffectTime,jdbcType=DATE},
+      </if>
+      <if test="userNo != null" >
+        #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="parentUserNo != null" >
+        #{parentUserNo,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNo != null" >
+        #{phoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.User" >
+    update app_user
+    <set >
+      <if test="optimistic != null" >
+        OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        USER_NAME = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="maxErrorTimes != null" >
+        MAX_ERROR_TIMES = #{maxErrorTimes,jdbcType=INTEGER},
+      </if>
+      <if test="lastLoginErrTime != null" >
+        LAST_LOGIN_ERR_TIME = #{lastLoginErrTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyPasswdCycle != null" >
+        MODIFY_PASSWD_CYCLE = #{modifyPasswdCycle,jdbcType=INTEGER},
+      </if>
+      <if test="passwdModifyTime != null" >
+        PASSWD_MODIFY_TIME = #{passwdModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="allowBeginTime != null" >
+        ALLOW_BEGIN_TIME = #{allowBeginTime,jdbcType=VARCHAR},
+      </if>
+      <if test="allowEndTime != null" >
+        ALLOW_END_TIME = #{allowEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null" >
+        REALNAME = #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="passwdExpireTime != null" >
+        PASSWD_EXPIRE_TIME = #{passwdExpireTime,jdbcType=DATE},
+      </if>
+      <if test="passwdEffectTime != null" >
+        PASSWD_EFFECT_TIME = #{passwdEffectTime,jdbcType=DATE},
+      </if>
+      <if test="userNo != null" >
+        USER_NO = #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="parentUserNo != null" >
+        PARENT_USER_NO = #{parentUserNo,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNo != null" >
+        PHONE_NO = #{phoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.User" >
+    update app_user
+    set OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      USER_NAME = #{userName,jdbcType=VARCHAR},
+      ABLE_STATUS = #{ableStatus,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      MAX_ERROR_TIMES = #{maxErrorTimes,jdbcType=INTEGER},
+      LAST_LOGIN_ERR_TIME = #{lastLoginErrTime,jdbcType=TIMESTAMP},
+      MODIFY_PASSWD_CYCLE = #{modifyPasswdCycle,jdbcType=INTEGER},
+      PASSWD_MODIFY_TIME = #{passwdModifyTime,jdbcType=TIMESTAMP},
+      ALLOW_BEGIN_TIME = #{allowBeginTime,jdbcType=VARCHAR},
+      ALLOW_END_TIME = #{allowEndTime,jdbcType=VARCHAR},
+      REALNAME = #{realname,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      PASSWD_EXPIRE_TIME = #{passwdExpireTime,jdbcType=DATE},
+      PASSWD_EFFECT_TIME = #{passwdEffectTime,jdbcType=DATE},
+      USER_NO = #{userNo,jdbcType=VARCHAR},
+      PARENT_USER_NO = #{parentUserNo,jdbcType=VARCHAR},
+      PHONE_NO = #{phoneNo,jdbcType=VARCHAR},
+      EMAIL = #{email,jdbcType=VARCHAR},
+      IDENTITY_NO = #{identityNo,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="findUserByUserName" resultMap="UserMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List_New" />
+    ,ar.id as GROUP_ID
+    ,ar.ROLE_NAME
+    ,ar.ROLE_TYPE
+    ,ar.REMARK
+    from app_user u left join user_role_link url on u.id=url.user_id
+	left join app_role ar on url.role_id = ar.id
+    where 
+    1=1
+    AND  
+    u.USER_NAME = #{userName,jdbcType=VARCHAR} AND 
+    url.status='ENABLE' AND 
+    ar.status='ENABLE' AND 
+    u.ABLE_STATUS not in ('DELETE','FALSE')
+  </select>
+  
+  <select id="findUserByUserNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from app_user
+    where USER_NO = #{userNo,jdbcType=VARCHAR} AND 
+    ABLE_STATUS not in ('DELETE','FALSE')
+  </select>
+  
+  <insert id="insertUserRoleLink" parameterType="java.lang.String" >
+    insert into user_role_link ( USER_ID, ROLE_ID, 
+      STATUS)
+    values (#{userId,jdbcType=VARCHAR}, 
+    #{roleId,jdbcType=VARCHAR}, 'ENABLE')
+  </insert>
+  
+</mapper>
