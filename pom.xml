@@ -6,6 +6,8 @@
 	<packaging>pom</packaging>
   
   	<!-- 统一管理依赖版本号 -->
+	<!-- 统一管理依赖版本号 -->
+
 	<properties>
 		<pluton.super.version>0.0.5</pluton.super.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
