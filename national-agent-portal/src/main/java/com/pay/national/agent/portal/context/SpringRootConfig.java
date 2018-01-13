@@ -1,20 +1,13 @@
 package com.pay.national.agent.portal.context;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.ComponentScan.Filter;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.stereotype.Controller;
 
-import com.pay.commons.cache.context.CacheConfig;
-import com.pay.national.agent.common.jedis.context.JedisConfig;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 /**
  * @Description: spring上下文配置
@@ -24,7 +17,7 @@ import com.pay.national.agent.common.jedis.context.JedisConfig;
  */
 @Configuration
 @EnableAspectJAutoProxy
-@Import({MariaDBConfig.class,MyBatisConfig.class, DubboConfig.class, DubboClientConfig.class, TimerConfig.class,SMSConfig.class, CacheConfig.class,JedisConfig.class,MqProducerConfig.class,MqConsumerConfig.class })
+@Import({MariaDBConfig.class,MyBatisConfig.class})
 @ComponentScan(basePackages = "com.pay.national.agent.portal", excludeFilters = { @Filter(Controller.class), @Filter(Configuration.class) })
 public class SpringRootConfig {
 
