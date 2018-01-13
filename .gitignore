@@ -1,0 +1,11 @@
+# Created by .ignore support plugin (hsz.mobi)
+.gitignore
+.idea/
+national-agent-commons/national-agent-commons.iml
+national-agent-commons/target/
+national-agent-core/national-agent-core.iml
+national-agent-core/target/
+national-agent-model/national-agent-model.iml
+national-agent-model/target/
+national-agent-portal/national-agent-portal.iml
+national-agent-portal/target/
