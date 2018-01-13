@@ -44,6 +44,13 @@ public class WebController {
 	
 	@Autowired
 	private RewardFacade rewardFacade;
+
+	@RequestMapping(value="/test01",method=RequestMethod.GET)
+	public @ResponseBody String test(HttpServletRequest request){
+		LogUtil.info("访问成功");
+		return "SUCCESS";
+	}
+
 	
 	@RequestMapping(value="/test",method=RequestMethod.GET)
 	public @ResponseBody String test(HttpServletRequest request,
@@ -95,7 +102,7 @@ public class WebController {
 	
 	*//**
 	 * 提现
-	 * @param loginKey
+	 * @param
 	 * @return
 	 */
 	@RequestMapping(value="/withdrawTest",method=RequestMethod.GET)
@@ -117,7 +124,7 @@ public class WebController {
 	
 	/**
 	 * 提现详情
-	 * @param loginKey
+	 * @param
 	 * @return
 	 */
 	@RequestMapping(value="/wdTest",method=RequestMethod.GET)

@@ -23,7 +23,7 @@ import com.pay.commons.cache.context.CacheConfig;
  */
 @Configuration
 @EnableAspectJAutoProxy
-@Import({ MariaDBConfig.class,MyBatisConfig.class,CacheConfig.class, SMSConfig.class})
+@Import({ MariaDBConfig.class,MyBatisConfig.class})//CacheConfig.class SMSConfig.class
 @ComponentScan(basePackages = "com.pay.national.agent.core", excludeFilters = { @Filter(Controller.class), @Filter(Configuration.class) })
 public class SpringRootConfig {
 
