@@ -19,7 +19,7 @@ import com.pay.national.agent.common.utils.LogUtil;
 @Configuration
 public class MariaDBConfig {
 
-	@Bean(destroyMethod = "close")
+	@Bean
 	public DataSource dataSource() throws PropertyVetoException {
 		ComboPooledDataSource ds = new ComboPooledDataSource();
 		ds.setDriverClass("com.mysql.jdbc.Driver");//设置连接池连接数据库所需的驱动  
