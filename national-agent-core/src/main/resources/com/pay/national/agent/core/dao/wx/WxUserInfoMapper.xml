@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.wx.WxUserInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.WxUserInfo" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="SUBSCRIBE" property="subscribe" jdbcType="VARCHAR" />
+    <result column="CREATETIME" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="OPENID" property="openid" jdbcType="VARCHAR" />
+    <result column="NICKNAME" property="nickname" jdbcType="VARCHAR" />
+    <result column="SEX" property="sex" jdbcType="VARCHAR" />
+    <result column="LANGUAGE" property="language" jdbcType="VARCHAR" />
+    <result column="CITY" property="city" jdbcType="VARCHAR" />
+    <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
+    <result column="COUNTRY" property="country" jdbcType="VARCHAR" />
+    <result column="HEADIMGURL" property="headimgurl" jdbcType="VARCHAR" />
+    <result column="SUBCRIBE_TIME" property="subcribeTime" jdbcType="VARCHAR" />
+    <result column="USER_ID" property="userId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, OPTIMISTIC,SUBSCRIBE, CREATETIME, OPENID, NICKNAME, SEX, LANGUAGE, CITY, PROVINCE, COUNTRY,
+    HEADIMGURL, SUBCRIBE_TIME,USER_ID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from WX_USER_INFO
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+     delete from WX_USER_INFO
+     where ID = #{id,jdbcType=BIGINT}
+   </delete>
+
+
+ <insert id="insert" parameterType="com.pay.national.agent.model.entity.WxUserInfo" >
+      <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+        SELECT LAST_INSERT_ID()
+      </selectKey>
+      insert into WX_USER_INFO (OPTIMISTIC,SUBSCRIBE, CREATETIME, OPENID,
+        NICKNAME, SEX, LANGUAGE,
+        CITY, PROVINCE, COUNTRY,
+        HEADIMGURL, SUBCRIBE_TIME,USER_ID)
+      values (#{optimistic,jdbcType=INTEGER},#{subscribe,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{openid,jdbcType=VARCHAR},
+        #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{language,jdbcType=VARCHAR},
+        #{city,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR},
+        #{headimgurl,jdbcType=VARCHAR}, #{subcribeTime,jdbcType=VARCHAR},#{userId,jdbcType=BIGINT})
+ </insert>
+
+
+ <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.WxUserInfo" >
+  <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+    SELECT LAST_INSERT_ID()
+  </selectKey>
+  insert into WX_USER_INFO
+  <trim prefix="(" suffix=")" suffixOverrides="," >
+    <if test="optimistic != null" >
+      OPTIMISTIC,
+    </if>
+    <if test="subscribe != null" >
+      SUBSCRIBE,
+    </if>
+    <if test="createtime != null" >
+      CREATETIME,
+    </if>
+    <if test="openid != null" >
+      OPENID,
+    </if>
+    <if test="nickname != null" >
+      NICKNAME,
+    </if>
+    <if test="sex != null" >
+      SEX,
+    </if>
+    <if test="language != null" >
+      LANGUAGE,
+    </if>
+    <if test="city != null" >
+      CITY,
+    </if>
+    <if test="province != null" >
+      PROVINCE,
+    </if>
+    <if test="country != null" >
+      COUNTRY,
+    </if>
+    <if test="headimgurl != null" >
+      HEADIMGURL,
+    </if>
+    <if test="subcribeTime != null" >
+      SUBCRIBE_TIME,
+    </if>
+    <if test="userId != null" >
+      USER_ID,
+    </if>
+  </trim>
+  <trim prefix="values (" suffix=")" suffixOverrides="," >
+    <if test="optimistic != null" >
+      #{optimistic,jdbcType=INTEGER},
+    </if>
+    <if test="subscribe != null" >
+      #{subscribe,jdbcType=VARCHAR},
+    </if>
+    <if test="createtime != null" >
+      #{createtime,jdbcType=TIMESTAMP},
+    </if>
+    <if test="openid != null" >
+      #{openid,jdbcType=VARCHAR},
+    </if>
+    <if test="nickname != null" >
+      #{nickname,jdbcType=VARCHAR},
+    </if>
+    <if test="sex != null" >
+      #{sex,jdbcType=VARCHAR},
+    </if>
+    <if test="language != null" >
+      #{language,jdbcType=VARCHAR},
+    </if>
+    <if test="city != null" >
+      #{city,jdbcType=VARCHAR},
+    </if>
+    <if test="province != null" >
+      #{province,jdbcType=VARCHAR},
+    </if>
+    <if test="country != null" >
+      #{country,jdbcType=VARCHAR},
+    </if>
+    <if test="headimgurl != null" >
+      #{headimgurl,jdbcType=VARCHAR},
+    </if>
+    <if test="subcribeTime != null" >
+      #{subcribeTime,jdbcType=VARCHAR},
+    </if>
+    <if test="userId != null" >
+      #{userId,jdbcType=BIGINT},
+    </if>
+  </trim>
+</insert>
+
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.WxUserInfo" >
+   update WX_USER_INFO
+   <set >
+     <if test="optimistic != null" >
+       OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+     </if>
+     <if test="subscribe != null" >
+       SUBSCRIBE = #{subscribe,jdbcType=VARCHAR},
+     </if>
+     <if test="createtime != null" >
+       CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+     </if>
+     <if test="openid != null" >
+       OPENID = #{openid,jdbcType=VARCHAR},
+     </if>
+     <if test="nickname != null" >
+       NICKNAME = #{nickname,jdbcType=VARCHAR},
+     </if>
+     <if test="sex != null" >
+       SEX = #{sex,jdbcType=VARCHAR},
+     </if>
+     <if test="language != null" >
+       LANGUAGE = #{language,jdbcType=VARCHAR},
+     </if>
+     <if test="city != null" >
+       CITY = #{city,jdbcType=VARCHAR},
+     </if>
+     <if test="province != null" >
+       PROVINCE = #{province,jdbcType=VARCHAR},
+     </if>
+     <if test="country != null" >
+       COUNTRY = #{country,jdbcType=VARCHAR},
+     </if>
+     <if test="headimgurl != null" >
+       HEADIMGURL = #{headimgurl,jdbcType=VARCHAR},
+     </if>
+     <if test="subcribeTime != null" >
+       SUBCRIBE_TIME = #{subcribeTime,jdbcType=VARCHAR},
+     </if>
+     <if test="userId != null" >
+       USER_ID = #{userId,jdbcType=BIGINT},
+     </if>
+   </set>
+   where ID = #{id,jdbcType=BIGINT}
+ </update>
+
+
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.WxUserInfo" >
+    update WX_USER_INFO
+    set OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      SUBSCRIBE = #{subscribe,jdbcType=VARCHAR},
+      CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      OPENID = #{openid,jdbcType=VARCHAR},
+      NICKNAME = #{nickname,jdbcType=VARCHAR},
+      SEX = #{sex,jdbcType=VARCHAR},
+      LANGUAGE = #{language,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      COUNTRY = #{country,jdbcType=VARCHAR},
+      HEADIMGURL = #{headimgurl,jdbcType=VARCHAR},
+      SUBCRIBE_TIME = #{subcribeTime,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectByOpenId" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM  WX_USER_INFO
+    WHERE OPENID = #{openId,jdbcType=VARCHAR}
+  </select>
+</mapper>

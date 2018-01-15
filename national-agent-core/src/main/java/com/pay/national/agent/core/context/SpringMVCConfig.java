@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import com.pay.national.agent.core.interceptor.Oauth2AccessTokenInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -43,7 +44,7 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 	/**
 	 * @Description
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	@Bean
 	public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
@@ -81,7 +82,7 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 	/**
 	 * @Description 通用异常跳转页面
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	@Bean
 	public SimpleMappingExceptionResolver simpleMappingExceptionResolver() {
@@ -116,6 +117,9 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
+
+		//微信登录授权拦截器
+		registry.addInterceptor(new Oauth2AccessTokenInterceptor()).addPathPatterns("/**");
 		// http前置请求拦截器
 		registry.addInterceptor(new CommonHttpRequestInterceptor()).addPathPatterns("/**")
 				.excludePathPatterns("/file/**")
@@ -136,13 +140,15 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 		.excludePathPatterns("/creditCard/transact")
 		.excludePathPatterns("/appAdvertiseInfo/getAppAdVertiseInfo")
 		.excludePathPatterns("/appVersion/versionCheck");
+
+
 		super.addInterceptors(registry);
 	}
 
 	/**
 	 * @Description springmvc上传文件相关
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	@Bean(name = "multipartResolver")
 	public CommonsMultipartResolver commonsMultipartResolver() {
