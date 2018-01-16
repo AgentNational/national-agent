@@ -3,11 +3,7 @@ package com.pay.national.agent.core.service.common;
 import java.util.Map;
 
 import com.pay.national.agent.model.beans.ReturnBean;
-import com.pay.national.agent.model.beans.query.EditInformationParamBean;
 import com.pay.national.agent.model.beans.query.LoginParamBean;
-import com.pay.national.agent.model.beans.query.RealNameParamBean;
-import com.pay.national.agent.model.beans.query.RegisterParamBean;
-import com.pay.national.agent.model.beans.query.UpdatePasswordParamBean;
 import com.pay.national.agent.model.beans.results.FindInformationResultBean;
 import com.pay.national.agent.model.beans.results.LoginResultBean;
 import com.pay.national.agent.model.entity.User;
@@ -36,7 +32,7 @@ public interface UserService {
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	ReturnBean<String> checkRegistInfo(RegisterParamBean registerParamBean);
+	//ReturnBean<String> checkRegistInfo(RegisterParamBean registerParamBean);
 
 	/**
 	 * @Description 注册用户
@@ -44,7 +40,7 @@ public interface UserService {
 	 * @return 
 	 * @see 需要参考的类或方法
 	 */
-	ReturnBean<String> register(RegisterParamBean registerParamBean);
+	//ReturnBean<String> register(RegisterParamBean registerParamBean);
 
 	/**
 	 * @Description 校验登录信息
@@ -76,7 +72,7 @@ public interface UserService {
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	ReturnBean<Object> updatePassword(UpdatePasswordParamBean updatePasswordParamBean);
+	//ReturnBean<Object> updatePassword(UpdatePasswordParamBean updatePasswordParamBean);
 
 	/**
 	 * @Description 找回密码
@@ -94,7 +90,7 @@ public interface UserService {
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	ReturnBean<Object> realName(RealNameParamBean realNameParamBean);
+	//ReturnBean<Object> realName(RealNameParamBean realNameParamBean);
 
 	/**
 	 * @Description 查找个人资料
@@ -110,7 +106,7 @@ public interface UserService {
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	ReturnBean<Object> editInformation(EditInformationParamBean editInformationParamBean);
+	//ReturnBean<Object> editInformation(EditInformationParamBean editInformationParamBean);
 
 	/**
 	 * @Description 找回密码第二步

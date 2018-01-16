@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.pay.national.agent.common.persistence.Page;
-import com.pay.national.agent.model.entity.AppMenu;
 import com.pay.national.agent.model.entity.AppUser;
 
 public interface AppUserService {

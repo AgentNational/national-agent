@@ -19,11 +19,7 @@ import com.pay.national.agent.core.facade.UserFacade;
 import com.pay.national.agent.model.annotation.ParamValidate;
 import com.pay.national.agent.model.annotation.ParamsValidate;
 import com.pay.national.agent.model.beans.ReturnBean;
-import com.pay.national.agent.model.beans.query.EditInformationParamBean;
 import com.pay.national.agent.model.beans.query.LoginParamBean;
-import com.pay.national.agent.model.beans.query.RealNameParamBean;
-import com.pay.national.agent.model.beans.query.RegisterParamBean;
-import com.pay.national.agent.model.beans.query.UpdatePasswordParamBean;
 import com.pay.national.agent.model.constants.RetCodeConstants;
 
 /**
@@ -108,7 +104,7 @@ public class UserController {
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	@RequestMapping(value = "/register", method=RequestMethod.POST)
+	/*@RequestMapping(value = "/register", method=RequestMethod.POST)
 	@ParamsValidate(value = {@ParamValidate(name = "phoneNo", required = true),
 			@ParamValidate(name="osType",required = true),
 			@ParamValidate(name="password",required = true),
@@ -132,7 +128,7 @@ public class UserController {
 			returnBean.setMsg(RetCodeConstants.FAIL_DESC);
 			return JSONUtils.alibabaJsonString(returnBean);
 		}
-	}
+	}*/
 	
 	/**
 	 * @Description 发送注册验证码。
@@ -172,7 +168,7 @@ public class UserController {
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	@RequestMapping(value = "/updatePassword",method = RequestMethod.POST)
+	/*@RequestMapping(value = "/updatePassword",method = RequestMethod.POST)
 	@ParamsValidate(value = {@ParamValidate(name="osType",required = true),
 			@ParamValidate(name="deviceType",required = true),
 			@ParamValidate(name="loginKey",required = true),
@@ -192,7 +188,7 @@ public class UserController {
 			returnBean.setMsg("修改密码失败！");
 		}
 		return JSONUtils.alibabaJsonString(returnBean);
-	}
+	}*/
 	
 	/**
 	 * @Description 发送找回密码验证码。
@@ -291,7 +287,7 @@ public class UserController {
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	@ParamsValidate(value = {@ParamValidate(name = "loginKey", required = true),
+	/*@ParamsValidate(value = {@ParamValidate(name = "loginKey", required = true),
 			@ParamValidate(name="osType",required = true),
 			@ParamValidate(name="deviceType",required = true),
 			@ParamValidate(name="identityCardId",required = true),
@@ -313,7 +309,7 @@ public class UserController {
 			returnBean.setMsg("实名认证失败！");
 			return JSONUtils.alibabaJsonString(returnBean);
 		}
-	}
+	}*/
 	
 	/**
 	 * @Description 查找个人资料
@@ -344,7 +340,7 @@ public class UserController {
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	@RequestMapping(value = "/editInformation",method = RequestMethod.POST)
+	/*@RequestMapping(value = "/editInformation",method = RequestMethod.POST)
 	public String editInformation(HttpServletRequest request,@RequestParam Map<String, Object> params){
 		ReturnBean<Object> returnBean = new ReturnBean<>();
 		LogUtil.info("编辑个人资料 start params:{}",params);
@@ -358,5 +354,5 @@ public class UserController {
 			returnBean.setMsg("编辑个人资料失败！");
 			return JSONUtils.alibabaJsonString(returnBean);
 		}
-	}
+	}*/
 }

@@ -2,11 +2,7 @@ package com.pay.national.agent.core.facade;
 
 import java.util.Map;
 
-import com.pay.national.agent.model.beans.query.EditInformationParamBean;
 import com.pay.national.agent.model.beans.query.LoginParamBean;
-import com.pay.national.agent.model.beans.query.RealNameParamBean;
-import com.pay.national.agent.model.beans.query.RegisterParamBean;
-import com.pay.national.agent.model.beans.query.UpdatePasswordParamBean;
 
 /**
  * @Description: 用户相关dubbo接口
@@ -30,7 +26,7 @@ public interface UserFacade {
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	String register(RegisterParamBean registerParamBean);
+	//String register(RegisterParamBean registerParamBean);
 
 	/**
 	 * @Description 用户登录
@@ -54,7 +50,7 @@ public interface UserFacade {
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	String updatePassword(UpdatePasswordParamBean updatePasswordParamBean);
+	//String updatePassword(UpdatePasswordParamBean updatePasswordParamBean);
 
 	/**
 	 * @Description 发送找回密码验证码
@@ -87,7 +83,7 @@ public interface UserFacade {
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	String realName(RealNameParamBean realNameParamBean);
+	//String realName(RealNameParamBean realNameParamBean);
 
 	/**
 	 * @Description 查找个人资料
@@ -103,7 +99,7 @@ public interface UserFacade {
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	String editInformation(EditInformationParamBean editInformationParamBean);
+	//String editInformation(EditInformationParamBean editInformationParamBean);
 
 	
 

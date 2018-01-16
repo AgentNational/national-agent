@@ -11,8 +11,6 @@ import com.pay.commons.cache.util.CacheUtils;
 import com.pay.national.agent.core.facade.UserFacade;
 import com.pay.national.agent.core.test.context.BaseTest;
 import com.pay.national.agent.model.beans.query.LoginParamBean;
-import com.pay.national.agent.model.beans.query.RegisterParamBean;
-import com.pay.national.agent.model.beans.query.UpdatePasswordParamBean;
 import com.pay.national.agent.model.constants.RedisKeys;
 import com.pay.national.agent.model.entity.User;
 
@@ -28,7 +26,7 @@ public class UserFacadeTest extends BaseTest{
 		userFacade.sendRegisterCheckCode(params);
 	}
 	
-	@Test
+	/*@Test
 	public void testRegister (){
 		RegisterParamBean registerParamBean = new RegisterParamBean();
 		registerParamBean.setCheckCode("298512");
@@ -37,7 +35,7 @@ public class UserFacadeTest extends BaseTest{
 		registerParamBean.setPhoneNo("13622211427");
 		registerParamBean.setRepeatPassword("123456");
 		userFacade.register(registerParamBean);
-	}
+	}*/
 	
 	@Test
 	public void testLogin(){
@@ -66,14 +64,14 @@ public class UserFacadeTest extends BaseTest{
 		
 	}
 	
-	@Test
+	/*@Test
 	public void testUpdatePassword(){
 		UpdatePasswordParamBean updatePasswordParamBean = new UpdatePasswordParamBean();
 		updatePasswordParamBean.setLoginKey("4ef0ff7569267f447ae56a33634a718e");
 		updatePasswordParamBean.setPassword("123456");
 		updatePasswordParamBean.setNewPassword("654321");
 		userFacade.updatePassword(updatePasswordParamBean);
-	}
+	}*/
 	
 	@Test
 	public void testSendFindPasswordCheckCode(){

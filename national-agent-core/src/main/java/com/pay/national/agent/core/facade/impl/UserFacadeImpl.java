@@ -13,11 +13,7 @@ import com.pay.national.agent.core.facade.UserFacade;
 import com.pay.national.agent.core.service.common.SmsService;
 import com.pay.national.agent.core.service.common.UserService;
 import com.pay.national.agent.model.beans.ReturnBean;
-import com.pay.national.agent.model.beans.query.EditInformationParamBean;
 import com.pay.national.agent.model.beans.query.LoginParamBean;
-import com.pay.national.agent.model.beans.query.RealNameParamBean;
-import com.pay.national.agent.model.beans.query.RegisterParamBean;
-import com.pay.national.agent.model.beans.query.UpdatePasswordParamBean;
 import com.pay.national.agent.model.beans.results.FindInformationResultBean;
 import com.pay.national.agent.model.beans.results.LoginResultBean;
 import com.pay.national.agent.model.constants.RedisKeys;
@@ -76,7 +72,7 @@ public class UserFacadeImpl implements UserFacade{
 	/**
 	 * 用户注册
 	 */
-	@Override
+	/*@Override
 	public String register(RegisterParamBean registerParamBean) {
 		LogUtil.info("registerParamBean:{}",registerParamBean.toString());
 		ReturnBean<String> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,"注册成功");
@@ -116,9 +112,9 @@ public class UserFacadeImpl implements UserFacade{
 			returnBean.setCode(RetCodeConstants.FAIL);
 			returnBean.setMsg("请勿重复提交！");
 		}
-		
+
 		return JSONUtils.alibabaJsonString(returnBean);
-	}
+	}*/
 
 	/**
 	 * 用户登录
@@ -159,7 +155,7 @@ public class UserFacadeImpl implements UserFacade{
 	/**
 	 * 用户修改密码
 	 */
-	@Override
+	/*@Override
 	public String updatePassword(UpdatePasswordParamBean updatePasswordParamBean) {
 		LogUtil.info("用户修改密码 updatePasswordParamBean：{}",updatePasswordParamBean.toString());
 		ReturnBean<Object> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
@@ -172,7 +168,7 @@ public class UserFacadeImpl implements UserFacade{
 			returnBean.setMsg(RetCodeConstants.UPDATE_PASSWORD_ERROR_DESC);
 		}
 		return JSONUtils.alibabaJsonString(returnBean);
-	}
+	}*/
 
 	/**
 	 * 发送找回密码验证
@@ -250,7 +246,7 @@ public class UserFacadeImpl implements UserFacade{
 	 * @return
 	 * @see 需要参考的类或方法
 	 */
-	@Override
+	/*@Override
 	public String realName(RealNameParamBean realNameParamBean) {
 		LogUtil.info("实名认证 start realNameParamBean：{}",realNameParamBean);
 		ReturnBean<Object> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
@@ -267,7 +263,7 @@ public class UserFacadeImpl implements UserFacade{
 			returnBean.setMsg("实名认证失败");
 		}
 		return JSONUtils.alibabaJsonString(returnBean);
-	}
+	}*/
 
 	/**
 	 * 查找个人资料
@@ -290,7 +286,7 @@ public class UserFacadeImpl implements UserFacade{
 	/**
 	 * 编辑个人资料
 	 */
-	@Override
+	/*@Override
 	public String editInformation(EditInformationParamBean editInformationParamBean) {
 		LogUtil.info("查找个人资料 start editInformationParamBean：{}",editInformationParamBean);
 		ReturnBean<Object> returnBean = new ReturnBean<>();
@@ -303,5 +299,5 @@ public class UserFacadeImpl implements UserFacade{
 		}
 		return JSONUtils.alibabaJsonString(returnBean);
 	}
-
+*/
 }

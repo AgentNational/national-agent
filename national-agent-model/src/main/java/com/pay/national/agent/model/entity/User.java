@@ -163,11 +163,6 @@ public class User implements Serializable{
      * 注册来源
      */
     private String source;
-
-    /**
-     * 用户角色集合
-     */
-    private List<AppRole> appRoles;
     
     public Long getId() {
         return id;
@@ -217,13 +212,6 @@ public class User implements Serializable{
 		this.source = source;
 	}
 
-	public List<AppRole> getAppRoles() {
-		return appRoles;
-	}
-
-	public void setAppRoles(List<AppRole> appRoles) {
-		this.appRoles = appRoles;
-	}
 
 	public String getStatus() {
         return status;
@@ -370,6 +358,6 @@ public class User implements Serializable{
 				+ ", realname=" + realname + ", createTime=" + createTime + ", lastUpdateTime=" + lastUpdateTime
 				+ ", passwdExpireTime=" + passwdExpireTime + ", passwdEffectTime=" + passwdEffectTime + ", userNo="
 				+ userNo + ", parentUserNo=" + parentUserNo + ", phoneNo=" + phoneNo + ", email=" + email
-				+ ", identityNo=" + identityNo + ", source=" + source + ", appRoles=" + appRoles + "]";
+				+ ", identityNo=" + identityNo + ", source=" + source + "]";
 	}
 }

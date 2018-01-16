@@ -19,7 +19,6 @@ import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.core.bean.result.WithdrawDetailBean;
 import com.pay.national.agent.core.facade.AccountFacade;
 import com.pay.national.agent.core.facade.RewardFacade;
-import com.pay.national.agent.core.facade.TestFacade;
 import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.entity.RewardRecord;
@@ -35,9 +34,8 @@ import com.pay.national.agent.model.enums.ChildBusinessCode;
 @Controller
 @RequestMapping("/web")
 public class WebController {
-	
-	@Autowired
-	private TestFacade testFacade;
+	/*@Autowired
+	private TestFacade testFacade;*/
 	
 	@Autowired
 	private AccountFacade accountFacade;
@@ -52,7 +50,7 @@ public class WebController {
 	}
 
 	
-	@RequestMapping(value="/test",method=RequestMethod.GET)
+	/*@RequestMapping(value="/test",method=RequestMethod.GET)
 	public @ResponseBody String test(HttpServletRequest request,
 			@RequestParam("userName")String userName,@RequestParam("pwd")String pwd){
 		String result = "";
@@ -61,7 +59,7 @@ public class WebController {
 		} catch (Exception e) {
 		}
 		return result;
-	}
+	}*/
 	
 	/*@RequestMapping(value="/creditTest",method=RequestMethod.GET)
 	@ResponseBody

@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mchange.v2.log.LogUtils;
 import com.pay.national.agent.common.persistence.Page;
 import com.pay.national.agent.common.utils.JSONUtils;
 import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.constants.RetCodeConstants;
-import com.pay.national.agent.model.entity.AppMenu;
 import com.pay.national.agent.model.entity.AppUser;
 import com.pay.national.agent.portal.service.common.AppUserService;
 

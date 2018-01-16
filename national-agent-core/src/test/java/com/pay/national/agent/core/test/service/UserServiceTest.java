@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import com.pay.national.agent.core.facade.UserFacade;
 import com.pay.national.agent.core.test.context.BaseTest;
-import com.pay.national.agent.model.beans.query.RegisterParamBean;
 
 public class UserServiceTest extends BaseTest{
 
@@ -23,7 +22,7 @@ public class UserServiceTest extends BaseTest{
 		userFacade.sendRegisterCheckCode(params);
 	}
 	
-	@Test
+	/*@Test
 	public void testRegister (){
 		RegisterParamBean registerParamBean = new RegisterParamBean();
 		registerParamBean.setCheckCode("888883");
@@ -32,5 +31,5 @@ public class UserServiceTest extends BaseTest{
 		registerParamBean.setPhoneNo("13622211425");
 		registerParamBean.setRepeatPassword("123456");
 		userFacade.register(registerParamBean);
-	}
+	}*/
 }

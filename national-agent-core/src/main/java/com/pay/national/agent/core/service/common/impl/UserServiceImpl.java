@@ -6,11 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.pay.national.agent.core.service.common.UserService;
 import com.pay.national.agent.model.beans.ReturnBean;
-import com.pay.national.agent.model.beans.query.EditInformationParamBean;
 import com.pay.national.agent.model.beans.query.LoginParamBean;
-import com.pay.national.agent.model.beans.query.RealNameParamBean;
-import com.pay.national.agent.model.beans.query.RegisterParamBean;
-import com.pay.national.agent.model.beans.query.UpdatePasswordParamBean;
 import com.pay.national.agent.model.beans.results.FindInformationResultBean;
 import com.pay.national.agent.model.beans.results.LoginResultBean;
 import com.pay.national.agent.model.entity.User;
@@ -37,18 +33,6 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public ReturnBean<String> checkRegistInfo(RegisterParamBean registerParamBean) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ReturnBean<String> register(RegisterParamBean registerParamBean) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public ReturnBean<LoginResultBean> checkLoginInfo(LoginParamBean loginParamBean) {
 		// TODO Auto-generated method stub
 		return null;
@@ -66,11 +50,6 @@ public class UserServiceImpl implements UserService{
 		return false;
 	}
 
-	@Override
-	public ReturnBean<Object> updatePassword(UpdatePasswordParamBean updatePasswordParamBean) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public ReturnBean<Object> findPassword(Map<String, String> params) {
@@ -78,11 +57,6 @@ public class UserServiceImpl implements UserService{
 		return null;
 	}
 
-	@Override
-	public ReturnBean<Object> realName(RealNameParamBean realNameParamBean) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public ReturnBean<FindInformationResultBean> findInformation(Map<String, String> params) {
@@ -90,11 +64,6 @@ public class UserServiceImpl implements UserService{
 		return null;
 	}
 
-	@Override
-	public ReturnBean<Object> editInformation(EditInformationParamBean editInformationParamBean) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public ReturnBean<Object> resetPassword(Map<String, String> params) {
