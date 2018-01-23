@@ -98,39 +98,44 @@ public class Oauth2AccessTokenInterceptor extends HandlerInterceptorAdapter{
                     }
 
                     String openId = (String) accessTokenMap.get("openid");
+                    request.getSession().setAttribute(WeiXinConstant.sessinoOpenIdKey,openId);
 
                     //显式授权获取用户信息，保存到数据库
                     if (oauth2Flag) {
                         String userInfoJson = getWxUserInfo(accessTokenMap.get("access_token"), openId);
                         Map<String, Object> userInfoMap = JSONObject.parseObject(userInfoJson, Map.class);
 
-                        if (userInfoMap != null && null == userInfoMap.get("errcode")) {
-                            WxUserInfo wxUserInfo = wxUserInfoService.selectByOpenId(openId);
-                            if (wxUserInfo != null) {
-                                wxUserInfo.setOptimistic(wxUserInfo.getOptimistic()+1);
-                                wxUserInfo.setCountry(userInfoMap.get("country").toString());
-                                wxUserInfo.setProvince(userInfoMap.get("province").toString());
-                                wxUserInfo.setCity(userInfoMap.get("city").toString());
-                                wxUserInfo.setLanguage(userInfoMap.get("language").toString());
-                                wxUserInfo.setNickname(userInfoMap.get("nickname").toString());
-                                wxUserInfo.setSex(userInfoMap.get("sex").toString());
-                                wxUserInfo.setHeadimgurl(userInfoMap.get("headimgurl").toString());
-                                wxUserInfoService.update(wxUserInfo);
-                            }else{
-                                wxUserInfo = new WxUserInfo();
-                                wxUserInfo.setCountry(userInfoMap.get("country").toString());
-                                wxUserInfo.setProvince(userInfoMap.get("province").toString());
-                                wxUserInfo.setCity(userInfoMap.get("city").toString());
-                                wxUserInfo.setLanguage(userInfoMap.get("language").toString());
-                                wxUserInfo.setNickname(userInfoMap.get("nickname").toString());
-                                wxUserInfo.setSex(userInfoMap.get("sex").toString());
-                                wxUserInfo.setCreatetime(new Date());
-                                wxUserInfo.setHeadimgurl(userInfoMap.get("headimgurl").toString());
-                                wxUserInfo.setOpenid(openId);
-                                wxUserInfo.setCreatetime(new Date());
-                                wxUserInfo.setOptimistic(0);
-                                wxUserInfoService.insert(wxUserInfo);
+                        try {
+                            if (userInfoMap != null && null == userInfoMap.get("errcode")) {
+                                WxUserInfo wxUserInfo = wxUserInfoService.selectByOpenId(openId);
+                                if (wxUserInfo != null) {
+                                    wxUserInfo.setOptimistic(wxUserInfo.getOptimistic()+1);
+                                    wxUserInfo.setCountry(userInfoMap.get("country").toString());
+                                    wxUserInfo.setProvince(userInfoMap.get("province").toString());
+                                    wxUserInfo.setCity(userInfoMap.get("city").toString());
+                                    wxUserInfo.setLanguage(userInfoMap.get("language").toString());
+                                    wxUserInfo.setNickname(userInfoMap.get("nickname").toString());
+                                    wxUserInfo.setSex(userInfoMap.get("sex").toString());
+                                    wxUserInfo.setHeadimgurl(userInfoMap.get("headimgurl").toString());
+                                    wxUserInfoService.update(wxUserInfo);
+                                }else{
+                                    wxUserInfo = new WxUserInfo();
+                                    wxUserInfo.setCountry(userInfoMap.get("country").toString());
+                                    wxUserInfo.setProvince(userInfoMap.get("province").toString());
+                                    wxUserInfo.setCity(userInfoMap.get("city").toString());
+                                    wxUserInfo.setLanguage(userInfoMap.get("language").toString());
+                                    wxUserInfo.setNickname(userInfoMap.get("nickname").toString());
+                                    wxUserInfo.setSex(userInfoMap.get("sex").toString());
+                                    wxUserInfo.setCreatetime(new Date());
+                                    wxUserInfo.setHeadimgurl(userInfoMap.get("headimgurl").toString());
+                                    wxUserInfo.setOpenid(openId);
+                                    wxUserInfo.setCreatetime(new Date());
+                                    wxUserInfo.setOptimistic(0);
+                                    wxUserInfoService.insert(wxUserInfo);
+                                }
                             }
+                        } catch (Exception e) {
+                            LogUtil.error("保存微信用户信息到数据库异常  e:{}",e);
                         }
                     }
 
@@ -189,7 +194,7 @@ public class Oauth2AccessTokenInterceptor extends HandlerInterceptorAdapter{
                 .append(access_token)
                 .append("&openid=")
                 .append(openid)
-                .append("&lang=zh_CN ");
+                .append("&lang=zh_CN");
 
         String url = userInfoUrl.toString();
         LogUtil.info("OAuth2AccessTokenInterceptor 获取微信用户信息url：{}", url);

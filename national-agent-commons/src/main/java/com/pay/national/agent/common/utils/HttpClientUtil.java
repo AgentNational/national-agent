@@ -146,7 +146,11 @@ public class HttpClientUtil {
 		String result = "";
 		BufferedReader in = null;
 		try {
-			String urlNameString = url + "?" + param;
+			String urlNameString = url;
+			if(StringUtils.isNotBlank(param)){
+				urlNameString = urlNameString + "?" + param;
+			}
+
 			URL realUrl = new URL(urlNameString);
 			// 打开和URL之间的连接
 			URLConnection connection = realUrl.openConnection();
@@ -254,7 +258,7 @@ public class HttpClientUtil {
 	 * @param map
 	 *            请求参数为map
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	public static String sendPostMap(String url, Map<String, Object> map) {
 		URL u = null;
@@ -314,7 +318,7 @@ public class HttpClientUtil {
 	 * @throws ClientProtocolException
 	 * @throws ParseException
 	 * @throws IOException
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	public static String getSend(String url, String paramStr)
 			throws ClientProtocolException, ParseException, IOException {
