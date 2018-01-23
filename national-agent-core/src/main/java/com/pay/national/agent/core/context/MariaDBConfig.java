@@ -1,14 +1,12 @@
 package com.pay.national.agent.core.context;
 
-import java.beans.PropertyVetoException;
-
-import javax.sql.DataSource;
-
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.pay.national.agent.common.utils.LogUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.pay.national.agent.common.utils.LogUtil;
+import javax.sql.DataSource;
+import java.beans.PropertyVetoException;
 
 /**
  * @Description: 数据库链接配置
@@ -23,9 +21,9 @@ public class MariaDBConfig {
 	public DataSource dataSource() throws PropertyVetoException {
 		ComboPooledDataSource ds = new ComboPooledDataSource();
 		ds.setDriverClass("com.mysql.jdbc.Driver");//设置连接池连接数据库所需的驱动  
-		ds.setJdbcUrl("jdbc:mysql://localhost:3306/mysql");//设置连接数据库的URL  
+		ds.setJdbcUrl("jdbc:mysql://localhost:3306/nationalagent");//设置连接数据库的URL
 		ds.setUser("root");//设置连接数据库的用户名  
-		ds.setPassword("123456");//设置连接数据库的密码
+		ds.setPassword("921021");//设置连接数据库的密码
 		ds.setMaxPoolSize(40);//设置连接池的最大连接数  
 		ds.setMinPoolSize(2);//设置连接池的最小连接数  
 		ds.setInitialPoolSize(10);//设置连接池的初始连接数  

@@ -18,4 +18,6 @@ public interface WxService {
      * @return
      */
     String getEffectAccessToken(String appId,String appsecret);
+
+    String createQRCode(String accessToken,String content);
 }

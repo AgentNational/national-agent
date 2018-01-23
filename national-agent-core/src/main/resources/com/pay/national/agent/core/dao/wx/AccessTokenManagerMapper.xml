@@ -171,8 +171,8 @@
     <include refid="Base_Column_List" />
     from access_token_manager
     <![CDATA[
-    where EFFECT_TIME >= #{dateTime,jdbcType=TIMESTAMP} AND
-    EXPIRE_TIME <= #{dateTime,jdbcType=TIMESTAMP}
+    where EFFECT_TIME <= #{dateTime,jdbcType=TIMESTAMP} AND
+    EXPIRE_TIME >= #{dateTime,jdbcType=TIMESTAMP}
     ]]>
   </select>
 </mapper>

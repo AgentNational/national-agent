@@ -36,7 +36,7 @@ public class RewardServiceImpl implements RewardService{
 	@Resource
 	private RewardRecordMapper rewardRecordMapper;
 	
-	@Resource
+	//@Resource
 	private AccountService accountService;
 	
 	@Resource

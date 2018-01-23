@@ -1,11 +1,5 @@
 package com.pay.national.agent.core.facade.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Component;
-
 import com.pay.national.agent.common.persistence.Page;
 import com.pay.national.agent.core.bean.result.AccountBalanceBean;
 import com.pay.national.agent.core.bean.result.WithdrawDetailBean;
@@ -15,11 +9,14 @@ import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.entity.AccountHistory;
 import com.pay.national.agent.model.enums.BusinessCode;
 import com.pay.national.agent.model.enums.ChildBusinessCode;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component("accountFacade")
 public class AccountFacadeImpl implements AccountFacade{
 	
-	@Resource
+	//@Resource
 	private AccountService accountService;
 
 	@Override

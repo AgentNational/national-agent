@@ -1,15 +1,14 @@
 package com.pay.national.agent.core.context;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
+import com.pay.commons.web.springmvc.handler.SimpleForwardHttpRequestHandler;
+import com.pay.national.agent.core.interceptor.CommonHttpRequestInterceptor;
+import com.pay.national.agent.core.interceptor.LoginStatusInterceptor;
 import com.pay.national.agent.core.interceptor.Oauth2AccessTokenInterceptor;
+import com.pay.national.agent.core.interceptor.ValidateInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -25,10 +24,10 @@ import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
-import com.pay.commons.web.springmvc.handler.SimpleForwardHttpRequestHandler;
-import com.pay.national.agent.core.interceptor.CommonHttpRequestInterceptor;
-import com.pay.national.agent.core.interceptor.LoginStatusInterceptor;
-import com.pay.national.agent.core.interceptor.ValidateInterceptor;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @Description: springmvc上下文配置
@@ -123,7 +122,9 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 		// http前置请求拦截器
 		registry.addInterceptor(new CommonHttpRequestInterceptor()).addPathPatterns("/**")
 				.excludePathPatterns("/file/**")
-				.excludePathPatterns("/web/**");
+				.excludePathPatterns("/web/**")
+				.excludePathPatterns("/weixinEvent/**")
+				.excludePathPatterns("/weiXin/**");
 		// 公共参数拦截器
 		registry.addInterceptor(new ValidateInterceptor()).addPathPatterns("/**").excludePathPatterns("/web/**");
 		//登录状态校验拦截器
@@ -139,7 +140,9 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 		.excludePathPatterns("/creditCard/businessList")
 		.excludePathPatterns("/creditCard/transact")
 		.excludePathPatterns("/appAdvertiseInfo/getAppAdVertiseInfo")
-		.excludePathPatterns("/appVersion/versionCheck");
+		.excludePathPatterns("/appVersion/versionCheck")
+		.excludePathPatterns("/weixinEvent/**")
+		.excludePathPatterns("/weiXin/**");
 
 
 		super.addInterceptors(registry);

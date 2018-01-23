@@ -2,7 +2,6 @@ package com.pay.national.agent.core.service.wx.gate.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.pay.national.agent.common.constants.WeiXinConstant;
 import com.pay.national.agent.common.utils.HttpClientUtil;
 import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.core.dao.wx.AccessTokenManagerMapper;
@@ -20,7 +19,7 @@ public class WxServiceImpl implements WxService {
     private AccessTokenManagerMapper accessTokenManagerMapper;
 
     @Override
-    public String getAccessToken(String appId, String appsecret) {
+    public  String getAccessToken(String appId, String appsecret) {
         LogUtil.info("geta服务getAccessToken请求参数 appid:{},appsecret:{}", appId, appsecret);
         StringBuilder sb = new StringBuilder();
         sb.append("grant_type=").append("client_credential").append("&appid=").append(appId).append("&secret=")
@@ -47,7 +46,8 @@ public class WxServiceImpl implements WxService {
         AccessTokenManager accessTokenManager = accessTokenManagerMapper.findAccessTokenByTime(new Date());
         if (accessTokenManager == null) {//accessToken已经失效
             accessTokenManager = new AccessTokenManager();
-            String accessToken = getAccessToken(WeiXinConstant.APP_ID, WeiXinConstant.APP_SECRET);
+            String accessToken = getAccessToken(appId, appsecret
+            );
             accessTokenManager.setAccessToken(accessToken);
             accessTokenManager.setCreateTime(new Date());
             accessTokenManager.setEffectTime(new Date());
@@ -58,4 +58,16 @@ public class WxServiceImpl implements WxService {
         }
         return accessTokenManager.getAccessToken();
     }
+    public  String createQRCode(String accessToken,String content){
+        LogUtil.info("geta服务createQrcode请求参数 accessToken:{},sence:{}", accessToken, content);
+        StringBuilder sb = new StringBuilder(WeixinConstants.qrcodeUrl);
+        sb.append(accessToken);
+        String result = HttpClientUtil.sendPost(sb.toString(), content);
+        LogUtil.info("geta服务createQrcode 返回结果:{}", result);
+        JSONObject obj = JSON.parseObject(result);
+        String ticket = (String) obj.get("ticket");
+        return ticket;
+    }
+
+
 }

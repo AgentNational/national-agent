@@ -117,4 +117,26 @@ public class DigestUtils {
 
 		return output.toString();
 	}
+
+	public static byte[] getSha1Bytes(String source) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("sha-1");
+			md.update(source.getBytes());
+			byte b[] = md.digest();
+			return b;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static String getSha1Str(String source) {
+
+		byte[] b = getSha1Bytes(source);
+		String result = "";
+		for (int i = 0; i < b.length; i++) {
+			result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+		}
+		return result;
+	}
 }
