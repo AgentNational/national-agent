@@ -23,4 +23,14 @@ public class WeiXinConstant {
      * 拉取用户信息
      */
     public static final String OAUTH2_USERINFO_URL = "https://api.weixin.qq.com/sns/userinfo";
+
+    /** 永久二维码 **/
+    public static final String qrcodeUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=";// 永久二维码
+
+    /**
+     * 获取访问微信接口的token地址
+     */
+    public static final String tokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
+
+    public static String sessinoOpenIdKey ="SESSION_OPEN_ID_KEY";
 }
