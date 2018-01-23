@@ -5,8 +5,8 @@ package com.pay.national.agent.common.constants;
  */
 public class WeiXinConstant {
     public static final String COMMON_ACCESS_TOKEN_CACHE ="wx_access_token";//微信 access_token在缓存中的key
-    public static final String APP_ID ="wx1e86ade34d844bf3";
-    public static final String APP_SECRET ="58d90bc03812beba9628bad7f460c3ba";
+    public static final String APP_ID ="wx7e3931abd0f15feb";
+    public static final String APP_SECRET ="fc410a455971f8ebef1262ecacf53ed4";
 
     /**
      * 微信用户同意授权，获取code
