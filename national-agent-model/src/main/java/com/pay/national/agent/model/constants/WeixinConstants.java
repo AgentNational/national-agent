@@ -10,4 +10,10 @@ public class WeixinConstants {
 	 */
 	public static final String tokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
 
+	public static String appId = "wx7e3931abd0f15feb";//
+	public static String appsecret = "fc410a455971f8ebef1262ecacf53ed4";
+
+	public static String token = "sghdyfghdfkjsghjrthkfg";
+
+	public static String sessinoOpenIdKey ="SESSION_OPEN_ID_KEY";
 }
