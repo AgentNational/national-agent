@@ -1,13 +1,13 @@
 package com.pay.national.agent.core.test.service;
 
 import com.alibaba.fastjson.JSON;
+import com.pay.national.agent.common.constants.WeiXinConstant;
 import com.pay.national.agent.common.utils.HttpClientUtil;
 import com.pay.national.agent.core.service.wx.gate.WxService;
 import com.pay.national.agent.core.test.context.BaseTest;
 import com.pay.national.agent.model.beans.wx.FatherButton;
 import com.pay.national.agent.model.beans.wx.Menu;
 import com.pay.national.agent.model.beans.wx.SonButton;
-import com.pay.national.agent.model.constants.WeixinConstants;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -21,7 +21,7 @@ public class WxserviceTest extends BaseTest{
 
     @Test
     public void test(){
-        String result = wxService.getEffectAccessToken(WeixinConstants.appId, WeixinConstants.appsecret);
+        String result = wxService.getEffectAccessToken(WeiXinConstant.APP_ID, WeiXinConstant.APP_SECRET);
 		System.out.println(result);
         String content = "{\"action_name\": \"QR_LIMIT_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \"sfgerjgreu\"}}}";
         System.out.println(content);
@@ -32,7 +32,7 @@ public class WxserviceTest extends BaseTest{
 
     @Test
     public void createCommMenu() {
-        String ACCESS_TOKEN = wxService.getEffectAccessToken(WeixinConstants.appId, WeixinConstants.appsecret);// 获取AccessToken，AccessTokenUtils是封装好的类
+        String ACCESS_TOKEN = wxService.getEffectAccessToken(WeiXinConstant.APP_ID, WeiXinConstant.APP_SECRET);// 获取AccessToken，AccessTokenUtils是封装好的类
         // 拼接api要求的httpsurl链接
         String urlString = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token="
                 + ACCESS_TOKEN;

@@ -28,9 +28,7 @@ import com.pay.national.agent.model.entity.User;
  * @author dong.lian
  */
 public class LoginStatusInterceptor extends HandlerInterceptorAdapter {
-
 	private static final Logger logger = LoggerFactory.getLogger(LoginStatusInterceptor.class);
-	
 
 	@Override
 	public boolean preHandle(HttpServletRequest request,

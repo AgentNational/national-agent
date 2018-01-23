@@ -111,22 +111,30 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 	}
 
 
+
+	@Bean
+	public Oauth2AccessTokenInterceptor oAuth2AccessTokenInterceptor(){
+		return  new Oauth2AccessTokenInterceptor();
+	}
+
 	/**
 	 * 拦截器配置
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-
 		//微信登录授权拦截器
-		registry.addInterceptor(new Oauth2AccessTokenInterceptor()).addPathPatterns("/**");
+		registry.addInterceptor(oAuth2AccessTokenInterceptor()).addPathPatterns("/**");
 		// http前置请求拦截器
 		registry.addInterceptor(new CommonHttpRequestInterceptor()).addPathPatterns("/**")
 				.excludePathPatterns("/file/**")
 				.excludePathPatterns("/web/**")
 				.excludePathPatterns("/weixinEvent/**")
+				.excludePathPatterns("/wxMenu/**")
 				.excludePathPatterns("/weiXin/**");
 		// 公共参数拦截器
-		registry.addInterceptor(new ValidateInterceptor()).addPathPatterns("/**").excludePathPatterns("/web/**");
+		registry.addInterceptor(new ValidateInterceptor()).addPathPatterns("/**")
+				.excludePathPatterns("/web/**")
+				.excludePathPatterns("/wxMenu/**");
 		//登录状态校验拦截器
 		registry.addInterceptor(new LoginStatusInterceptor()).addPathPatterns("/**")
 		.excludePathPatterns("/web/**")
@@ -142,6 +150,7 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 		.excludePathPatterns("/appAdvertiseInfo/getAppAdVertiseInfo")
 		.excludePathPatterns("/appVersion/versionCheck")
 		.excludePathPatterns("/weixinEvent/**")
+		.excludePathPatterns("/wxMenu/**")
 		.excludePathPatterns("/weiXin/**");
 
 

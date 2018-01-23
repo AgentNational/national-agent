@@ -2,11 +2,11 @@ package com.pay.national.agent.core.service.wx.gate.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.pay.national.agent.common.constants.WeiXinConstant;
 import com.pay.national.agent.common.utils.HttpClientUtil;
 import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.core.dao.wx.AccessTokenManagerMapper;
 import com.pay.national.agent.core.service.wx.gate.WxService;
-import com.pay.national.agent.model.constants.WeixinConstants;
 import com.pay.national.agent.model.entity.AccessTokenManager;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class WxServiceImpl implements WxService {
         StringBuilder sb = new StringBuilder();
         sb.append("grant_type=").append("client_credential").append("&appid=").append(appId).append("&secret=")
                 .append(appsecret);
-        String content = HttpClientUtil.sendGet(WeixinConstants.tokenUrl, sb.toString());
+        String content = HttpClientUtil.sendGet(WeiXinConstant.tokenUrl, sb.toString());
         LogUtil.info("获取AccessToken 返回结果content:{}", content);
         JSONObject obj = JSON.parseObject(content);
         String accessToken = (String) obj.get("access_token");
@@ -58,9 +58,10 @@ public class WxServiceImpl implements WxService {
         }
         return accessTokenManager.getAccessToken();
     }
+    @Override
     public  String createQRCode(String accessToken,String content){
         LogUtil.info("geta服务createQrcode请求参数 accessToken:{},sence:{}", accessToken, content);
-        StringBuilder sb = new StringBuilder(WeixinConstants.qrcodeUrl);
+        StringBuilder sb = new StringBuilder(WeiXinConstant.qrcodeUrl);
         sb.append(accessToken);
         String result = HttpClientUtil.sendPost(sb.toString(), content);
         LogUtil.info("geta服务createQrcode 返回结果:{}", result);

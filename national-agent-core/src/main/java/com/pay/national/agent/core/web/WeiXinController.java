@@ -1,9 +1,9 @@
 package com.pay.national.agent.core.web;
 
 import com.pay.national.agent.common.bean.wx.TextMessage;
+import com.pay.national.agent.common.constants.WeiXinConstant;
 import com.pay.national.agent.common.utils.DigestUtils;
 import com.pay.national.agent.common.utils.WxMessageUtil;
-import com.pay.national.agent.model.constants.WeixinConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +36,7 @@ public class WeiXinController {
 			logger.info("signatur:{},timestamp:{},nonce:{},echostr:{}", signature, timestamp, nonce, echostr);
 
 			// 将token、timestamp、nonce三个参数进行字典序排序
-			String[] params = new String[] {WeixinConstants.token, timestamp, nonce };
+			String[] params = new String[] {WeiXinConstant.TOKEN, timestamp, nonce };
 			Arrays.sort(params);
 			// 将三个参数字符串拼接成一个字符串进行加密
 			String clearText = params[0] + params[1] + params[2];
