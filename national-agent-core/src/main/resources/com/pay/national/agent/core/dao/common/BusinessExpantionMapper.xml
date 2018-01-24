@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.BusinessExpantionMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.BusinessExpantion" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="BUSINESS_CODE" property="businessCode" jdbcType="VARCHAR" />
+    <result column="COLUMN_CODE" property="columnCode" jdbcType="VARCHAR" />
+    <result column="COLUMN_NAME" property="columnName" jdbcType="VARCHAR" />
+    <result column="COLUMN_VALUE" property="columnValue" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, OPTIMISTIC, STATUS, BUSINESS_CODE, COLUMN_CODE, COLUMN_NAME, COLUMN_VALUE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from business_expantion
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from business_expantion
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.BusinessExpantion" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into business_expantion (OPTIMISTIC, STATUS, BUSINESS_CODE, 
+      COLUMN_CODE, COLUMN_NAME, COLUMN_VALUE
+      )
+    values (#{optimistic,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR}, 
+      #{columnCode,jdbcType=VARCHAR}, #{columnName,jdbcType=VARCHAR}, #{columnValue,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.BusinessExpantion" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into business_expantion
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        OPTIMISTIC,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="businessCode != null" >
+        BUSINESS_CODE,
+      </if>
+      <if test="columnCode != null" >
+        COLUMN_CODE,
+      </if>
+      <if test="columnName != null" >
+        COLUMN_NAME,
+      </if>
+      <if test="columnValue != null" >
+        COLUMN_VALUE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null" >
+        #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="columnCode != null" >
+        #{columnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="columnName != null" >
+        #{columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnValue != null" >
+        #{columnValue,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.BusinessExpantion" >
+    update business_expantion
+    <set >
+      <if test="optimistic != null" >
+        OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null" >
+        BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="columnCode != null" >
+        COLUMN_CODE = #{columnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="columnName != null" >
+        COLUMN_NAME = #{columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnValue != null" >
+        COLUMN_VALUE = #{columnValue,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.BusinessExpantion" >
+    update business_expantion
+    set OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      STATUS = #{status,jdbcType=VARCHAR},
+      BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
+      COLUMN_CODE = #{columnCode,jdbcType=VARCHAR},
+      COLUMN_NAME = #{columnName,jdbcType=VARCHAR},
+      COLUMN_VALUE = #{columnValue,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByBusiness" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM business_expantion
+    WHERE BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR}
+    AND STATUS = 'ENABLE'
+  </select>
+</mapper>

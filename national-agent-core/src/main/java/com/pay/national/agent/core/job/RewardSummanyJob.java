@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import com.pay.commons.utils.lang.DateUtils;
 import com.pay.national.agent.common.utils.LogUtil;
-import com.pay.national.agent.core.service.common.RewardService;
 
 /**
  * 奖励汇总定时任务
@@ -16,17 +15,11 @@ import com.pay.national.agent.core.service.common.RewardService;
  * Date:2017年9月26日上午3:51:42
  */
 @Component
-public class RewardSummanyJob{// extends AbstractJob{
-	
-	@Resource
-	private RewardService rewardService;
+public class RewardSummanyJob{
 
-	//@Override
 	public void execute() {
 		Date yesterday = DateUtils.addDays(new Date(), -1);
 		try {
-			rewardService.gatherForDay(yesterday);
-			rewardService.gatherForAll(yesterday);
 		} catch (Exception e) {
 			LogUtil.error("RewardSummanyJob yesterday:{}error:{}",yesterday,e);
 		}
