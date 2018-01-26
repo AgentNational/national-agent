@@ -7,7 +7,7 @@ public class WeiXinConstant {
     public static final String COMMON_ACCESS_TOKEN_CACHE ="wx_access_token";//微信 access_token在缓存中的key
     public static final String APP_ID ="wx7e3931abd0f15feb";
     public static final String APP_SECRET ="fc410a455971f8ebef1262ecacf53ed4";
-    public static final String TOKEN = "shuyan";
+    public static final String TOKEN = "liuzhenhui";
 
     /**
      * 微信用户同意授权，获取code
@@ -33,4 +33,12 @@ public class WeiXinConstant {
     public static final String tokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
 
     public static String sessinoOpenIdKey ="SESSION_OPEN_ID_KEY";
+
+    /**
+     * 企业付款url
+     */
+    public static String transfersUrl = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
+    public static final String payOrderUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";// 公众号支付
+    public static final String queryPayOrderUrl = "https://api.mch.weixin.qq.com/pay/orderquery";// 公众号支付订单查询
+
 }

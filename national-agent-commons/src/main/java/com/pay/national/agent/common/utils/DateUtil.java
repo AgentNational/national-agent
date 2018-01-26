@@ -243,4 +243,25 @@ public class DateUtil {
 	        String day_first = sdf.format(gcLast.getTime());
 	        return day_first;
 	    }
+	/**
+	 * 把日期字符串按照对应格式转换成日期类型
+	 *
+	 * @param str
+	 * @param format
+	 * @return
+	 */
+	public static Date parseStrToDate(String str, String format) {
+		if (str == null || format == null) {
+			return null;
+		}
+		Date date = null;
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		try {
+			date = sdf.parse(str);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
+
 }
