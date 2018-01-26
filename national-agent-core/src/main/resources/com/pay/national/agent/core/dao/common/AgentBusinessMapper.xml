@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.AgentBusinessMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.AgentBusiness" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
+    <result column="CHILD_BUSINESS_CODE" property="childBusinessCode" jdbcType="VARCHAR" />
+    <result column="BUSINESS_CODE" property="businessCode" jdbcType="VARCHAR" />
+    <result column="BUSINESS_NAME" property="businessName" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="REWARD_AMOUNT" property="rewardAmount" jdbcType="DOUBLE" />
+    <result column="FEATURE" property="feature" jdbcType="VARCHAR" />
+    <result column="REWARD_STANDARD" property="rewardStandard" jdbcType="VARCHAR" />
+    <result column="LINK" property="link" jdbcType="VARCHAR" />
+    <result column="SHOW_INDEX" property="showIndex" jdbcType="INTEGER" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, OPTIMISTIC, CHILD_BUSINESS_CODE, BUSINESS_CODE, BUSINESS_NAME, STATUS, REWARD_AMOUNT, 
+    FEATURE, REWARD_STANDARD, LINK, SHOW_INDEX, CREATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from agent_business
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from agent_business
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.AgentBusiness" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into agent_business (OPTIMISTIC, CHILD_BUSINESS_CODE, BUSINESS_CODE, 
+      BUSINESS_NAME, STATUS, REWARD_AMOUNT, 
+      FEATURE, REWARD_STANDARD, LINK, 
+      SHOW_INDEX, CREATE_TIME)
+    values (#{optimistic,jdbcType=INTEGER}, #{childBusinessCode,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR}, 
+      #{businessName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{rewardAmount,jdbcType=DOUBLE}, 
+      #{feature,jdbcType=VARCHAR}, #{rewardStandard,jdbcType=VARCHAR}, #{link,jdbcType=VARCHAR}, 
+      #{showIndex,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.AgentBusiness" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into agent_business
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        OPTIMISTIC,
+      </if>
+      <if test="childBusinessCode != null" >
+        CHILD_BUSINESS_CODE,
+      </if>
+      <if test="businessCode != null" >
+        BUSINESS_CODE,
+      </if>
+      <if test="businessName != null" >
+        BUSINESS_NAME,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="rewardAmount != null" >
+        REWARD_AMOUNT,
+      </if>
+      <if test="feature != null" >
+        FEATURE,
+      </if>
+      <if test="rewardStandard != null" >
+        REWARD_STANDARD,
+      </if>
+      <if test="link != null" >
+        LINK,
+      </if>
+      <if test="showIndex != null" >
+        SHOW_INDEX,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="childBusinessCode != null" >
+        #{childBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null" >
+        #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="businessName != null" >
+        #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardAmount != null" >
+        #{rewardAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="feature != null" >
+        #{feature,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardStandard != null" >
+        #{rewardStandard,jdbcType=VARCHAR},
+      </if>
+      <if test="link != null" >
+        #{link,jdbcType=VARCHAR},
+      </if>
+      <if test="showIndex != null" >
+        #{showIndex,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.AgentBusiness" >
+    update agent_business
+    <set >
+      <if test="optimistic != null" >
+        OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="childBusinessCode != null" >
+        CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null" >
+        BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="businessName != null" >
+        BUSINESS_NAME = #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardAmount != null" >
+        REWARD_AMOUNT = #{rewardAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="feature != null" >
+        FEATURE = #{feature,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardStandard != null" >
+        REWARD_STANDARD = #{rewardStandard,jdbcType=VARCHAR},
+      </if>
+      <if test="link != null" >
+        LINK = #{link,jdbcType=VARCHAR},
+      </if>
+      <if test="showIndex != null" >
+        SHOW_INDEX = #{showIndex,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.AgentBusiness" >
+    update agent_business
+    set OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+      CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR},
+      BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
+      BUSINESS_NAME = #{businessName,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      REWARD_AMOUNT = #{rewardAmount,jdbcType=DOUBLE},
+      FEATURE = #{feature,jdbcType=VARCHAR},
+      REWARD_STANDARD = #{rewardStandard,jdbcType=VARCHAR},
+      LINK = #{link,jdbcType=VARCHAR},
+      SHOW_INDEX = #{showIndex,jdbcType=INTEGER},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByBusiness" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM agent_business
+    WHERE BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR}
+    AND STATUS = 'ENABLE'
+  </select>
+</mapper>

@@ -3,6 +3,7 @@
  */
 package com.pay.national.agent.core.test.context;
 
+import com.pay.national.agent.common.utils.LogUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Commit;
@@ -27,6 +28,7 @@ public class BaseTest {
 	@Test
 	public void testConfig()
 	{
+		LogUtil.info("testConfig 测试通过...");
 	}
 
 }

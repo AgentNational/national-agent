@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.BusinessOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.BusinessOrder" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="optimistic" property="optimistic" jdbcType="INTEGER" />
+    <result column="user_no" property="userNo" jdbcType="VARCHAR" />
+    <result column="business_name" property="businessName" jdbcType="VARCHAR" />
+    <result column="business_code" property="businessCode" jdbcType="VARCHAR" />
+    <result column="parent_business_code" property="parentBusinessCode" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="customer_phone" property="customerPhone" jdbcType="VARCHAR" />
+    <result column="reward_amount" property="rewardAmount" jdbcType="DOUBLE" />
+    <result column="trans_amount" property="transAmount" jdbcType="DOUBLE" />
+    <result column="partner_business_name" property="partnerBusinessName" jdbcType="VARCHAR" />
+    <result column="partner_business_no" property="partnerBusinessNo" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_update_time" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, optimistic, user_no, business_name, business_code, parent_business_code, status, 
+    customer_name, customer_phone, reward_amount, trans_amount, partner_business_name, 
+    partner_business_no, create_time, last_update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from business_order
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from business_order
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.BusinessOrder" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into business_order (optimistic, user_no, business_name, 
+      business_code, parent_business_code, status, 
+      customer_name, customer_phone, reward_amount, 
+      trans_amount, partner_business_name, partner_business_no, 
+      create_time, last_update_time)
+    values (#{optimistic,jdbcType=INTEGER}, #{userNo,jdbcType=VARCHAR}, #{businessName,jdbcType=VARCHAR}, 
+      #{businessCode,jdbcType=VARCHAR}, #{parentBusinessCode,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{customerName,jdbcType=VARCHAR}, #{customerPhone,jdbcType=VARCHAR}, #{rewardAmount,jdbcType=DOUBLE}, 
+      #{transAmount,jdbcType=DOUBLE}, #{partnerBusinessName,jdbcType=VARCHAR}, #{partnerBusinessNo,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.BusinessOrder" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into business_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        optimistic,
+      </if>
+      <if test="userNo != null" >
+        user_no,
+      </if>
+      <if test="businessName != null" >
+        business_name,
+      </if>
+      <if test="businessCode != null" >
+        business_code,
+      </if>
+      <if test="parentBusinessCode != null" >
+        parent_business_code,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="customerName != null" >
+        customer_name,
+      </if>
+      <if test="customerPhone != null" >
+        customer_phone,
+      </if>
+      <if test="rewardAmount != null" >
+        reward_amount,
+      </if>
+      <if test="transAmount != null" >
+        trans_amount,
+      </if>
+      <if test="partnerBusinessName != null" >
+        partner_business_name,
+      </if>
+      <if test="partnerBusinessNo != null" >
+        partner_business_no,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastUpdateTime != null" >
+        last_update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="userNo != null" >
+        #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="businessName != null" >
+        #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null" >
+        #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentBusinessCode != null" >
+        #{parentBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null" >
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerPhone != null" >
+        #{customerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardAmount != null" >
+        #{rewardAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="transAmount != null" >
+        #{transAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="partnerBusinessName != null" >
+        #{partnerBusinessName,jdbcType=VARCHAR},
+      </if>
+      <if test="partnerBusinessNo != null" >
+        #{partnerBusinessNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.BusinessOrder" >
+    update business_order
+    <set >
+      <if test="optimistic != null" >
+        optimistic = #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="userNo != null" >
+        user_no = #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="businessName != null" >
+        business_name = #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null" >
+        business_code = #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentBusinessCode != null" >
+        parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null" >
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerPhone != null" >
+        customer_phone = #{customerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardAmount != null" >
+        reward_amount = #{rewardAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="transAmount != null" >
+        trans_amount = #{transAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="partnerBusinessName != null" >
+        partner_business_name = #{partnerBusinessName,jdbcType=VARCHAR},
+      </if>
+      <if test="partnerBusinessNo != null" >
+        partner_business_no = #{partnerBusinessNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.BusinessOrder" >
+    update business_order
+    set optimistic = #{optimistic,jdbcType=INTEGER},
+      user_no = #{userNo,jdbcType=VARCHAR},
+      business_name = #{businessName,jdbcType=VARCHAR},
+      business_code = #{businessCode,jdbcType=VARCHAR},
+      parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      customer_name = #{customerName,jdbcType=VARCHAR},
+      customer_phone = #{customerPhone,jdbcType=VARCHAR},
+      reward_amount = #{rewardAmount,jdbcType=DOUBLE},
+      trans_amount = #{transAmount,jdbcType=DOUBLE},
+      partner_business_name = #{partnerBusinessName,jdbcType=VARCHAR},
+      partner_business_no = #{partnerBusinessNo,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectByUser" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM business_order
+    WHERE business_code = #{businessCode,jdbcType=VARCHAR}
+    AND  customer_phone = #{customerPhone,jdbcType=VARCHAR}
+  </select>
+
+  <select id="findAllOrders" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM business_order
+    WHERE user_no = #{userNo,jdbcType=VARCHAR}
+    AND  parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}
+    ORDER BY create_time DESC
+  </select>
+</mapper>

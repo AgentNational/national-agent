@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pay.national.agent.core.dao.common.BusinessRewardRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.BusinessRewardRule" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="optimistic" property="optimistic" jdbcType="INTEGER" />
+    <result column="business_code" property="businessCode" jdbcType="VARCHAR" />
+    <result column="parent_business_code" property="parentBusinessCode" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="reward_type" property="rewardType" jdbcType="VARCHAR" />
+    <result column="reward_amount" property="rewardAmount" jdbcType="DOUBLE" />
+    <result column="reward_proportion" property="rewardProportion" jdbcType="DOUBLE" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_update_time" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, optimistic, business_code, parent_business_code, status, reward_type, reward_amount, 
+    reward_proportion, create_time, last_update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from business_reward_rule
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from business_reward_rule
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.BusinessRewardRule" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into business_reward_rule (optimistic, business_code, parent_business_code, 
+      status, reward_type, reward_amount, 
+      reward_proportion, create_time, last_update_time
+      )
+    values (#{optimistic,jdbcType=INTEGER}, #{businessCode,jdbcType=VARCHAR}, #{parentBusinessCode,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{rewardType,jdbcType=VARCHAR}, #{rewardAmount,jdbcType=DOUBLE}, 
+      #{rewardProportion,jdbcType=DOUBLE}, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.BusinessRewardRule" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into business_reward_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        optimistic,
+      </if>
+      <if test="businessCode != null" >
+        business_code,
+      </if>
+      <if test="parentBusinessCode != null" >
+        parent_business_code,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="rewardType != null" >
+        reward_type,
+      </if>
+      <if test="rewardAmount != null" >
+        reward_amount,
+      </if>
+      <if test="rewardProportion != null" >
+        reward_proportion,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastUpdateTime != null" >
+        last_update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="businessCode != null" >
+        #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentBusinessCode != null" >
+        #{parentBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardType != null" >
+        #{rewardType,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardAmount != null" >
+        #{rewardAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="rewardProportion != null" >
+        #{rewardProportion,jdbcType=DOUBLE},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.BusinessRewardRule" >
+    update business_reward_rule
+    <set >
+      <if test="optimistic != null" >
+        optimistic = #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="businessCode != null" >
+        business_code = #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentBusinessCode != null" >
+        parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardType != null" >
+        reward_type = #{rewardType,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardAmount != null" >
+        reward_amount = #{rewardAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="rewardProportion != null" >
+        reward_proportion = #{rewardProportion,jdbcType=DOUBLE},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.BusinessRewardRule" >
+    update business_reward_rule
+    set optimistic = #{optimistic,jdbcType=INTEGER},
+      business_code = #{businessCode,jdbcType=VARCHAR},
+      parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      reward_type = #{rewardType,jdbcType=VARCHAR},
+      reward_amount = #{rewardAmount,jdbcType=DOUBLE},
+      reward_proportion = #{rewardProportion,jdbcType=DOUBLE},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectByBusiness" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM business_reward_rule
+    WHERE business_code = #{businessCode,jdbcType=VARCHAR}
+  </select>
+</mapper>

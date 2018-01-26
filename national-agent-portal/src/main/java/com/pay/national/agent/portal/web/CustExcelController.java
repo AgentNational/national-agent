@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.pay.national.agent.model.enums.ParentBusinessCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +20,8 @@ import com.pay.national.agent.common.bean.CreditCardUserModel;
 import com.pay.national.agent.common.utils.ExcelUtil;
 import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.model.enums.BusinessCode;
-import com.pay.national.agent.portal.service.credit.CreditCardUserService;
+
+import static com.pay.national.agent.model.enums.ParentBusinessCode.CREDIT_CARD;
 
 /**
  * 合伙方客户数据导入
@@ -29,9 +31,7 @@ import com.pay.national.agent.portal.service.credit.CreditCardUserService;
 @Controller
 @RequestMapping("/custExcel")
 public class CustExcelController {
-	@Resource
-	private CreditCardUserService creditCardUserService;
-	
+
 	@RequestMapping(value="/toUploadCreditCard.action")
 	public ModelAndView toUpload(ModelAndView model){
 		model.setViewName("custExcel/creditCardExcel");
@@ -48,15 +48,17 @@ public class CustExcelController {
     	String view = "";
         try{
         	String type = reqeust.getParameter("type");
-        	BusinessCode businessCode = BusinessCode.valueOf(type);
-        	
-        	switch (businessCode) {
+            ParentBusinessCode parentBusinessCode = ParentBusinessCode.valueOf(type);
+
+            switch (parentBusinessCode) {
 			case CREDIT_CARD:
 				List<CreditCardUserModel> list = ExcelUtil.importExcel(CreditCardUserModel.class,file.getInputStream(),1);
 				String creditCardType = reqeust.getParameter("creditCardType");
 				view = "custExcel/creditCardExcel";
-				creditCardUserService.importUser(list,creditCardType);
+				//creditCardUserService.importUser(list,creditCardType);
 				break;
+            default:
+                break;
 			}
         	model.addObject("uploadResult", true);
         }catch(Exception e){
@@ -78,12 +80,14 @@ public class CustExcelController {
     public ModelAndView downloadExcel(@RequestParam("type")String type,HttpServletResponse response,ModelAndView model) {
     	String view = "";
         try{
-        	BusinessCode businessCode = BusinessCode.valueOf(type);
+            ParentBusinessCode parentBusinessCode = ParentBusinessCode.valueOf(type);
             BufferedInputStream input = null;
-            switch (businessCode) {
+            switch (parentBusinessCode) {
 			case CREDIT_CARD:
 				input = new BufferedInputStream(ExcelUtil.excelModelbyClass(CreditCardUserModel.class, null, null));
 				view = "custExcel/creditCardExcel";
+            default:
+                break;
             }
             
             response.setContentType("application/xls");
