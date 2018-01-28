@@ -2,7 +2,7 @@
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration >
 
-  <classPathEntry location="/Users/shuyan.qi/.m2/repository/mysql/mysql-connector-java/5.1.9/mysql-connector-java-5.1.9.jar"/>
+  <classPathEntry location="D:\\Repositories\\Maven\\Repository\\mysql\\mysql-connector-java\5.1.9\\mysql-connector-java-5.1.9.jar"/>
   <context id="context1" defaultModelType="flat">
     <!-- 解决实体类字段注释中文乱码 -->
     <!--<property name="javaFileEncoding" value="UTF-8"/>
@@ -13,13 +13,13 @@
         <property name="suppressDate" value="true" />&lt;!&ndash;是否生成注释代时间戳&ndash;&gt;
     </commentGenerator>-->
 
-    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://127.0.0.1:3306/nationalagent" userId="root" password="123456" />
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://127.0.0.1:3306/nationalagent" userId="root" password="921021" />
     <javaModelGenerator targetPackage="com.pay.national.agent.model.entity" targetProject="../national-agent-model/src/main/java" />
-    <sqlMapGenerator targetPackage="com.pay.national.agent.core.dao.common" targetProject="src/main/resources" />
-    <javaClientGenerator targetPackage="com.pay.national.agent.core.dao.common" targetProject="src/main/java" type="XMLMAPPER" />
+    <sqlMapGenerator targetPackage="com.pay.national.agent.core.dao.wx" targetProject="src/main/resources" />
+    <javaClientGenerator targetPackage="com.pay.national.agent.core.dao.wx" targetProject="src/main/java" type="XMLMAPPER" />
 
    <!-- 不生成example类 -->
-   <table tableName="business_reward_rule" enableCountByExample="false"
+   <table tableName="wx_public_pay_detail" enableCountByExample="false"
             enableUpdateByExample="false"
             enableDeleteByExample="false"
             enableSelectByExample="false"
