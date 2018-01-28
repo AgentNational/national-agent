@@ -3,7 +3,9 @@ package com.pay.national.agent.core.service.wx;
 import com.pay.national.agent.model.entity.WxUserInfo;
 
 /**
- * Created by shuyan.qi on 2018/1/13.
+ *
+ * @author shuyan.qi
+ * @date 2018/1/13
  */
 public interface WxUserInfoService {
 

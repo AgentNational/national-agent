@@ -6,18 +6,8 @@ import java.util.Date;
 /**
  * @author shuyan.qi
  */
-public class WxUserInfo implements Serializable{
+public class WxUserInfo extends BaseEntity{
     private static final long serialVersionUID = 5915463841245114769L;
-    /**
-     * 主键
-     */
-    private Long id;
-
-    /**
-     * 版本号
-     */
-    private Integer optimistic;
-
     /**
      * 用户是否订阅该公众号标识，值为0时，代表此用户没有关注该公众号，拉取不到其余信息。
      */
@@ -76,17 +66,9 @@ public class WxUserInfo implements Serializable{
     private String subcribeTime;
 
     /**
-     * 关联系统用户ID
+     * 用户编号
      */
-    private Long userId;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setOptimistic(Integer optimistic) {
-        this.optimistic = optimistic;
-    }
+    private String  userNo;
 
     public void setSubscribe(String subscribe) {
         this.subscribe = subscribe;
@@ -132,16 +114,8 @@ public class WxUserInfo implements Serializable{
         this.subcribeTime = subcribeTime;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Integer getOptimistic() {
-        return optimistic;
+    public void setUserNo(String userNo) {
+        this.userNo = userNo;
     }
 
     public String getSubscribe() {
@@ -188,16 +162,14 @@ public class WxUserInfo implements Serializable{
         return subcribeTime;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getUserNo() {
+        return userNo;
     }
 
     @Override
     public String toString() {
-        return "WxUserInfo{" +
-                "id=" + id +
-                ", optimistic=" + optimistic +
-                ", subscribe='" + subscribe + '\'' +
+        return super.toString()+"WxUserInfo{" +
+                "subscribe='" + subscribe + '\'' +
                 ", createtime=" + createtime +
                 ", openid='" + openid + '\'' +
                 ", nickname='" + nickname + '\'' +
@@ -208,7 +180,7 @@ public class WxUserInfo implements Serializable{
                 ", country='" + country + '\'' +
                 ", headimgurl='" + headimgurl + '\'' +
                 ", subcribeTime='" + subcribeTime + '\'' +
-                ", userId=" + userId +
+                ", userNo='" + userNo + '\'' +
                 '}';
     }
 }
