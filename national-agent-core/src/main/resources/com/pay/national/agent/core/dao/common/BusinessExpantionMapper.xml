@@ -30,7 +30,7 @@
     insert into business_expantion (OPTIMISTIC, STATUS, BUSINESS_CODE, 
       COLUMN_CODE, COLUMN_NAME, COLUMN_VALUE
       )
-    values (#{optimistic,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR}, 
+    values (0, #{status,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR},
       #{columnCode,jdbcType=VARCHAR}, #{columnName,jdbcType=VARCHAR}, #{columnValue,jdbcType=VARCHAR}
       )
   </insert>
@@ -61,7 +61,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="optimistic != null" >
-        #{optimistic,jdbcType=INTEGER},
+        0,
       </if>
       <if test="status != null" >
         #{status,jdbcType=VARCHAR},
@@ -84,7 +84,7 @@
     update business_expantion
     <set >
       <if test="optimistic != null" >
-        OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+        OPTIMISTIC = OPTIMISTIC + 1,
       </if>
       <if test="status != null" >
         STATUS = #{status,jdbcType=VARCHAR},
@@ -106,7 +106,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.BusinessExpantion" >
     update business_expantion
-    set OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+    set OPTIMISTIC = OPTIMISTIC + 1,
       STATUS = #{status,jdbcType=VARCHAR},
       BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
       COLUMN_CODE = #{columnCode,jdbcType=VARCHAR},

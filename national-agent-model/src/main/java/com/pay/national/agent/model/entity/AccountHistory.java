@@ -5,9 +5,18 @@ import java.util.Date;
 /**
  * @author shuyan.qi
  */
-public class RewardGatherDay extends  BaseEntity{
+public class AccountHistory extends BaseEntity{
+    private static final long serialVersionUID = -5004473018513268379L;
 
-    private static final long serialVersionUID = -3594279680368386601L;
+    /**
+     * 账户编号
+     */
+    private String accountNo;
+
+    /**
+     * 金额
+     */
+    private Double amount;
 
     /**
      * 用户编号
@@ -25,14 +34,14 @@ public class RewardGatherDay extends  BaseEntity{
     private String parentBusinessCode;
 
     /**
-     *汇总金额
+     *状态
      */
-    private Double totalAmount;
+    private String status;
 
     /**
-     *奖励日期
+     *操作(加PLUS、减SUBTRACT)
      */
-    private Date day;
+    private String symbol;
 
     /**
      *创建时间
@@ -43,6 +52,27 @@ public class RewardGatherDay extends  BaseEntity{
      *最后更新时间
      */
     private Date lastUpdateTime;
+
+    /**
+     *微信付款单号
+     */
+    private String wxBillNo;
+
+    public String getAccountNo() {
+        return accountNo;
+    }
+
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
 
     public String getUserNo() {
         return userNo;
@@ -68,20 +98,20 @@ public class RewardGatherDay extends  BaseEntity{
         this.parentBusinessCode = parentBusinessCode;
     }
 
-    public Double getTotalAmount() {
-        return totalAmount;
+    public String getStatus() {
+        return status;
     }
 
-    public void setTotalAmount(Double totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public Date getDay() {
-        return day;
+    public String getSymbol() {
+        return symbol;
     }
 
-    public void setDay(Date day) {
-        this.day = day;
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     public Date getCreateTime() {
@@ -100,16 +130,27 @@ public class RewardGatherDay extends  BaseEntity{
         this.lastUpdateTime = lastUpdateTime;
     }
 
+    public String getWxBillNo() {
+        return wxBillNo;
+    }
+
+    public void setWxBillNo(String wxBillNo) {
+        this.wxBillNo = wxBillNo;
+    }
+
     @Override
     public String toString() {
-        return super.toString()+"RewardGatherDay{" +
-                "userNo='" + userNo + '\'' +
+        return super.toString()+"AccountHistory{" +
+                "accountNo='" + accountNo + '\'' +
+                ", amount=" + amount +
+                ", userNo='" + userNo + '\'' +
                 ", businessCode='" + businessCode + '\'' +
                 ", parentBusinessCode='" + parentBusinessCode + '\'' +
-                ", totalAmount=" + totalAmount +
-                ", day=" + day +
+                ", status='" + status + '\'' +
+                ", symbol='" + symbol + '\'' +
                 ", createTime=" + createTime +
                 ", lastUpdateTime=" + lastUpdateTime +
+                ", wxBillNo='" + wxBillNo + '\'' +
                 '}';
     }
 }

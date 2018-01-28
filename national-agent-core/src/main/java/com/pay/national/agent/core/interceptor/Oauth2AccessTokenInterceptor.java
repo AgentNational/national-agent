@@ -22,6 +22,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * @author shuyan.qi
+ */
 public class Oauth2AccessTokenInterceptor extends HandlerInterceptorAdapter{
     @Autowired
     private WxUserInfoService wxUserInfoService;

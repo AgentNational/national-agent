@@ -42,7 +42,7 @@
       customer_name, customer_phone, reward_amount, 
       trans_amount, partner_business_name, partner_business_no, 
       create_time, last_update_time)
-    values (#{optimistic,jdbcType=INTEGER}, #{userNo,jdbcType=VARCHAR}, #{businessName,jdbcType=VARCHAR}, 
+    values (0, #{businessName,jdbcType=VARCHAR},
       #{businessCode,jdbcType=VARCHAR}, #{parentBusinessCode,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
       #{customerName,jdbcType=VARCHAR}, #{customerPhone,jdbcType=VARCHAR}, #{rewardAmount,jdbcType=DOUBLE}, 
       #{transAmount,jdbcType=DOUBLE}, #{partnerBusinessName,jdbcType=VARCHAR}, #{partnerBusinessNo,jdbcType=VARCHAR}, 
@@ -99,7 +99,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="optimistic != null" >
-        #{optimistic,jdbcType=INTEGER},
+       0,
       </if>
       <if test="userNo != null" >
         #{userNo,jdbcType=VARCHAR},
@@ -146,7 +146,7 @@
     update business_order
     <set >
       <if test="optimistic != null" >
-        optimistic = #{optimistic,jdbcType=INTEGER},
+        optimistic = optimistic +1,
       </if>
       <if test="userNo != null" >
         user_no = #{userNo,jdbcType=VARCHAR},
@@ -192,7 +192,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.BusinessOrder" >
     update business_order
-    set optimistic = #{optimistic,jdbcType=INTEGER},
+    set optimistic = optimistic + 1,
       user_no = #{userNo,jdbcType=VARCHAR},
       business_name = #{businessName,jdbcType=VARCHAR},
       business_code = #{businessCode,jdbcType=VARCHAR},

@@ -47,7 +47,7 @@ public class RewardServiceImpl implements RewardService {
     private RewardGatherMapper rewardGatherMapper;
 
     /**
-     * 奖励汇总
+     * 奖励总汇总信息
      * @param userNo 用户编号
      * @param parentBusinessCode 父业务编码
      * @return
@@ -147,7 +147,7 @@ public class RewardServiceImpl implements RewardService {
     }
 
     /**
-     * 奖励汇总
+     * 执行奖励汇总
      * @param day 汇总日期
      * @param userNo 汇总用户; 传null或空,汇总所有用户的奖励
      * @return
