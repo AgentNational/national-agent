@@ -37,7 +37,7 @@
       BUSINESS_NAME, STATUS, REWARD_AMOUNT, 
       FEATURE, REWARD_STANDARD, LINK, 
       SHOW_INDEX, CREATE_TIME)
-    values (#{optimistic,jdbcType=INTEGER}, #{childBusinessCode,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR}, 
+    values (0, #{childBusinessCode,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR},
       #{businessName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{rewardAmount,jdbcType=DOUBLE}, 
       #{feature,jdbcType=VARCHAR}, #{rewardStandard,jdbcType=VARCHAR}, #{link,jdbcType=VARCHAR}, 
       #{showIndex,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
@@ -84,7 +84,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="optimistic != null" >
-        #{optimistic,jdbcType=INTEGER},
+        0,
       </if>
       <if test="childBusinessCode != null" >
         #{childBusinessCode,jdbcType=VARCHAR},
@@ -122,7 +122,7 @@
     update agent_business
     <set >
       <if test="optimistic != null" >
-        OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+        OPTIMISTIC = OPTIMISTIC + 1,
       </if>
       <if test="childBusinessCode != null" >
         CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR},
@@ -159,7 +159,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.AgentBusiness" >
     update agent_business
-    set OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
+    set OPTIMISTIC = OPTIMISTIC + 1,
       CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR},
       BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
       BUSINESS_NAME = #{businessName,jdbcType=VARCHAR},

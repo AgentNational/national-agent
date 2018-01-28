@@ -35,7 +35,7 @@
       status, reward_type, reward_amount, 
       reward_proportion, create_time, last_update_time
       )
-    values (#{optimistic,jdbcType=INTEGER}, #{businessCode,jdbcType=VARCHAR}, #{parentBusinessCode,jdbcType=VARCHAR}, 
+    values (0, #{businessCode,jdbcType=VARCHAR}, #{parentBusinessCode,jdbcType=VARCHAR},
       #{status,jdbcType=VARCHAR}, #{rewardType,jdbcType=VARCHAR}, #{rewardAmount,jdbcType=DOUBLE}, 
       #{rewardProportion,jdbcType=DOUBLE}, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}
       )
@@ -76,7 +76,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="optimistic != null" >
-        #{optimistic,jdbcType=INTEGER},
+        0,
       </if>
       <if test="businessCode != null" >
         #{businessCode,jdbcType=VARCHAR},
@@ -108,7 +108,7 @@
     update business_reward_rule
     <set >
       <if test="optimistic != null" >
-        optimistic = #{optimistic,jdbcType=INTEGER},
+        optimistic = optimistic+1,
       </if>
       <if test="businessCode != null" >
         business_code = #{businessCode,jdbcType=VARCHAR},
@@ -139,7 +139,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.BusinessRewardRule" >
     update business_reward_rule
-    set optimistic = #{optimistic,jdbcType=INTEGER},
+    set optimistic = optimistic+1,
       business_code = #{businessCode,jdbcType=VARCHAR},
       parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
       status = #{status,jdbcType=VARCHAR},

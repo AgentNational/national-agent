@@ -6,6 +6,7 @@ import com.pay.national.agent.core.service.common.BusinessService;
 import com.pay.national.agent.model.entity.BusinessOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/buss")
+@CrossOrigin
 public class BusinessController {
     @Autowired
     private BusinessService businessService;
@@ -38,9 +40,9 @@ public class BusinessController {
      * @return
      */
     public String createOrder(BusinessOrder order){
-        LogUtil.info("创建信用卡业务订单 order={}",order);
+        LogUtil.info("Con 创建信用卡业务订单 order={}",order);
         String result = businessService.createOrder(order);
-        LogUtil.info("创建信用卡业务订单 return order={},result={}",order,result);
+        LogUtil.info("Con 创建信用卡业务订单 return order={},result={}",order,result);
         return result;
     }
 
@@ -51,10 +53,10 @@ public class BusinessController {
      * @return
      */
     public String orders(String userNo,String parentBusinessCode,Integer page){
-        LogUtil.info("查询订单 userNo={},parentBusinessCode={},page={}",userNo,parentBusinessCode,page);
+        LogUtil.info("Con 查询订单 userNo={},parentBusinessCode={},page={}",userNo,parentBusinessCode,page);
         this.page.setCurrentPage(page == null?1:page);
         String result = businessService.orders(userNo,parentBusinessCode,this.page);
-        LogUtil.info("查询订单 return userNo={},parentBusinessCode={},page={},result={}",userNo,parentBusinessCode,page,result);
+        LogUtil.info("Con 查询订单 return userNo={},parentBusinessCode={},page={},result={}",userNo,parentBusinessCode,page,result);
         return result;
     }
 }

@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public interface RewardService {
     /**
-     * 奖励汇总
+     * 奖励总汇总信息
      * @param userNo 用户编号
      * @param parentBusinessCode 父业务编码
 
@@ -41,7 +41,7 @@ public interface RewardService {
     String gatherOfDay(String userNo, ParentBusinessCode parentBusinessCode, Date startDate, Date endDate);
 
     /**
-     * 奖励汇总
+     * 执行奖励汇总
      * @param day 汇总日期
      * @param userNo 汇总用户; 传null或空,汇总所有用户的奖励
      */
