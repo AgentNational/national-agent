@@ -8,15 +8,38 @@ import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.core.dao.wx.AccessTokenManagerMapper;
 import com.pay.national.agent.core.service.wx.gate.WxService;
 import com.pay.national.agent.model.entity.AccessTokenManager;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.net.ssl.SSLContext;
+import java.io.*;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.KeyStore;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service("wxService")
 public class WxServiceImpl implements WxService {
     @Resource
     private AccessTokenManagerMapper accessTokenManagerMapper;
+
+    private String lzzymchid = "";//商户号
 
     @Override
     public  String getAccessToken(String appId, String appsecret) {
@@ -70,5 +93,128 @@ public class WxServiceImpl implements WxService {
         return ticket;
     }
 
+    @Override
+    public Map<String, String> createEnterPrisePayment(String respXml) throws Exception {
 
+        LogUtil.info("geta服务createEnterPrisePayment 请求:{}", respXml);
+
+        // 将解析结果存储在HashMap中
+        Map<String, String> map = new HashMap<String, String>();
+
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        LogUtil.info("geta服务createEnterPrisePayment 证书地址:{}",
+                WxServiceImpl.class.getResource("/").getPath() + "apiclient_cert.p12");
+
+        FileInputStream instream = new FileInputStream(
+                new File(WxServiceImpl.class.getResource("/").getPath() + "apiclient_cert.p12"));
+        try {
+            keyStore.load(instream, lzzymchid.toCharArray());
+        } finally {
+            instream.close();
+        }
+
+        // Trust own CA and all self-signed certs
+        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, lzzymchid.toCharArray())
+                .build();
+        // Allow TLSv1 protocol only
+        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1" }, null,
+                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+        CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+
+        try {
+            HttpPost httpPost = new HttpPost(WeiXinConstant.transfersUrl);
+            StringEntity reqEntity = new StringEntity(respXml, "utf-8");
+            // 设置类型
+            reqEntity.setContentType("application/x-www-form-urlencoded");
+            httpPost.setEntity(reqEntity);
+            CloseableHttpResponse response = httpclient.execute(httpPost);
+            LogUtil.info("----响应：{}", JSON.toJSONString(response));
+            try {
+                HttpEntity entity = response.getEntity();
+                LogUtil.info("-----:{}", JSON.toJSONString(entity));
+                if (entity != null) {
+                    // 从request中取得输入流
+                    InputStream inputStream = entity.getContent();
+                    // 读取输入流
+                    SAXReader reader = new SAXReader();
+                    Document document = reader.read(inputStream);
+                    // 得到xml根元素
+                    Element root = document.getRootElement();
+                    // 得到根元素的所有子节点
+                    @SuppressWarnings("unchecked")
+                    List<Element> elementList = root.elements();
+                    LogUtil.info("---map:{}", JSON.toJSONString(map));
+                    // 遍历所有子节点
+                    for (Element e : elementList)
+                        map.put(e.getName(), e.getText());
+                    // 释放资源
+                    inputStream.close();
+                    inputStream = null;
+                }
+                EntityUtils.consume(entity);
+            } finally {
+                response.close();
+            }
+        } finally {
+            httpclient.close();
+        }
+
+        return map;
+
+    }
+
+    @Override
+    public String createWxPayOrder(String outputStr) {
+
+        LogUtil.info("createPay:outputStr:{}",outputStr);
+        try {
+            URL url = new URL(WeiXinConstant.payOrderUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+            // 设置请求方式（GET/POST）
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+            // 当outputStr不为null时向输出流写数据
+            if (null != outputStr) {
+                OutputStream outputStream = conn.getOutputStream();
+                // 注意编码格式
+                outputStream.write(outputStr.getBytes("UTF-8"));
+                outputStream.close();
+            }
+            // 从输入流读取返回内容
+            InputStream inputStream = conn.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String str = null;
+            StringBuffer buffer = new StringBuffer();
+            while ((str = bufferedReader.readLine()) != null) {
+                buffer.append(str);
+            }
+            // 释放资源
+            bufferedReader.close();
+            inputStreamReader.close();
+            inputStream.close();
+            inputStream = null;
+            conn.disconnect();
+            LogUtil.info("========{}",buffer.toString());
+            return buffer.toString();
+        } catch (ConnectException ce) {
+            System.out.println("连接超时：{}"+ ce);
+        } catch (Exception e) {
+            System.out.println("https请求异常：{}"+ e);
+        }
+        return null;
+
+    }
+
+    @Override
+    public String getWxPayOrder(String xml) {
+        LogUtil.info("geta服务getWxPayOrder请求参数 xml:{}", xml);
+        String result = HttpClientUtil.sendPost(WeiXinConstant.queryPayOrderUrl, xml);
+        LogUtil.info("geta服务getWxPayOrder 返回结果:{}", result);
+        return result;
+    }
 }

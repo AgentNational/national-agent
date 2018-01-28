@@ -63,7 +63,7 @@ public class WxserviceTest extends BaseTest{
         // 子按钮2-1
         SonButton sb21 = new SonButton();
         sb21.setName("view");
-        sb21.setUrl("https://e5f3eaae.ngrok.io/wxMenu/menu/1");
+        sb21.setUrl("http://adfd160c.ngrok.io/wxMenu/menu/1");
         sb21.setType("view");
         // 子按钮2-2
         SonButton sb22 = new SonButton();
