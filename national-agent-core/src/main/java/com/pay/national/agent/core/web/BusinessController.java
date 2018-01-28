@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * 代理业务
- * Created by shuyan.qi on 2018/1/23.
+ *
+ * @author shuyan.qi
+ * @date 2018/1/23
  */
 @Controller
 @RequestMapping("/buss")
-public class BusinesscController {
+public class BusinessController {
     @Autowired
     private BusinessService businessService;
     private Page<BusinessOrder> page = new Page<>();

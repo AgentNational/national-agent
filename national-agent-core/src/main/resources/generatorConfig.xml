@@ -19,7 +19,7 @@
     <javaClientGenerator targetPackage="com.pay.national.agent.core.dao.common" targetProject="src/main/java" type="XMLMAPPER" />
 
    <!-- 不生成example类 -->
-   <table tableName="business_reward_rule" enableCountByExample="false"
+   <table tableName="reward_gather_month" enableCountByExample="false"
             enableUpdateByExample="false"
             enableDeleteByExample="false"
             enableSelectByExample="false"

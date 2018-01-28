@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 
 import com.pay.commons.cache.context.CacheConfig;
@@ -23,7 +24,7 @@ import com.pay.commons.cache.context.CacheConfig;
  */
 @Configuration
 @EnableAspectJAutoProxy
-@Import({ MariaDBConfig.class,MyBatisConfig.class})//CacheConfig.class SMSConfig.class
+@Import({ MariaDBConfig.class,MyBatisConfig.class,TimerConfig.class})//CacheConfig.class SMSConfig.class
 @ComponentScan(basePackages = "com.pay.national.agent.core", excludeFilters = { @Filter(Controller.class), @Filter(Configuration.class) })
 public class SpringRootConfig {
 
@@ -37,6 +38,4 @@ public class SpringRootConfig {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		return factory.getValidator();
 	}
-
-
 }
