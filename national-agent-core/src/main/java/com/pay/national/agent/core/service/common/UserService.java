@@ -20,9 +20,9 @@ public interface UserService {
 	
 	/**
 	 * @Description 通过用户编号查询用户是否存在
-	 * @param phoneNo
+	 * @param
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	User findUserByUserNo(String userNo);
 
@@ -46,7 +46,7 @@ public interface UserService {
 	 * @Description 校验登录信息
 	 * @param loginParamBean
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	ReturnBean<LoginResultBean> checkLoginInfo(LoginParamBean loginParamBean);
 
@@ -54,7 +54,7 @@ public interface UserService {
 	 * @Description 登录
 	 * @param loginParamBean
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	ReturnBean<LoginResultBean> login(LoginParamBean loginParamBean);
 
@@ -62,7 +62,7 @@ public interface UserService {
 	 * @Description 退出登录
 	 * @param loginKey
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	boolean logout(String loginKey);
 
@@ -96,7 +96,7 @@ public interface UserService {
 	 * @Description 查找个人资料
 	 * @param params
 	 * @return 
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	ReturnBean<FindInformationResultBean> findInformation(Map<String, String> params);
 
@@ -116,4 +116,10 @@ public interface UserService {
 	 */
 	ReturnBean<Object> resetPassword(Map<String, String> params);
 
+	/**
+	 * 公众号用户注册
+	 * @param fromUserName
+	 * @param eventKey
+	 */
+	void register(String fromUserName, String eventKey);
 }

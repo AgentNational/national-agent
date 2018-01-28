@@ -14,7 +14,7 @@ import java.io.IOException;
 @RequestMapping("/wxMenu")
 public class WxMenuCtroller {
 
-    @NeedOpenId(needOpenId = true,isLoginFlag = false,oauth2Flag = true)
+    @NeedOpenId(needOpenId = true,isLoginFlag = false)
     @RequestMapping(value = "menu/{menuNo}")
     public void menuRedirect(HttpServletRequest request, HttpServletResponse response, @PathVariable("menuNo")String menuNo) throws IOException {
        System.out.println(menuNo);

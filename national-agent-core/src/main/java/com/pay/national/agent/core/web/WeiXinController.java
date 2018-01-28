@@ -3,7 +3,9 @@ package com.pay.national.agent.core.web;
 import com.pay.national.agent.common.bean.wx.TextMessage;
 import com.pay.national.agent.common.constants.WeiXinConstant;
 import com.pay.national.agent.common.utils.DigestUtils;
+import com.pay.national.agent.common.utils.StringUtils;
 import com.pay.national.agent.common.utils.WxMessageUtil;
+import com.pay.national.agent.core.service.common.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -52,7 +55,10 @@ public class WeiXinController {
 		}
 		return "ERROR";
 	}
-	
+
+	@Resource
+	private UserService userService;
+
 	@RequestMapping(value = "/wxNotice" , method = RequestMethod.POST)
 	public @ResponseBody
     void wxNoticePost(HttpServletRequest request, HttpServletResponse response) throws IOException{
@@ -87,6 +93,12 @@ public class WeiXinController {
 					textMessage.setContent("欢迎关注我的公众号。11111哈哈哈哈哈");
 					textMessage.setCreateTime(System.currentTimeMillis());
 					String message = WxMessageUtil.textMessageToXml(textMessage);
+					String EventKey = map.get("EventKey");
+					if(StringUtils.isNotBlank(EventKey)){
+						userService.register(FromUserName,EventKey);
+					}else{
+						userService.register(FromUserName,null);
+					}
 					System.out.println(message);
 					printWriter.print(message);
 				}else if(WxMessageUtil.EVENT_TYPE_CLICK.equals(Event)){
