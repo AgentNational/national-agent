@@ -1,59 +1,145 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.pay.national.agent.core.dao.common.RewardGatherMapper" >
-  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.RewardGather" >
-    <id column="ID" property="id" jdbcType="INTEGER" />
-    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
-    <result column="USER_NO" property="userNo" jdbcType="VARCHAR" />
-    <result column="BUSINESS_CODE" property="businessCode" jdbcType="VARCHAR" />
-    <result column="CHILD_BUSINESS_CODE" property="childBusinessCode" jdbcType="VARCHAR" />
-    <result column="REWARD_AMOUNT_TOTAL" property="rewardAmountTotal" jdbcType="DOUBLE" />
-    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pay.national.agent.core.dao.common.RewardGatherMapper">
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.RewardGather">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="optimistic" jdbcType="INTEGER" property="optimistic" />
+    <result column="user_no" jdbcType="VARCHAR" property="userNo" />
+    <result column="business_code" jdbcType="VARCHAR" property="businessCode" />
+    <result column="parent_business_code" jdbcType="VARCHAR" property="parentBusinessCode" />
+    <result column="total_amount" jdbcType="DOUBLE" property="totalAmount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    ID, OPTIMISTIC, USER_NO, BUSINESS_CODE, CHILD_BUSINESS_CODE, REWARD_AMOUNT_TOTAL, 
-    CREATE_TIME
+  <sql id="Base_Column_List">
+    id, optimistic, user_no, business_code, parent_business_code, total_amount, create_time,
+    last_update_time
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
     from reward_gather
-    where ID = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from reward_gather
-    where ID = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.pay.national.agent.model.entity.RewardGather" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.RewardGather">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into reward_gather (USER_NO, BUSINESS_CODE, 
-      CHILD_BUSINESS_CODE, REWARD_AMOUNT_TOTAL, CREATE_TIME
-      )
-    values (#{userNo,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR}, 
-      #{childBusinessCode,jdbcType=VARCHAR}, #{rewardAmountTotal,jdbcType=DOUBLE}, #{createTime,jdbcType=TIMESTAMP}
-      )
+    insert into reward_gather (optimistic, user_no, business_code, 
+      parent_business_code, total_amount, create_time, 
+      last_update_time)
+    values (0, #{userNo,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR},
+      #{parentBusinessCode,jdbcType=VARCHAR}, #{totalAmount,jdbcType=DOUBLE}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{lastUpdateTime,jdbcType=TIMESTAMP})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.RewardGather" >
+  <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.RewardGather">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into reward_gather
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="optimistic != null">
+        optimistic,
+      </if>
+      <if test="userNo != null">
+        user_no,
+      </if>
+      <if test="businessCode != null">
+        business_code,
+      </if>
+      <if test="parentBusinessCode != null">
+        parent_business_code,
+      </if>
+      <if test="totalAmount != null">
+        total_amount,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="lastUpdateTime != null">
+        last_update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="optimistic != null">
+        0,
+      </if>
+      <if test="userNo != null">
+        #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null">
+        #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentBusinessCode != null">
+        #{parentBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="totalAmount != null">
+        #{totalAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null">
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.RewardGather">
     update reward_gather
-    set OPTIMISTIC = OPTIMISTIC + 1,
-      USER_NO = #{userNo,jdbcType=VARCHAR},
-      BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
-      CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR},
-      REWARD_AMOUNT_TOTAL = #{rewardAmountTotal,jdbcType=DOUBLE}
-    where ID = #{id,jdbcType=INTEGER}
+    <set>
+      <if test="optimistic != null">
+        optimistic = optimistic+1,
+      </if>
+      <if test="userNo != null">
+        user_no = #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null">
+        business_code = #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentBusinessCode != null">
+        parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="totalAmount != null">
+        total_amount = #{totalAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null">
+        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
   </update>
-  
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.RewardGather">
+    update reward_gather
+    set optimistic = optimistic+1,
+      user_no = #{userNo,jdbcType=VARCHAR},
+      business_code = #{businessCode,jdbcType=VARCHAR},
+      parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
+      total_amount = #{totalAmount,jdbcType=DOUBLE},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+ <select id="selectByUser" resultMap="BaseResultMap">
+  SELECT <include refid="Base_Column_List"/>
+  FROM reward_gather
+  WHERE USER_NO = #{userNo,jdbcType=VARCHAR}
+</select>
+
   <select id="selectByBusiness" resultMap="BaseResultMap">
-  	select <include refid="Base_Column_List" />
-  	from reward_gather
-  	where USER_NO = #{userNo,jdbcType=VARCHAR}
-  	<if test="businessCode != null and businessCode != ''">
-  	and BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR} 
-  	</if>
-  	<if test="childBusinessCode != null and childBusinessCode != ''">
-  	and CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR}
-  	</if>
+    SELECT <include refid="Base_Column_List"/>
+    FROM reward_gather
+    WHERE 1=1
+    <if test="userNo != null and userNo != ''">
+      AND user_no = #{userNo,jdbcType=VARCHAR}
+    </if>
+    AND business_code = #{businessCode,jdbcType=VARCHAR}
   </select>
 </mapper>

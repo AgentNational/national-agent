@@ -1,73 +1,203 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.pay.national.agent.core.dao.common.RewardRecordMapper" >
-  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.RewardRecord" >
-    <id column="ID" property="id" jdbcType="INTEGER" />
-    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
-    <result column="BUSINESS_CODE" property="businessCode" jdbcType="VARCHAR" />
-    <result column="CHILD_BUSINESS_CODE" property="childBusinessCode" jdbcType="VARCHAR" />
-    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
-    <result column="SYSTEM_FLOW_ID" property="systemFlowId" jdbcType="VARCHAR" />
-    <result column="USER_NO" property="userNo" jdbcType="VARCHAR" />
-    <result column="STATUS" property="status" jdbcType="VARCHAR" />
-    <result column="REWARD_AMOUNT" property="rewardAmount" jdbcType="DOUBLE" />
-    <result column="REWARD_STATUS" property="rewardStatus" jdbcType="VARCHAR" />
-    <result column="REWARD_TIME" property="rewardTime" jdbcType="TIMESTAMP" />
-    <result column="ERROR_CODE" property="errorCode" jdbcType="VARCHAR" />
-    <result column="ERROR_MSG" property="errorMsg" jdbcType="VARCHAR" />
-    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="RULE_ID" property="ruleId" jdbcType="INTEGER" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pay.national.agent.core.dao.common.RewardRecordMapper">
+  <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.RewardRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="optimistic" jdbcType="INTEGER" property="optimistic" />
+    <result column="business_code" jdbcType="VARCHAR" property="businessCode" />
+    <result column="parent_business_code" jdbcType="VARCHAR" property="parentBusinessCode" />
+    <result column="user_no" jdbcType="VARCHAR" property="userNo" />
+    <result column="amount" jdbcType="DOUBLE" property="amount" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="reward_time" jdbcType="TIMESTAMP" property="rewardTime" />
+    <result column="error_code" jdbcType="VARCHAR" property="errorCode" />
+    <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="rule_id" jdbcType="BIGINT" property="ruleId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    ID, OPTIMISTIC, BUSINESS_CODE, CHILD_BUSINESS_CODE, ORDER_NO, SYSTEM_FLOW_ID, USER_NO, 
-    STATUS, REWARD_AMOUNT, REWARD_STATUS, REWARD_TIME, ERROR_CODE, ERROR_MSG, CREATE_TIME,RULE_ID
+  <sql id="Base_Column_List">
+    id, optimistic, business_code, parent_business_code, user_no, amount, status, reward_time,
+    error_code, error_msg, order_id, rule_id, create_time, last_update_time
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
     from reward_record
-    where ID = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from reward_record
-    where ID = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.pay.national.agent.model.entity.RewardRecord" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+  <insert id="insert" parameterType="com.pay.national.agent.model.entity.RewardRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into reward_record (BUSINESS_CODE, CHILD_BUSINESS_CODE, 
-      ORDER_NO, SYSTEM_FLOW_ID, USER_NO, 
-      STATUS, REWARD_AMOUNT, REWARD_STATUS, 
-      REWARD_TIME, ERROR_CODE, ERROR_MSG, 
-      CREATE_TIME,RULE_ID)
-    values (#{businessCode,jdbcType=VARCHAR}, #{childBusinessCode,jdbcType=VARCHAR}, 
-      #{orderNo,jdbcType=VARCHAR}, #{systemFlowId,jdbcType=VARCHAR}, #{userNo,jdbcType=VARCHAR}, 
-      #{status,jdbcType=VARCHAR}, #{rewardAmount,jdbcType=DOUBLE}, #{rewardStatus,jdbcType=VARCHAR}, 
-      #{rewardTime,jdbcType=TIMESTAMP}, #{errorCode,jdbcType=VARCHAR}, #{errorMsg,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP},#{ruleId,jdbcType=VARCHAR})
+    insert into reward_record (optimistic, business_code, parent_business_code,
+      user_no, amount, status,
+      reward_time, error_code, error_msg,
+      order_id, rule_id, create_time,
+      last_update_time)
+    values (0, #{businessCode,jdbcType=VARCHAR}, #{parentBusinessCode,jdbcType=VARCHAR},
+      #{userNo,jdbcType=VARCHAR}, #{amount,jdbcType=DOUBLE}, #{status,jdbcType=VARCHAR},
+      #{rewardTime,jdbcType=TIMESTAMP}, #{errorCode,jdbcType=VARCHAR}, #{errorMsg,jdbcType=VARCHAR},
+      #{orderId,jdbcType=BIGINT}, #{ruleId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
+      #{lastUpdateTime,jdbcType=TIMESTAMP})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.RewardRecord" >
+  <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.RewardRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into reward_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="optimistic != null">
+        optimistic,
+      </if>
+      <if test="businessCode != null">
+        business_code,
+      </if>
+      <if test="parentBusinessCode != null">
+        parent_business_code,
+      </if>
+      <if test="userNo != null">
+        user_no,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="rewardTime != null">
+        reward_time,
+      </if>
+      <if test="errorCode != null">
+        error_code,
+      </if>
+      <if test="errorMsg != null">
+        error_msg,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="ruleId != null">
+        rule_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="lastUpdateTime != null">
+        last_update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="optimistic != null">
+        0,
+      </if>
+      <if test="businessCode != null">
+        #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentBusinessCode != null">
+        #{parentBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userNo != null">
+        #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardTime != null">
+        #{rewardTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="errorCode != null">
+        #{errorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="ruleId != null">
+        #{ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null">
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.RewardRecord">
     update reward_record
-    set OPTIMISTIC = OPTIMISTIC + 1,
-      BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
-      CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR},
-      ORDER_NO = #{orderNo,jdbcType=VARCHAR},
-      SYSTEM_FLOW_ID = #{systemFlowId,jdbcType=VARCHAR},
-      USER_NO = #{userNo,jdbcType=VARCHAR},
-      STATUS = #{status,jdbcType=VARCHAR},
-      REWARD_AMOUNT = #{rewardAmount,jdbcType=DOUBLE},
-      REWARD_STATUS = #{rewardStatus,jdbcType=VARCHAR},
-      REWARD_TIME = #{rewardTime,jdbcType=TIMESTAMP},
-      ERROR_CODE = #{errorCode,jdbcType=VARCHAR},
-      ERROR_MSG = #{errorMsg,jdbcType=VARCHAR},
-      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
-      RULE_ID = #{ruleId,jdbcType=VARCHAR}
-    where ID = #{id,jdbcType=INTEGER}
+    <set>
+      <if test="optimistic != null">
+        optimistic = optimistic+1,
+      </if>
+      <if test="businessCode != null">
+        business_code = #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentBusinessCode != null">
+        parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userNo != null">
+        user_no = #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardTime != null">
+        reward_time = #{rewardTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="errorCode != null">
+        error_code = #{errorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        error_msg = #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="ruleId != null">
+        rule_id = #{ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null">
+        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
   </update>
-  
+  <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.RewardRecord">
+    update reward_record
+    set optimistic = optimistic+1,
+      business_code = #{businessCode,jdbcType=VARCHAR},
+      parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
+      user_no = #{userNo,jdbcType=VARCHAR},
+      amount = #{amount,jdbcType=DOUBLE},
+      status = #{status,jdbcType=VARCHAR},
+      reward_time = #{rewardTime,jdbcType=TIMESTAMP},
+      error_code = #{errorCode,jdbcType=VARCHAR},
+      error_msg = #{errorMsg,jdbcType=VARCHAR},
+      order_id = #{orderId,jdbcType=BIGINT},
+      rule_id = #{ruleId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
   <select id="getRewardRecord" resultMap="BaseResultMap">
-  	select <include refid="Base_Column_List"/>
+  	select <include refid="Base_Column_List" />
   	from reward_record
   	where  USER_NO = #{userNo,jdbcType=VARCHAR}
   	and ORDER_NO = #{orderNo,jdbcType=VARCHAR}

@@ -2,115 +2,200 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.pay.national.agent.core.dao.common.RewardGatherDayMapper" >
   <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.RewardGatherDay" >
-    <id column="ID" property="id" jdbcType="INTEGER" />
-    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
-    <result column="USER_NO" property="userNo" jdbcType="VARCHAR" />
-    <result column="BUSINESS_CODE" property="businessCode" jdbcType="VARCHAR" />
-    <result column="CHILD_BUSINESS_CODE" property="childBusinessCode" jdbcType="VARCHAR" />
-    <result column="REWARD_AMOUNT_TOTAL" property="rewardAmountTotal" jdbcType="DOUBLE" />
-    <result column="REWARD_DATE" property="rewardDate" jdbcType="DATE" />
-    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="optimistic" property="optimistic" jdbcType="INTEGER" />
+    <result column="user_no" property="userNo" jdbcType="VARCHAR" />
+    <result column="business_code" property="businessCode" jdbcType="VARCHAR" />
+    <result column="parent_business_code" property="parentBusinessCode" jdbcType="VARCHAR" />
+    <result column="total_amount" property="totalAmount" jdbcType="DOUBLE" />
+    <result column="day" property="day" jdbcType="DATE" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_update_time" property="lastUpdateTime" jdbcType="TIMESTAMP" />
   </resultMap>
-  
-  <resultMap type="com.pay.national.agent.model.beans.results.RewardMonthResultBean" id="rewardMonthBean">
-  	 <result column="MONTH" property="month" jdbcType="VARCHAR" />
-     <result column="AMOUNT_OF_MONTH" property="amountOfMonth" jdbcType="DOUBLE" />
-     <result column="BUSINESS_CODE" property="businessCode" jdbcType="VARCHAR" />
-     <result column="USER_NO" property="userNo" jdbcType="VARCHAR" />
-  </resultMap>
-  
-  <resultMap type="com.pay.national.agent.model.beans.results.RewardDayResultBean" id="rewardDayBean">
-     	<result column="DAY" property="day" jdbcType="VARCHAR" />
-     	<result column="USER_NO" property="userNo" jdbcType="VARCHAR" />
-     	<result column="AMOUNT_OF_DAY" property="amountOfDay" jdbcType="DOUBLE" />
-     	<result column="BUSINESS_CODE" property="businessCode" jdbcType="VARCHAR" />
+  <resultMap id="GatherMap" type="com.pay.national.agent.core.bean.result.DayRewardGatherBean">
+    <result column="user_no" property="userNo" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="DOUBLE" />
+    <result column="day1" property="day" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ID, OPTIMISTIC, USER_NO, BUSINESS_CODE, CHILD_BUSINESS_CODE, REWARD_AMOUNT_TOTAL, 
-    REWARD_DATE, CREATE_TIME
+    id, optimistic, user_no, business_code, parent_business_code, total_amount, day, 
+    create_time, last_update_time
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from reward_gather_day
-    where ID = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from reward_gather_day
-    where ID = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.pay.national.agent.model.entity.RewardGatherDay" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into reward_gather_day (USER_NO, BUSINESS_CODE, 
-      CHILD_BUSINESS_CODE, REWARD_AMOUNT_TOTAL, REWARD_DATE, 
-      CREATE_TIME)
-    values (#{userNo,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR}, 
-      #{childBusinessCode,jdbcType=VARCHAR}, #{rewardAmountTotal,jdbcType=DOUBLE}, #{rewardDate,jdbcType=DATE}, 
-      #{createTime,jdbcType=TIMESTAMP})
+    insert into reward_gather_day (optimistic, user_no, business_code, 
+      parent_business_code, total_amount, day, 
+      create_time, last_update_time)
+    values (0, #{userNo,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR},
+      #{parentBusinessCode,jdbcType=VARCHAR}, #{totalAmount,jdbcType=DOUBLE}, #{day,jdbcType=DATE}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP})
   </insert>
+  <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.RewardGatherDay" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into reward_gather_day
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        optimistic,
+      </if>
+      <if test="userNo != null" >
+        user_no,
+      </if>
+      <if test="businessCode != null" >
+        business_code,
+      </if>
+      <if test="parentBusinessCode != null" >
+        parent_business_code,
+      </if>
+      <if test="totalAmount != null" >
+        total_amount,
+      </if>
+      <if test="day != null" >
+        day,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastUpdateTime != null" >
+        last_update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="optimistic != null" >
+        0,
+      </if>
+      <if test="userNo != null" >
+        #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null" >
+        #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentBusinessCode != null" >
+        #{parentBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="totalAmount != null" >
+        #{totalAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="day != null" >
+        #{day,jdbcType=DATE},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.RewardGatherDay" >
+    update reward_gather_day
+    <set >
+      <if test="optimistic != null" >
+        optimistic = optimistic + 1,
+      </if>
+      <if test="userNo != null" >
+        user_no = #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null" >
+        business_code = #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentBusinessCode != null" >
+        parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="totalAmount != null" >
+        total_amount = #{totalAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="day != null" >
+        day = #{day,jdbcType=DATE},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null" >
+        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
   <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.RewardGatherDay" >
     update reward_gather_day
-    set OPTIMISTIC = OPTIMISTIC + 1,
-      USER_NO = #{userNo,jdbcType=VARCHAR},
-      BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
-      CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR},
-      REWARD_AMOUNT_TOTAL = #{rewardAmountTotal,jdbcType=DOUBLE},
-      REWARD_DATE = #{rewardDate,jdbcType=DATE}
-    where ID = #{id,jdbcType=INTEGER}
+    set optimistic = optimistic +1,
+      user_no = #{userNo,jdbcType=VARCHAR},
+      business_code = #{businessCode,jdbcType=VARCHAR},
+      parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
+      total_amount = #{totalAmount,jdbcType=DOUBLE},
+      day = #{day,jdbcType=DATE},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
   </update>
-  
-  <select id="rewardSummaryMonth" resultMap="rewardMonthBean">
-  	select  USER_NO,sum(REWARD_AMOUNT_TOTAL) AMOUNT_OF_MONTH, BUSINESS_CODE,DATE_FORMAT(REWARD_DATE,'%Y-%m') MONTH
-	from reward_gather_day 
-	group by USER_NO,MONTH,BUSINESS_CODE
-	having USER_NO = #{userNo,jdbcType=VARCHAR} 
-	and BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR}
-	order by REWARD_DATE desc;
+
+  <select id="group1" resultMap="GatherMap">
+    SELECT user_no,DATE_FORMAT(`day`,'%Y-%m-%d') as day1,sum(total_amount) as amount
+    FROM reward_gather_day
+    GROUP BY user_no,`day`
+    HAVING user_no = #{userNo,jdbcType=VARCHAR}
+    <if test="startDate != null">
+      AND `day` <![CDATA[>=]]> #{startDate,jdbcType=DATE}
+    </if>
+    <if test="endDate != null">
+      AND `day` <![CDATA[<=]]> #{endDate,jdbcType=DATE}
+    </if>
+    ORDER BY `day`
   </select>
-  
-  <select id="rewardSummaryMonth2" resultMap="rewardMonthBean">
-  	select  USER_NO,sum(REWARD_AMOUNT_TOTAL) AMOUNT_OF_MONTH,DATE_FORMAT(REWARD_DATE,'%Y-%m') MONTH
-	from reward_gather_day 
-	group by USER_NO,MONTH
-	having USER_NO = #{userNo,jdbcType=VARCHAR} 
-	order by REWARD_DATE desc;
+
+  <select id="group2" resultMap="GatherMap">
+    SELECT user_no,DATE_FORMAT(`day`,'%Y-%m-%d') as day1,sum(total_amount) as amount
+    FROM reward_gather_day
+    GROUP BY user_no,`day`,parent_business_code
+    HAVING user_no = #{userNo,jdbcType=VARCHAR}
+    AND parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}
+    <if test="startDate != null">
+      AND `day` <![CDATA[>=]]> #{startDate,jdbcType=DATE}
+    </if>
+    <if test="endDate != null">
+      AND `day` <![CDATA[<=]]> #{endDate,jdbcType=DATE}
+    </if>
+    ORDER BY `day`
   </select>
-  
-  <select id="rewardSummaryDay" resultMap="rewardDayBean">
-  	select USER_NO, sum(reward_amount_total) AMOUNT_OF_DAY,BUSINESS_CODE,DATE_FORMAT(REWARD_DATE,'%Y-%m-%d') DAY
-	from reward_gather_day 
-	group by USER_NO,REWARD_DATE,BUSINESS_CODE
-	HAVING  USER_NO = #{userNo,jdbcType=VARCHAR}
-	AND BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR}
-	AND reward_date <![CDATA[>=]]> #{startDate,jdbcType=VARCHAR}
-	AND reward_date <![CDATA[<=]]> #{endDate,jdbcType=VARCHAR}
-	order by reward_date;
-  </select>
-  
-  <select id="rewardSummaryDay2" resultMap="rewardDayBean">
-  	select USER_NO, sum(reward_amount_total) AMOUNT_OF_DAY,DATE_FORMAT(REWARD_DATE,'%Y-%m-%d') DAY
-	from reward_gather_day 
-	group by USER_NO,REWARD_DATE
-	HAVING  USER_NO = #{userNo,jdbcType=VARCHAR}
-	AND reward_date <![CDATA[>=]]> #{startDate,jdbcType=VARCHAR}
-	AND reward_date <![CDATA[<=]]> #{endDate,jdbcType=VARCHAR}
-	order by reward_date;
-  </select>
-  
-  
-  <insert id="gather" parameterType="java.lang.String">
-  	insert into reward_gather_day(USER_NO,BUSINESS_CODE,CHILD_BUSINESS_CODE,REWARD_AMOUNT_TOTAL,REWARD_DATE,CREATE_TIME)
-	select rr.USER_NO,rr.BUSINESS_CODE,rr.CHILD_BUSINESS_CODE,SUM(rr.REWARD_AMOUNT),DATE_FORMAT(rr.REWARD_TIME,'%Y-%m-%d') days,SYSDATE()
-	from reward_record rr
-	group by rr.USER_NO,rr.BUSINESS_CODE,rr.CHILD_BUSINESS_CODE,rr.REWARD_STATUS,days
-	having rr.REWARD_STATUS = 'SUCCESS' and days = #{day};
+
+  <insert id="summary">
+    INSERT INTO reward_gather_day(user_no,business_code,parent_business_code,total_amount,day,create_time)
+    SELECT user_no,business_code,parent_business_code,SUM(amount),DATE_ADD(SYSDATE(),INTERVAL -1 day),SYSDATE()
+    FROM (
+    SELECT user_no,business_code,parent_business_code,amount
+    FROM reward_record
+    WHERE 1=1
+    <if test="userNo != null and userNo != ''">
+      AND user_no = #{userNo,jdbcType=VARCHAR}
+    </if>
+    AND status = 'SUCCESS'
+    AND reward_time <![CDATA[>=]]> #{startDate,jdbcType=VARCHAR}
+    AND reward_time <![CDATA[<=]]> #{endDate,jdbcType=VARCHAR}
+    ) tmp
+    GROUP BY user_no,parent_business_code,business_code;
   </insert>
-  
-  <select id="selectByDate" parameterType="java.lang.String" resultMap="BaseResultMap">
-  	select <include refid="Base_Column_List"/> 
-  	from reward_gather_day
-  	where DATE_FORMAT(REWARD_DATE,'%Y-%m-%d') = #{day}
+
+  <select id="selectByRewardDay" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM reward_gather_day
+    WHERE 1=1
+    <if test="userNo != null and userNo != ''">
+      AND user_no = #{userNo,jdbcType=VARCHAR}
+    </if>
+    AND day = #{day,jdbcType=DATE}
   </select>
 </mapper>

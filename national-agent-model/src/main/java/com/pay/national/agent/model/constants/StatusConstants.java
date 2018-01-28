@@ -2,7 +2,9 @@ package com.pay.national.agent.model.constants;
 
 /**
  * 常用状态常量类
- * Created by shuyan.qi on 2018/1/23.
+ *
+ * @author shuyan.qi
+ * @date 2018/1/23
  */
 public class StatusConstants {
     public static final String ENABLE = "ENABLE";
@@ -11,4 +13,9 @@ public class StatusConstants {
 
     public static final String DELETE = "DELETE";
 
+    public static final String SUCCESS = "SUCCESS";
+
+    public static final String FAIL = "FAIL";
+
+    public static final String ERROR = "ERROR";
 }

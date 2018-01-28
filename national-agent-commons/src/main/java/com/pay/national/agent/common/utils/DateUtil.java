@@ -62,7 +62,7 @@ public class DateUtil {
     *
     * @param date 如：2015-05-01
     * @param pattern 如：YYYY-MM-DD
-    * @param passnumber 0 为当天
+    * @param days 0 为当天
     * @return
     * @see [类、类#方法、类#成员]
     */
@@ -232,7 +232,7 @@ public class DateUtil {
 	     * @param addMonth
 	     * @return
 	     * @throws ParseException
-	     * @see 需要参考的类或方法
+	     * @see
 	     */
 	    public static String getMonthLastDay(String date,int addMonth) throws ParseException {
 	        Date theDate = sdf.parse(date);
@@ -264,4 +264,38 @@ public class DateUtil {
 		return date;
 	}
 
+
+	/**
+	 * 相差月份的第一天
+	 * @return
+	 */
+	public static Date getFirstDay(Date date,int month){
+		GregorianCalendar calendar = (GregorianCalendar) Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH,month);
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		return calendar.getTime();
+	}
+
+
+	/**
+	 * 相差月份的最后一天
+	 * @return
+	 */
+	public static Date getLastDay(Date date,int month){
+		GregorianCalendar calendar = (GregorianCalendar) Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH,month);
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		return calendar.getTime();
+	}
+
+
+	public static Date addDay(Date date,int addDay){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE,addDay);
+        return calendar.getTime();
+
+    }
 }
