@@ -10,6 +10,9 @@ import com.pay.national.agent.common.utils.wx.RequestUtil;
 import com.pay.national.agent.common.utils.wx.UUIDHexGenerator;
 import com.pay.national.agent.common.utils.wx.UUIDUtils;
 import com.pay.national.agent.common.utils.wx.WeixinPayUtil;
+import com.pay.national.agent.core.dao.wx.WxPublicPayBillMapper;
+import com.pay.national.agent.core.dao.wx.WxPublicPayDetailMapper;
+import com.pay.national.agent.core.dao.wx.WxPublicPrepayBillMapper;
 import com.pay.national.agent.core.service.wx.WxPublicPayService;
 import com.pay.national.agent.core.service.wx.gate.WxService;
 import com.pay.national.agent.model.entity.WxPublicPayBill;
@@ -33,23 +36,26 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
     @Resource
     private WxService wxService;
 
+    @Resource
+    private WxPublicPayBillMapper wxPublicPayBillMapper;
+
+    @Resource
+    private WxPublicPrepayBillMapper wxPublicPrepayBillMapper;
+
+    @Resource
+    private WxPublicPayDetailMapper wxPublicPayDetailMapper;
+
     @Override
     public Map<String, String> createPayBill(Map<String, String> params) {
 
         LogUtil.info("微信下单请求参数:{}", JSON.toJSONString(params));
         Map<String, String> result = new HashMap<String, String>();
-        String busiNo = params.get("outOrderId");// 业务方订单号
-        String partnerId = params.get("partner");// 业务方下单支付商户编号
-        String returnParam = params.get("returnParam");// 业务方需返回的参数
-        String redirectURL = params.get("redirectURL");// 业务方支付成功同步跳转地址
+        String redirectURL = params.get("redirectURL");// 支付成功跳转地址
         String amount = params.get("amount");// 订单金额
-        String notifyURL = params.get("notifyURL");// 业务支付陈功异步回调地址
         String ip = params.get("ip");// 访问ip
         String payNotifyUrl = params.get("payNotifyUrl");// 支付成功微信回调地址
-        String openId = params.get("openId");// 业务回调地址
+        String openId = params.get("openId");//
         try {
-            // 附加参数，不参与下单，异步通知使用
-            String attach = "returnParam=" + returnParam;
             // 生成微信支付商户订单号
             String outerTradeNo = UUIDHexGenerator.getInstance().generate();
             WxPublicPrepayBill publicPrepayBill = findWxPublicPrepayByOuterTradeNo(outerTradeNo);
@@ -67,8 +73,8 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
             String nonceStr = UUIDUtils.getUUID();
 
             SortedMap<String, String> packageParams = new TreeMap<String, String>();
-            packageParams.put("appid", PayConstants.lzzymch_appid);
-            packageParams.put("mch_id", PayConstants.lzzymchid);
+            packageParams.put("appid", PayConstants.mch_appid);
+            packageParams.put("mch_id", PayConstants.mchid);
             packageParams.put("nonce_str", nonceStr);
             packageParams.put("body", body);
             packageParams.put("out_trade_no", outerTradeNo);
@@ -85,7 +91,7 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
             // 调用微信下单
             String jsonStr = wxService.createWxPayOrder(xml);
             Map<String, String> map = WeixinPayUtil.doXMLParse(jsonStr);
-            LogUtil.info("微信支付商户订单号：{},返回结果：{}", busiNo, JSON.toJSONString(map));
+            LogUtil.info("微信支付商户订单号：{},返回结果：{}", JSON.toJSONString(map));
             String prepayId = "";
             String returnCode = map.get("return_code");
             String returnMsg = map.get("return_msg");
@@ -109,8 +115,8 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
                 result.put("returnMsg", returnMsg);
             }
             // 生成微信预订单
-            WxPublicPrepayBill wxPublicPrepayBill = new WxPublicPrepayBill(outerTradeNo, prepayId, partnerId, busiNo,
-                    notifyURL, redirectURL, openId, null, nonceStr, body, null, attach, null, total_fee, ip, null, null,
+            WxPublicPrepayBill wxPublicPrepayBill = new WxPublicPrepayBill(outerTradeNo, prepayId, null, null,
+                    null, redirectURL, openId, null, nonceStr, body, null, null, null, total_fee, ip, null, null,
                     null, WxPubTradeType.JSAPI.name(), null, null, null, returnCode, resultCode, null, null);
             // 预订单详情
             WxPublicPayDetail wxPublicPayDetail = new WxPublicPayDetail(outerTradeNo, returnCode, returnMsg, resultCode,
@@ -120,7 +126,7 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
             SortedMap<String, String> finalpackage = new TreeMap<String, String>();
             String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
             String packages = "prepay_id=" + prepayId;
-            finalpackage.put("appId", PayConstants.lzzymch_appid);
+            finalpackage.put("appId", PayConstants.mch_appid);
             finalpackage.put("timeStamp", timestamp);
             finalpackage.put("nonceStr", nonceStr);
             finalpackage.put("package", packages);
@@ -133,18 +139,26 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
             result.put("sign", finalsign);
             result.put("outerTradeNo", outerTradeNo);
         } catch (Exception e1) {
-            LogUtil.error("微信支付异常，商户订单号：{}，错误信息：{}", busiNo, e1.getMessage());
+            LogUtil.error("微信支付异常，商户订单号：{}，错误信息：{}", e1.getMessage());
             result.put("returnCode", SuccessFail.FAIL.name());
             result.put("returnMsg", "系统异常");
         }
         return result;
     }
 
-    private WxPublicPrepayBill findWxPublicPrepayByOuterTradeNo(String outerTradeNo) {
-        return null;
+
+    /**
+     * 通过订单号查询
+     * @param outerTradeNo
+     * @return
+     */
+    private  WxPublicPrepayBill findWxPublicPrepayByOuterTradeNo(String outerTradeNo) {
+        return wxPublicPrepayBillMapper.findWxPublicPrepayByOuterTradeNo(outerTradeNo);
     }
 
     private void insertWxPublicPrepayBill(WxPublicPrepayBill wxPublicPrepayBill, WxPublicPayDetail wxPublicPayDetail) {
+        wxPublicPrepayBillMapper.insert(wxPublicPrepayBill);
+        wxPublicPayDetailMapper.insert(wxPublicPayDetail);
     }
 
     @Override
@@ -235,16 +249,21 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
     }
 
     private void insertWxPublicPayDetail(WxPublicPayDetail wxPublicPayDetail) {
+        wxPublicPayDetailMapper.insert(wxPublicPayDetail);
     }
 
     private void updateWxPublicPayBill(WxPublicPayBill wxPublicPayBill, WxPublicPayDetail wxPublicPayDetail) {
+        wxPublicPayDetailMapper.updateByPrimaryKey(wxPublicPayDetail);
+        wxPublicPayBillMapper.updateByPrimaryKey(wxPublicPayBill);
     }
 
     private void insertWxPublicPayBill(WxPublicPayBill wxPublicPayBill, WxPublicPayDetail wxPublicPayDetail) {
+        wxPublicPayDetailMapper.insert(wxPublicPayDetail);
+        wxPublicPayBillMapper.insert(wxPublicPayBill);
     }
 
     private WxPublicPayBill findWxPublicPayByTradeno(String outerTradeNo) {
-        return null;
+        return wxPublicPayBillMapper.findWxPublicPayByTradeno(outerTradeNo);
     }
 
     /**
@@ -257,7 +276,7 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
         String sign = resultMap.get("sign");
         resultMap.remove("sign");
         String mapToStrSort = RequestUtil.MapToStrSort(resultMap);
-        String param = mapToStrSort + "&key=" + PayConstants.lzzypaysign;
+        String param = mapToStrSort + "&key=" + PayConstants.paysign;
         String signEnd = DigestUtils.md5(param).toUpperCase();
         if (sign.equals(signEnd)) {
             return true;
@@ -297,8 +316,8 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
             String nonce_str = UUIDUtils.getUUID();
             SortedMap<String, String> storeMap = new TreeMap<String, String>();
             storeMap.put("out_trade_no", outerTradeNo); // 商户 后台的贸易单号
-            storeMap.put("appid", PayConstants.lzzymch_appid); // appid
-            storeMap.put("mch_id", PayConstants.lzzymchid); // 商户号
+            storeMap.put("appid", PayConstants.mch_appid); // appid
+            storeMap.put("mch_id", PayConstants.mchid); // 商户号
             storeMap.put("nonce_str", nonce_str); // 随机数
             String sign = WeixinPayUtil.createSign(storeMap);
 
