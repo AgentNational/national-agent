@@ -56,7 +56,7 @@ public class WeiXinController {
 	@RequestMapping(value = "/wxNotice" , method = RequestMethod.POST)
 	public @ResponseBody
     void wxNoticePost(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		logger.info("wfsdjbgfkjgnfdk===============");
+		logger.info("微信推送消息开始。。");
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter printWriter = response.getWriter();
 		try {

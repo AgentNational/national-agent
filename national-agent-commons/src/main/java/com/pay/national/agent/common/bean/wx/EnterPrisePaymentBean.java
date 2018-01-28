@@ -141,7 +141,7 @@ public class EnterPrisePaymentBean {
         // 除去数组中的空值和签名参数
         Map<String, String> sPara = paraFilter(paramTemp);
         String prestr = createLinkString(sPara); // 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
-        String key = "&key=" + PayConstants.lzzypaysign; // 商户支付密钥
+        String key = "&key=" + PayConstants.paysign; // 商户支付密钥
         String mysign = com.pay.national.agent.common.utils.DigestUtils.md5(prestr + key).toUpperCase();
         return mysign;
     }

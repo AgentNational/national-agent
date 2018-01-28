@@ -82,7 +82,7 @@ public class WeixinPayUtil {
                 sb.append(k + "=" + v + "&");
             }
         }
-        sb.append("key=" + PayConstants.lzzypaysign);
+        sb.append("key=" + PayConstants.paysign);
         String sign = DigestUtils.md5(sb.toString()).toUpperCase();
         return sign;
 
