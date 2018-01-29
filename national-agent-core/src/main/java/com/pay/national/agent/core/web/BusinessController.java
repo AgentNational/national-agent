@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * 代理业务
@@ -21,6 +22,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class BusinessController {
     @Autowired
     private BusinessService businessService;
+    private Page<BusinessOrder> page = new Page<>();
+
+    /**
+     * 代理业务列表
+     * @param parentCode 父业务编码
+     * @return
+     */
+   /* @RequestMapping("/bussList")
+    public String businessList(String parentCode){
+        LogUtil.info("获取代理业务列表 parentCode={}",parentCode);
+        return businessService.businessList(parentCode);
+    }*/
 
     /**
      * 创建订单
@@ -40,12 +53,12 @@ public class BusinessController {
      * @param parentBusinessCode 父业务编码
      * @return
      */
-    public String orders(String userNo,String parentBusinessCode,Integer pageIndex){
-        LogUtil.info("Con 查询订单 userNo={},parentBusinessCode={},pageIndex={}",userNo,parentBusinessCode,pageIndex);
-        Page<BusinessOrder> page = new Page<>();
-        page.setCurrentPage(pageIndex == null?1:pageIndex);
-        String result = businessService.orders(userNo,parentBusinessCode,page);
-        LogUtil.info("Con 查询订单 return userNo={},parentBusinessCode={},pageIndex={},result={}",userNo,parentBusinessCode,pageIndex,result);
+    @RequestMapping(value = "/orders",method = RequestMethod.POST)
+    public String orders(String userNo,String parentBusinessCode,Integer page){
+        LogUtil.info("Con 查询订单 userNo={},parentBusinessCode={},page={}",userNo,parentBusinessCode,page);
+        this.page.setCurrentPage(page == null?1:page);
+        String result = businessService.orders(userNo,parentBusinessCode,this.page);
+        LogUtil.info("Con 查询订单 return userNo={},parentBusinessCode={},page={},result={}",userNo,parentBusinessCode,page,result);
         return result;
     }
 }
