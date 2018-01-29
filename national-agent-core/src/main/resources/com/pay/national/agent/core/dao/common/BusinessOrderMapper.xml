@@ -19,9 +19,15 @@
     <result column="last_update_time" property="lastUpdateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, optimistic, user_no, business_name, business_code, parent_business_code, status, 
-    customer_name, customer_phone, reward_amount, trans_amount, partner_business_name, 
+    id, optimistic, user_no, business_name, business_code, parent_business_code, status,
+    customer_name, customer_phone, reward_amount, trans_amount, partner_business_name,
     partner_business_no, create_time, last_update_time
+  </sql>
+
+  <sql id="Web_Column_List" >
+    id, business_name, business_code, parent_business_code, status,
+    customer_name, customer_phone, reward_amount, trans_amount, partner_business_name,
+    partner_business_no, create_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -217,7 +223,7 @@
   </select>
 
   <select id="findAllOrders" resultMap="BaseResultMap">
-    SELECT <include refid="Base_Column_List"/>
+    SELECT <include refid="Web_Column_List"/>
     FROM business_order
     WHERE user_no = #{userNo,jdbcType=VARCHAR}
     AND  parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}

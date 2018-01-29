@@ -19,6 +19,11 @@
     id, optimistic, account_no, amount, user_no, business_code, parent_business_code,
     status, symbol, create_time, last_update_time, wx_bill_no
   </sql>
+
+  <sql id="Web_Column_list" >
+    amount, business_code, parent_business_code, symbol, create_time, wx_bill_no
+  </sql>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select
     <include refid="Base_Column_List" />
@@ -172,4 +177,12 @@
       wx_bill_no = #{wxBillNo,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="findAllHistory" resultMap="BaseResultMap">
+    SELECT <include refid="Web_Column_list"/>
+    FROM  account_history
+    WHERE user_no = #{userNo,jdbcType=VARCHAR}
+    AND status = 'ENABLE'
+    ORDER BY create_time desc
+  </select>
 </mapper>

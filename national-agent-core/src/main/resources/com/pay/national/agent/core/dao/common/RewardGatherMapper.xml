@@ -127,10 +127,11 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
- <select id="selectByUser" resultMap="BaseResultMap">
-  SELECT <include refid="Base_Column_List"/>
+ <select id="selectByUser" resultType="java.util.Map">
+  SELECT parent_business_code,sum(total_amount) as amount
   FROM reward_gather
-  WHERE USER_NO = #{userNo,jdbcType=VARCHAR}
+  GROUP BY user_no,parent_business_code
+  HAVING user_no = #{userNo,jdbcType=VARCHAR}
 </select>
 
   <select id="selectByBusiness" resultMap="BaseResultMap">

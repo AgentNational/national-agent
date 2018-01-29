@@ -44,39 +44,6 @@ public class BusinessServiceImpl implements BusinessService{
     private BusinessRewardRuleMapper businessRewardRuleMapper;
 
     /**
-     * 代理业务列表
-     * @param parentCode 父业务编码
-     * @return
-     */
-    /*@Override
-    public String businessList(String parentCode){
-        ReturnBean<List<Map<String,Object>>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
-        try {
-            List<AgentBusiness> businesses = agentBusinessMapper.selectByBusiness(parentCode);
-            if(businesses != null && businesses.size() > 0){
-                List<Map<String,Object>> list = new ArrayList<>();
-                for (AgentBusiness business:businesses) {
-                    Map<String,Object> businessMap = new HashMap<>();
-                    BeanUtils.applyIf(businessMap,business);
-                    List<BusinessExpantion> expantions = businessExpantionMapper.selectByBusiness(business.getChildBusinessCode());
-                    if(expantions != null && expantions.size() > 0){
-                        for (BusinessExpantion expantion:expantions) {
-                            businessMap.put(expantion.getColumnCode(),expantion.getColumnValue());
-                        }
-                    }
-                    list.add(businessMap);
-                }
-                returnBean.setData(list);
-            }
-        } catch (Exception e) {
-            LogUtil.error("获取代理业务列表异常 parentCode={},e={}",parentCode,e);
-            returnBean.setCode(RetCodeConstants.ERROR);
-            returnBean.setMsg(BUSINESS_LIST_ERR);
-        }
-        return JSONUtils.alibabaJsonString(returnBean);
-    }*/
-
-    /**
      * 创建订单
      * @param order
      * @return

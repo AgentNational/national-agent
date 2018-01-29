@@ -144,7 +144,7 @@
   </update>
 
   <select id="group1" resultMap="GatherMap">
-    SELECT user_no,DATE_FORMAT(`day`,'%Y-%m-%d') as day1,sum(total_amount) as amount
+    SELECT DATE_FORMAT(`day`,'%m-%d') as day1,sum(total_amount) as amount
     FROM reward_gather_day
     GROUP BY user_no,`day`
     HAVING user_no = #{userNo,jdbcType=VARCHAR}
@@ -158,7 +158,7 @@
   </select>
 
   <select id="group2" resultMap="GatherMap">
-    SELECT user_no,DATE_FORMAT(`day`,'%Y-%m-%d') as day1,sum(total_amount) as amount
+    SELECT DATE_FORMAT(`day`,'%m-%d') as day1,sum(total_amount) as amount
     FROM reward_gather_day
     GROUP BY user_no,`day`,parent_business_code
     HAVING user_no = #{userNo,jdbcType=VARCHAR}

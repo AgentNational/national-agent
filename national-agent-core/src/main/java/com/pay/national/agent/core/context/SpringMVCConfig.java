@@ -124,21 +124,21 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 	public void addInterceptors(InterceptorRegistry registry) {
 		//微信登录授权拦截器
 		registry.addInterceptor(oAuth2AccessTokenInterceptor()).addPathPatterns("/**");
-		// http前置请求拦截器
-		registry.addInterceptor(new CommonHttpRequestInterceptor()).addPathPatterns("/**")
-				.excludePathPatterns("/file/**")
-				.excludePathPatterns("/web/**")
-				.excludePathPatterns("/weixinEvent/**")
-				.excludePathPatterns("/wxMenu/**")
-				.excludePathPatterns("/weiXin/**");
+		/*// http前置请求拦截器
+		registry.addInterceptor(new CommonHttpRequestInterceptor()).addPathPatterns("*//**")
+				.excludePathPatterns("/file*//**")
+				.excludePathPatterns("/web*//**")
+				.excludePathPatterns("/weixinEvent*//**")
+				.excludePathPatterns("/wxMenu*//**")
+				.excludePathPatterns("/weiXin*//**");
 		// 公共参数拦截器
-		registry.addInterceptor(new ValidateInterceptor()).addPathPatterns("/**")
-				.excludePathPatterns("/web/**")
-				.excludePathPatterns("/wxMenu/**");
+		registry.addInterceptor(new ValidateInterceptor()).addPathPatterns("*//**")
+				.excludePathPatterns("/web*//**")
+				.excludePathPatterns("/wxMenu*//**");
 		//登录状态校验拦截器
-		registry.addInterceptor(new LoginStatusInterceptor()).addPathPatterns("/**")
-		.excludePathPatterns("/web/**")
-		.excludePathPatterns("/file/**")
+		registry.addInterceptor(new LoginStatusInterceptor()).addPathPatterns("*//**")
+		.excludePathPatterns("/web*//**")
+		.excludePathPatterns("/file*//**")
 		.excludePathPatterns("/user/register")
 		.excludePathPatterns("/user/login")
 		.excludePathPatterns("/user/sendCheckCode")
@@ -149,11 +149,11 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 		.excludePathPatterns("/creditCard/transact")
 		.excludePathPatterns("/appAdvertiseInfo/getAppAdVertiseInfo")
 		.excludePathPatterns("/appVersion/versionCheck")
-		.excludePathPatterns("/weixinEvent/**")
-		.excludePathPatterns("/wxMenu/**")
-		.excludePathPatterns("/weiXin/**");
+		.excludePathPatterns("/weixinEvent*//**")
+		.excludePathPatterns("/wxMenu*//**")
+		.excludePathPatterns("/weiXin*//**");
 
-
+*/
 		super.addInterceptors(registry);
 	}
 
