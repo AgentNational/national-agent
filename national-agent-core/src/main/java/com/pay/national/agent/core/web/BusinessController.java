@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * 代理业务
@@ -39,6 +40,7 @@ public class BusinessController {
      * @param order
      * @return
      */
+    @RequestMapping(value = "/createOrder",method = RequestMethod.POST)
     public String createOrder(BusinessOrder order){
         LogUtil.info("Con 创建信用卡业务订单 order={}",order);
         String result = businessService.createOrder(order);
@@ -52,6 +54,7 @@ public class BusinessController {
      * @param parentBusinessCode 父业务编码
      * @return
      */
+    @RequestMapping(value = "/orders",method = RequestMethod.POST)
     public String orders(String userNo,String parentBusinessCode,Integer page){
         LogUtil.info("Con 查询订单 userNo={},parentBusinessCode={},page={}",userNo,parentBusinessCode,page);
         this.page.setCurrentPage(page == null?1:page);

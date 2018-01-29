@@ -38,11 +38,12 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into business_order (optimistic, user_no, business_name, 
-      business_code, parent_business_code, status, 
+      business_code, parent_business_code,
+    `status`,
       customer_name, customer_phone, reward_amount, 
       trans_amount, partner_business_name, partner_business_no, 
       create_time, last_update_time)
-    values (0, #{businessName,jdbcType=VARCHAR},
+    values (0,#{userNo,jdbcType=VARCHAR}, #{businessName,jdbcType=VARCHAR},
       #{businessCode,jdbcType=VARCHAR}, #{parentBusinessCode,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
       #{customerName,jdbcType=VARCHAR}, #{customerPhone,jdbcType=VARCHAR}, #{rewardAmount,jdbcType=DOUBLE}, 
       #{transAmount,jdbcType=DOUBLE}, #{partnerBusinessName,jdbcType=VARCHAR}, #{partnerBusinessNo,jdbcType=VARCHAR}, 
