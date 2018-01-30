@@ -6,7 +6,12 @@ import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.core.dao.common.AccountHistoryMapper;
 import com.pay.national.agent.core.dao.common.AccountMapper;
 import com.pay.national.agent.core.service.common.AccountService;
+import com.pay.national.agent.core.service.wx.WxPublicPayService;
 import com.pay.national.agent.model.beans.ReturnBean;
+import com.pay.national.agent.model.beans.query.DepositParam;
+import com.pay.national.agent.model.beans.query.RemitParam;
+import com.pay.national.agent.model.beans.results.DepositBean;
+import com.pay.national.agent.model.beans.results.RemitBean;
 import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.entity.Account;
 import com.pay.national.agent.model.entity.AccountHistory;
@@ -26,7 +31,8 @@ public class AccountServiceImpl implements AccountService {
     private AccountMapper accountMapper;
     @Autowired
     private AccountHistoryMapper accountHistoryMapper;
-
+    @Autowired
+    private WxPublicPayService wxPublicPayService;
     /**
      * 用户信息
      * @param userNo 用户编号
@@ -55,5 +61,27 @@ public class AccountServiceImpl implements AccountService {
             returnBean.setMsg(RetCodeConstants.ERROR_QUERY_DESC);
         }
         return JSONUtils.alibabaJsonString(returnBean);
+    }
+
+
+    /**
+     * 入账
+     * @param param
+     * @return
+     */
+    @Override
+    public DepositBean deposit(DepositParam param) {
+        return null;
+    }
+
+    /**
+     * 出款
+     * @param param
+     * @return
+     */
+    @Override
+    public RemitBean remit(RemitParam param) {
+        //wxPublicPayService.createPayBill();
+        return null;
     }
 }

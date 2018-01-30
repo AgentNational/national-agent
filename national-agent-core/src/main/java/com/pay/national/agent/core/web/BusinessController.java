@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 代理业务
@@ -40,6 +41,8 @@ public class BusinessController {
      * @param order
      * @return
      */
+    @RequestMapping("/createOrder")
+    @ResponseBody
     public String createOrder(BusinessOrder order){
         LogUtil.info("Con 创建信用卡业务订单 order={}",order);
         String result = businessService.createOrder(order);
@@ -53,7 +56,7 @@ public class BusinessController {
      * @param parentBusinessCode 父业务编码
      * @return
      */
-    @RequestMapping(value = "/orders",method = RequestMethod.POST)
+    @RequestMapping(value = "/orders")
     public String orders(String userNo,String parentBusinessCode,Integer pageIndex){
         LogUtil.info("Con 查询订单 userNo={},parentBusinessCode={},pageIndex={}",userNo,parentBusinessCode,pageIndex);
         Page<BusinessOrder> page = new Page<>();
