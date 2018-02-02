@@ -17,6 +17,7 @@ public class RetCodeConstants {
 	/**异常*/
 	public static final String ERROR = "0001";
 	public static final String ERROR_DESC = "服务器维护中，请稍后重试";
+	public static final String ERROR_DESC_01 = "操作异常";
 	public static final String ERROR_QUERY_DESC = "查询异常";
 
 	/**失败*/

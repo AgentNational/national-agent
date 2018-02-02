@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 代理业务
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class BusinessController {
     @Autowired
     private BusinessService businessService;
-    private Page<BusinessOrder> page = new Page<>();
+
 
     /**
      * 代理业务列表
@@ -40,7 +41,8 @@ public class BusinessController {
      * @param order
      * @return
      */
-    @RequestMapping(value = "/createOrder",method = RequestMethod.POST)
+    @RequestMapping("/createOrder")
+    @ResponseBody
     public String createOrder(BusinessOrder order){
         LogUtil.info("Con 创建信用卡业务订单 order={}",order);
         String result = businessService.createOrder(order);
@@ -54,12 +56,13 @@ public class BusinessController {
      * @param parentBusinessCode 父业务编码
      * @return
      */
-    @RequestMapping(value = "/orders",method = RequestMethod.POST)
-    public String orders(String userNo,String parentBusinessCode,Integer page){
-        LogUtil.info("Con 查询订单 userNo={},parentBusinessCode={},page={}",userNo,parentBusinessCode,page);
-        this.page.setCurrentPage(page == null?1:page);
-        String result = businessService.orders(userNo,parentBusinessCode,this.page);
-        LogUtil.info("Con 查询订单 return userNo={},parentBusinessCode={},page={},result={}",userNo,parentBusinessCode,page,result);
+    @RequestMapping(value = "/orders")
+    public String orders(String userNo,String parentBusinessCode,Integer pageIndex){
+        LogUtil.info("Con 查询订单 userNo={},parentBusinessCode={},pageIndex={}",userNo,parentBusinessCode,pageIndex);
+        Page<BusinessOrder> page = new Page<>();
+        page.setCurrentPage(pageIndex == null?1:pageIndex);
+        String result = businessService.orders(userNo,parentBusinessCode,page);
+        LogUtil.info("Con 查询订单 return userNo={},parentBusinessCode={},pageIndex={},result={}",userNo,parentBusinessCode,pageIndex,result);
         return result;
     }
 }

@@ -9,14 +9,6 @@ import com.pay.national.agent.model.entity.BusinessOrder;
  * @date 2018/1/23
  */
 public interface BusinessService {
-
-    /**
-     * 代理业务列表
-     * @param parentCode 父业务编码
-     * @return
-     */
-    /*String businessList(String parentCode);*/
-
     /**
      * 创建订单
      * @param order

@@ -1,6 +1,8 @@
 package com.pay.national.agent.core.context;
 
 import com.pay.commons.web.springmvc.handler.SimpleForwardHttpRequestHandler;
+import com.pay.national.agent.core.interceptor.CommonHttpRequestInterceptor;
+import com.pay.national.agent.core.interceptor.LoginStatusInterceptor;
 import com.pay.national.agent.core.interceptor.Oauth2AccessTokenInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,7 +22,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -131,17 +132,17 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 	public void addInterceptors(InterceptorRegistry registry) {
 		//微信登录授权拦截器
 		registry.addInterceptor(oAuth2AccessTokenInterceptor()).addPathPatterns("/**");
-		// http前置请求拦截器
-		/*registry.addInterceptor(new CommonHttpRequestInterceptor()).addPathPatterns("/**")
-				.excludePathPatterns("/file/**")
-				.excludePathPatterns("/web/**")
-				.excludePathPatterns("/weixinEvent/**")
-				.excludePathPatterns("/wxMenu/**")
-				.excludePathPatterns("/weiXin/**");*/
+		/*// http前置请求拦截器
+		registry.addInterceptor(new CommonHttpRequestInterceptor()).addPathPatterns("*//**")
+				.excludePathPatterns("/file*//**")
+				.excludePathPatterns("/web*//**")
+				.excludePathPatterns("/weixinEvent*//**")
+				.excludePathPatterns("/wxMenu*//**")
+				.excludePathPatterns("/weiXin*//**");
 		// 公共参数拦截器
-		/*registry.addInterceptor(new ValidateInterceptor()).addPathPatterns("/**")
-				.excludePathPatterns("/web/**")
-				.excludePathPatterns("/wxMenu/**");
+		registry.addInterceptor(new ValidateInterceptor()).addPathPatterns("*//**")
+				.excludePathPatterns("/web*//**")
+				.excludePathPatterns("/wxMenu*//**");
 		//登录状态校验拦截器
 		registry.addInterceptor(new LoginStatusInterceptor()).addPathPatterns("/**")
 		.excludePathPatterns("/web/**")
@@ -158,7 +159,7 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 		.excludePathPatterns("/appVersion/versionCheck")
 		.excludePathPatterns("/weixinEvent/**")
 		.excludePathPatterns("/wxMenu/**")
-		.excludePathPatterns("/weiXin/**");*/
+		.excludePathPatterns("/weiXin/**");
 
 
 		super.addInterceptors(registry);

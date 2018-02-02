@@ -1,11 +1,9 @@
 package com.pay.national.agent.core.service.common.impl;
 
+import com.pay.commons.utils.lang.AmountUtils;
 import com.pay.national.agent.common.exception.NationalAgentException;
 import com.pay.national.agent.common.persistence.Page;
-import com.pay.national.agent.common.utils.BeanUtils;
-import com.pay.national.agent.common.utils.JSONUtils;
-import com.pay.national.agent.common.utils.LogUtil;
-import com.pay.national.agent.common.utils.StringUtils;
+import com.pay.national.agent.common.utils.*;
 import com.pay.national.agent.core.dao.common.BusinessOrderMapper;
 import com.pay.national.agent.core.dao.common.BusinessRewardRuleMapper;
 import com.pay.national.agent.core.service.common.BusinessService;
@@ -17,6 +15,7 @@ import com.pay.national.agent.model.entity.BusinessExpantion;
 import com.pay.national.agent.model.entity.BusinessOrder;
 import com.pay.national.agent.model.entity.BusinessRewardRule;
 import com.pay.national.agent.model.enums.BusinessCode;
+import com.pay.national.agent.model.enums.ParentBusinessCode;
 import com.pay.national.agent.model.enums.RewardType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,48 +32,14 @@ import java.util.*;
  */
 @Service
 public class BusinessServiceImpl implements BusinessService{
-    private static final String BUSINESS_LIST_ERR = "查询代理业务异常";
     private static final String ORDER_NULL_MSG = "不允许提交空订单";
     private static final String ORDER_INCOMPLETE_MSG = "订单缺失必要参数";
-    private static final String CUSTOMER_IS_REPEAT = "您已推荐过该用户";
+    private static final String CUSTOMER_IS_REPEAT = "该用户已被推荐过";
     private static final String BUSINESS_DISABLE_MSG = "该业务不存在或已下架";
     @Autowired
     private BusinessOrderMapper businessOrderMapper;
     @Autowired
     private BusinessRewardRuleMapper businessRewardRuleMapper;
-
-    /**
-     * 代理业务列表
-     * @param parentCode 父业务编码
-     * @return
-     */
-    /*@Override
-    public String businessList(String parentCode){
-        ReturnBean<List<Map<String,Object>>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
-        try {
-            List<AgentBusiness> businesses = agentBusinessMapper.selectByBusiness(parentCode);
-            if(businesses != null && businesses.size() > 0){
-                List<Map<String,Object>> list = new ArrayList<>();
-                for (AgentBusiness business:businesses) {
-                    Map<String,Object> businessMap = new HashMap<>();
-                    BeanUtils.applyIf(businessMap,business);
-                    List<BusinessExpantion> expantions = businessExpantionMapper.selectByBusiness(business.getChildBusinessCode());
-                    if(expantions != null && expantions.size() > 0){
-                        for (BusinessExpantion expantion:expantions) {
-                            businessMap.put(expantion.getColumnCode(),expantion.getColumnValue());
-                        }
-                    }
-                    list.add(businessMap);
-                }
-                returnBean.setData(list);
-            }
-        } catch (Exception e) {
-            LogUtil.error("获取代理业务列表异常 parentCode={},e={}",parentCode,e);
-            returnBean.setCode(RetCodeConstants.ERROR);
-            returnBean.setMsg(BUSINESS_LIST_ERR);
-        }
-        return JSONUtils.alibabaJsonString(returnBean);
-    }*/
 
     /**
      * 创建订单
@@ -83,15 +48,21 @@ public class BusinessServiceImpl implements BusinessService{
      */
     @Override
     public String createOrder(BusinessOrder order) {
-        ReturnBean<Object> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
-        checkOrder(order);
-       BusinessOrder dbOrder =  businessOrderMapper.selectByUser(order.getBusinessCode(),order.getCustomerPhone());
-       if(dbOrder == null || StatusConstants.DELETE.equals(dbOrder.getStatus())){
-          initOrder(order);
-       }else{
-           returnBean.setCode(RetCodeConstants.FAIL);
-           returnBean.setMsg(CUSTOMER_IS_REPEAT);
-       }
+       ReturnBean<Object> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
+        try {
+            checkOrder(order);
+            BusinessOrder dbOrder =  businessOrderMapper.selectByUser(order.getBusinessCode(),order.getCustomerPhone());
+            if(dbOrder == null || StatusConstants.DELETE.equals(dbOrder.getStatus())){
+               initOrder(order);
+            }else{
+                returnBean.setCode(RetCodeConstants.FAIL);
+                returnBean.setMsg(CUSTOMER_IS_REPEAT);
+            }
+        } catch (Exception e) {
+            LogUtil.error("创建订单异常 order={}",order,e);
+            returnBean.setCode(RetCodeConstants.ERROR);
+            returnBean.setMsg(RetCodeConstants.ERROR_DESC_01);
+        }
         return JSONUtils.alibabaJsonString(returnBean);
     }
 
@@ -102,44 +73,31 @@ public class BusinessServiceImpl implements BusinessService{
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     private void initOrder(BusinessOrder order) {
         BusinessCode businessCode = BusinessCode.valueOf(order.getBusinessCode());
-        switch (businessCode){
-            case XINGYE:
-            case PUFA:
-            case PINGAN:
-                Double rewardAmount = calculateRewardAmount(order);
-                order.setRewardAmount(rewardAmount);
-                order.setStatus("INIT");
-                order.setCreateTime(new Date());
-                break;
-            default:
-                break;
-        }
-        businessOrderMapper.insert(order);
-    }
-
-
-    /**
-     * 计算奖励金额
-     * @param order 订单
-     * @return
-     */
-    private Double calculateRewardAmount(BusinessOrder order) {
-        Double rewardAmount = null;
         BusinessRewardRule rule = businessRewardRuleMapper.selectByBusiness(order.getBusinessCode());
         if(rule == null || !StatusConstants.ENABLE.equals(rule.getStatus())){
             throw new NationalAgentException(RetCodeConstants.FAIL,BUSINESS_DISABLE_MSG);
         }
-        RewardType rewardType = RewardType.valueOf(rule.getRewardType());
-        switch (rewardType){
-            case AMOUNT:
-                rewardAmount = rule.getRewardAmount();
+        switch (businessCode){
+            case XINGYE:
+            case PUFA:
+            case PINGAN:
+                order.setParentBusinessCode(ParentBusinessCode.CREDIT_CARD.name());
+                order.setRewardAmount(rule.getRewardAmount());
                 break;
-            case PROPORTION:
+            case CXF:
+                order.setParentBusinessCode(ParentBusinessCode.POS.name());
+                order.setTransAmount(0.00);
+            case YIPIAO:
+                order.setParentBusinessCode(ParentBusinessCode.TICKET.name());
+                order.setRewardAmount(rule.getRewardAmount());
                 break;
             default:
                 break;
         }
-        return rewardAmount;
+        order.setBusinessName(businessCode.getBusienssName());
+        order.setStatus("INIT");
+        order.setCreateTime(new Date());
+        businessOrderMapper.insert(order);
     }
 
     /**
@@ -151,7 +109,14 @@ public class BusinessServiceImpl implements BusinessService{
             throw new NationalAgentException(RetCodeConstants.FAIL,ORDER_NULL_MSG);
         }
 
-        if(StringUtils.isBlank(order.getBusinessCode()) || StringUtils.isBlank(order.getParentBusinessCode()) ||
+        try {
+            BusinessCode businessCode = BusinessCode.valueOf(order.getBusinessCode());
+        } catch (IllegalArgumentException e) {
+            LogUtil.error("创建订单 业务编码不正确 businessCode={}",order.getBusinessCode());
+            throw new NationalAgentException(RetCodeConstants.FAIL,BUSINESS_DISABLE_MSG);
+        }
+
+        if(StringUtils.isBlank(order.getBusinessCode()) || StringUtils.isBlank(order.getCustomerName()) ||
                 StringUtils.isBlank(order.getCustomerPhone()) || StringUtils.isBlank(order.getUserNo())){
             throw new NationalAgentException(RetCodeConstants.FAIL,ORDER_INCOMPLETE_MSG);
         }

@@ -1,7 +1,9 @@
 package com.pay.national.agent.core.service.common.impl;
 
 import com.pay.national.agent.common.exception.NationalAgentException;
-import com.pay.national.agent.common.utils.*;
+import com.pay.national.agent.common.utils.DateUtil;
+import com.pay.national.agent.common.utils.JSONUtils;
+import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.core.bean.result.DayRewardGatherBean;
 import com.pay.national.agent.core.bean.result.MonthRewardGatherBean;
 import com.pay.national.agent.core.bean.result.RewardGatherBean;
@@ -21,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -55,41 +58,132 @@ public class RewardServiceImpl implements RewardService {
     @Override
     public String rewardGather(String userNo,ParentBusinessCode parentBusinessCode) {
         ReturnBean<RewardGatherBean> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
+        RewardGatherBean gatherBean = new RewardGatherBean();
+        List<RewardGatherBean.RewardGatherDetailBean> details = new ArrayList<>();
         try {
-            List<RewardGather> list  = rewardGatherMapper.selectByUser(userNo);
-            if(list != null && list.size() >0){
-                RewardGatherBean gatherBean = new RewardGatherBean();
-                List<RewardGatherBean.RewardGatherDetailBean> details = new ArrayList<>();
-                gatherBean.setUserNo(userNo);
-                Double totalAmount = 0.00;
-                for (RewardGather gather : list) {
-                    if(parentBusinessCode == null){
+            List<Map<String,Object>> list  = rewardGatherMapper.selectByUser(userNo);
+            Double totalAmount = 0.00;
+
+            //查询总收益
+            if(parentBusinessCode == null){
+                if(list != null && list.size() >0){
+                    for (Map<String, Object> gather :list) {
+                        Double amount = (double)gather.get("amount");
+                        String parentBusinessCode1 = gather.get("parent_business_code").toString();
                         RewardGatherBean.RewardGatherDetailBean gatherDetailBean =
                                 gatherBean.new RewardGatherDetailBean();
-                        gatherDetailBean.setAmount(gather.getTotalAmount());
-                        gatherDetailBean.setParentBusinessCode(gather.getParentBusinessCode());
+                        gatherDetailBean.setAmount(amount);
+                        gatherDetailBean.setParentBusinessCode(parentBusinessCode1);
                         details.add(gatherDetailBean);
-                    }else{
-                        if (parentBusinessCode.name().equals(gather.getParentBusinessCode())){
+                        totalAmount += amount;
+                    }
+                }
+                defaultRewardGather(gatherBean,details);
+            }else{
+            //查询单业务收益
+                boolean hasBusiness = false;
+                if(list != null && list.size() >0){
+                    for (Map<String, Object> gather :list) {
+                        Double amount = (double)gather.get("amount");
+                        String parentBusinessCode1 = gather.get("parent_business_code").toString();
+                        if(parentBusinessCode.name().equals(parentBusinessCode1)){
                             RewardGatherBean.RewardGatherDetailBean gatherDetailBean =
                                     gatherBean.new RewardGatherDetailBean();
-                            gatherDetailBean.setAmount(gather.getTotalAmount());
-                            gatherDetailBean.setParentBusinessCode(gather.getParentBusinessCode());
+                            gatherDetailBean.setAmount(amount);
+                            gatherDetailBean.setParentBusinessCode(parentBusinessCode.name());
                             details.add(gatherDetailBean);
+                            hasBusiness = true;
                         }
+                        totalAmount += amount;
                     }
-                    totalAmount += gather.getTotalAmount();
                 }
-                gatherBean.setTotalAmount(totalAmount);
-                gatherBean.setDetails(details);
-                returnBean.setData(gatherBean);
+
+                if(!hasBusiness){
+                    RewardGatherBean.RewardGatherDetailBean gatherDetailBean =
+                            gatherBean.new RewardGatherDetailBean();
+                    gatherDetailBean.setAmount(0.00);
+                    gatherDetailBean.setParentBusinessCode(parentBusinessCode.name());
+                    details.add(gatherDetailBean);
+                }
             }
+            gatherBean.setTotalAmount(totalAmount);
+            gatherBean.setDetails(details);
+            returnBean.setData(gatherBean);
         } catch (Exception e) {
             LogUtil.error("查询奖励汇总信息异常 userNo={},parentBusinessCode={}",userNo,parentBusinessCode,e);
             returnBean.setCode(RetCodeConstants.ERROR);
             returnBean.setMsg(RetCodeConstants.ERROR_QUERY_DESC);
         }
         return JSONUtils.alibabaJsonString(returnBean);
+    }
+
+    public static void main(String[] args) {
+        RewardServiceImpl impl = new RewardServiceImpl();
+        RewardGatherBean gatherBean = new RewardGatherBean();
+        List<RewardGatherBean.RewardGatherDetailBean> details = new ArrayList<>();
+        impl.defaultRewardGather(gatherBean,details);
+    }
+
+    private void defaultRewardGather(RewardGatherBean gatherBean,List<RewardGatherBean.RewardGatherDetailBean> details){
+        boolean hasCreditCard = false;
+        boolean hasPos = false;
+        boolean hasTicket = false;
+        boolean hasNationalAgent = false;
+        for (RewardGatherBean.RewardGatherDetailBean detailBean:details) {
+            ParentBusinessCode match = ParentBusinessCode.valueOf(detailBean.getParentBusinessCode());
+            switch (match){
+                case CREDIT_CARD:
+                    hasCreditCard = true;
+                    break;
+                case NATIONAL_AGENT:
+                    hasNationalAgent = true;
+                    break;
+                case POS:
+                    hasPos = true;
+                    break;
+                case TICKET:
+                    hasTicket = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        //用户没有信用卡收益，新增一条金额为0的信用卡收益
+        if (!hasCreditCard){
+            RewardGatherBean.RewardGatherDetailBean gatherDetailBean =
+                    gatherBean.new RewardGatherDetailBean();
+            gatherDetailBean.setParentBusinessCode(ParentBusinessCode.CREDIT_CARD.name());
+            gatherDetailBean.setAmount(0.00);
+            details.add(gatherDetailBean);
+        }
+
+        //同上
+        if (!hasPos){
+            RewardGatherBean.RewardGatherDetailBean gatherDetailBean =
+                    gatherBean.new RewardGatherDetailBean();
+            gatherDetailBean.setParentBusinessCode(ParentBusinessCode.POS.name());
+            gatherDetailBean.setAmount(0.00);
+            details.add(gatherDetailBean);
+        }
+
+        //同上
+        if (!hasTicket){
+            RewardGatherBean.RewardGatherDetailBean gatherDetailBean =
+                    gatherBean.new RewardGatherDetailBean();
+            gatherDetailBean.setParentBusinessCode(ParentBusinessCode.TICKET.name());
+            gatherDetailBean.setAmount(0.00);
+            details.add(gatherDetailBean);
+        }
+
+        //同上
+        if (!hasNationalAgent){
+            RewardGatherBean.RewardGatherDetailBean gatherDetailBean =
+                    gatherBean.new RewardGatherDetailBean();
+            gatherDetailBean.setParentBusinessCode(ParentBusinessCode.NATIONAL_AGENT.name());
+            gatherDetailBean.setAmount(0.00);
+            details.add(gatherDetailBean);
+        }
     }
 
     /**
@@ -103,12 +197,25 @@ public class RewardServiceImpl implements RewardService {
     @Override
     public String gatherOfMonth(String userNo, ParentBusinessCode parentBusinessCode,Date startDate,Date endDate) {
         ReturnBean<List<MonthRewardGatherBean>> returnBean  = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
-        List<MonthRewardGatherBean> list = null;
+        List<MonthRewardGatherBean> list = new ArrayList<>();
         try {
             if(parentBusinessCode == null){
                  list = rewardGatherMonthMapper.group1(userNo,startDate,endDate);
             }else{
                  list = rewardGatherMonthMapper.group2(userNo,parentBusinessCode.name(),startDate,endDate);
+            }
+
+            //若没有奖励月汇总数据，返回相应月份金额为0的月汇总数据
+            if(list.size() == 0){
+                List<Date> dates = selectFirstDay(startDate,endDate);
+                if(dates.size() >0){
+                    for (Date day:dates) {
+                        MonthRewardGatherBean monthRewardGatherBean = new MonthRewardGatherBean();
+                        monthRewardGatherBean.setMonth(DateUtil.formatDate(day,"yyyy-MM"));
+                        monthRewardGatherBean.setAmount(0.00);
+                        list.add(monthRewardGatherBean);
+                    }
+                }
             }
             returnBean.setData(list);
         } catch (Exception e) {
@@ -117,6 +224,27 @@ public class RewardServiceImpl implements RewardService {
             returnBean.setMsg(RetCodeConstants.ERROR_QUERY_DESC);
         }
         return JSONUtils.alibabaJsonString(returnBean);
+    }
+
+    /**
+     * 遍历获取两个日期内的所有为1号的日期
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    private List<Date> selectFirstDay(Date startDate, Date endDate) {
+        int month = 0;
+        List<Date> dates = new ArrayList<>();
+        while (true){
+            Date date = DateUtil.getFirstDay(startDate, month);
+            if(date.after(endDate)){
+                break;
+            }else{
+                dates.add(date);
+                month++;
+            }
+        }
+        return dates;
     }
 
     /**
@@ -292,6 +420,4 @@ public class RewardServiceImpl implements RewardService {
         rewardRecordMapper.insert(rewardRecord);
         return rewardRecord;
     }
-
-
 }

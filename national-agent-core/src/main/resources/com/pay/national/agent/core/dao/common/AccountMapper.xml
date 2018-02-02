@@ -150,4 +150,10 @@
       last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="findByuser" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM account
+    WHERE user_no = #{userNo,jdbcType=VARCHAR}
+  </select>
 </mapper>

@@ -17,11 +17,18 @@
     <result column="partner_business_no" property="partnerBusinessNo" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="last_update_time" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="receive_address" property="receiveAddress" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, optimistic, user_no, business_name, business_code, parent_business_code, status, 
-    customer_name, customer_phone, reward_amount, trans_amount, partner_business_name, 
-    partner_business_no, create_time, last_update_time
+    id, optimistic, user_no, business_name, business_code, parent_business_code, status,
+    customer_name, customer_phone, reward_amount, trans_amount, partner_business_name,
+    partner_business_no, create_time, last_update_time,receive_address
+  </sql>
+
+  <sql id="Web_Column_List" >
+    id, business_name, business_code, parent_business_code, status,
+    customer_name, customer_phone, reward_amount, trans_amount, partner_business_name,
+    partner_business_no, create_time,receive_address
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -42,12 +49,12 @@
     `status`,
       customer_name, customer_phone, reward_amount, 
       trans_amount, partner_business_name, partner_business_no, 
-      create_time, last_update_time)
+      create_time, last_update_time,receive_address)
     values (0,#{userNo,jdbcType=VARCHAR}, #{businessName,jdbcType=VARCHAR},
       #{businessCode,jdbcType=VARCHAR}, #{parentBusinessCode,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
       #{customerName,jdbcType=VARCHAR}, #{customerPhone,jdbcType=VARCHAR}, #{rewardAmount,jdbcType=DOUBLE}, 
       #{transAmount,jdbcType=DOUBLE}, #{partnerBusinessName,jdbcType=VARCHAR}, #{partnerBusinessNo,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP})
+      #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP},#{receiveAddress,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.BusinessOrder" >
     <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
@@ -97,6 +104,9 @@
       <if test="lastUpdateTime != null" >
         last_update_time,
       </if>
+      <if test="receiveAddress != null" >
+        receive_address,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="optimistic != null" >
@@ -140,6 +150,9 @@
       </if>
       <if test="lastUpdateTime != null" >
         #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiveAddress != null" >
+        #{receiveAddress,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -188,6 +201,9 @@
       <if test="lastUpdateTime != null" >
         last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="receiveAddress != null" >
+        receive_address = #{receiveAddress,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -206,7 +222,8 @@
       partner_business_name = #{partnerBusinessName,jdbcType=VARCHAR},
       partner_business_no = #{partnerBusinessNo,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP}
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      receive_address = #{receiveAddress,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
@@ -218,7 +235,7 @@
   </select>
 
   <select id="findAllOrders" resultMap="BaseResultMap">
-    SELECT <include refid="Base_Column_List"/>
+    SELECT <include refid="Web_Column_List"/>
     FROM business_order
     WHERE user_no = #{userNo,jdbcType=VARCHAR}
     AND  parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}
