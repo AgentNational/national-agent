@@ -3,21 +3,17 @@
  */
 package com.pay.national.agent.core.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
-import com.pay.commons.cache.util.CacheUtils;
 import com.pay.commons.utils.lang.StringUtils;
 import com.pay.national.agent.common.utils.JSONUtils;
 import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.constants.Constants;
-import com.pay.national.agent.model.constants.RedisKeys;
 import com.pay.national.agent.model.constants.RetCodeConstants;
-import com.pay.national.agent.model.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 登录验证拦截器
@@ -46,14 +42,14 @@ public class LoginStatusInterceptor extends HandlerInterceptorAdapter {
 			return false;
 		}
 		//判断loginKey是否有效
-		User user = CacheUtils.get(RedisKeys.LOGIN_USER_INFO_PREFIX+loginKey, User.class);
+		/*User user = CacheUtils.get(RedisKeys.LOGIN_USER_INFO_PREFIX+loginKey, User.class);
 		if(user == null){
 			response.getWriter().write(JSONUtils.alibabaJsonString(new ReturnBean<Object>(RetCodeConstants.LOGIN_FAIL,RetCodeConstants.LOGIN_FAIL_DESC)));
 			setCrosResponse(response);
 			return false;
 		}else{
 			logger.info("interceptor LoginStatusInterceptor loginKey = {},userNo:{}", loginKey,user.getUserNo());
-		}
+		}*/
 		logger.info("interceptor LoginStatusInterceptor token = {},dataSign success ", loginKey);
 		return true;
 	}

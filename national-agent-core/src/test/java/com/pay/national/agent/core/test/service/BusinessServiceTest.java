@@ -22,8 +22,8 @@ public class BusinessServiceTest extends BaseTest {
         businessOrder.setParentBusinessCode("CREDIT_CARD");
         businessOrder.setBusinessCode("PINGAN");
         businessOrder.setBusinessName("平安银行信用卡");
-        businessOrder.setCustomerName("吴玉龙");
-        businessOrder.setCustomerPhone("18260497637");
+        businessOrder.setCustomerName("吴三桂");
+        businessOrder.setCustomerPhone("18260497636");
         String result = businessService.createOrder(businessOrder);
         LogUtil.info("method createOrderTest result={}",result);
     }
@@ -31,7 +31,7 @@ public class BusinessServiceTest extends BaseTest {
     @Test
     public void ordersTest(){
         Page<BusinessOrder> page = new Page<>();
-        page.setCurrentPage(2);
+        page.setCurrentPage(1);
         page.setShowCount(5);
         String result = businessService.orders("123455", "CREDIT_CARD", page);
         LogUtil.info("method ordersTest result={}",result);

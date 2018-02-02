@@ -1,12 +1,11 @@
 package com.pay.national.agent.portal.dao.common;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.pay.national.agent.common.persistence.Page;
 import com.pay.national.agent.model.entity.AppUser;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 public interface AppUserMapper {
     int deleteByPrimaryKey(Long id);

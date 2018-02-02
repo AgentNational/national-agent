@@ -66,9 +66,9 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
 
             Float totalFee = Float.valueOf(amount);
             // 总金额
-            Integer total_fee = Math.round(totalFee * 100);
+            Integer total_fee = totalFee.intValue();
             // 商品描述
-            String body = "卡友服务购";
+            String body = "全民代理";
             // 随机数
             String nonceStr = UUIDUtils.getUUID();
 

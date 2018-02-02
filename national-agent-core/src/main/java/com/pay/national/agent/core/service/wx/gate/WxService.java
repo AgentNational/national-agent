@@ -56,4 +56,17 @@ public interface WxService {
      * @see
      */
     String getWxPayOrder(String xml);
+
+    /**
+     * 获取js接口访问凭据
+     * @param accessToken
+     * @return
+     */
+    String getApiTicket(String accessToken);
+
+    /**
+     * 获取当前生效的apiTicket
+     * @return
+     */
+    String getEffectApiTicket();
 }

@@ -1,13 +1,17 @@
 package com.pay.national.agent.core.test.service;
 
 import com.alibaba.fastjson.JSON;
+import com.pay.national.agent.common.bean.wx.WxJssdkConfig;
 import com.pay.national.agent.common.constants.WeiXinConstant;
 import com.pay.national.agent.common.utils.HttpClientUtil;
+import com.pay.national.agent.core.service.wx.MenuInfoService;
 import com.pay.national.agent.core.service.wx.gate.WxService;
+import com.pay.national.agent.core.service.wx.impl.WxJssdkConfigMethod;
 import com.pay.national.agent.core.test.context.BaseTest;
 import com.pay.national.agent.model.beans.wx.FatherButton;
 import com.pay.national.agent.model.beans.wx.Menu;
 import com.pay.national.agent.model.beans.wx.SonButton;
+import com.pay.national.agent.model.entity.MenuInfo;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -19,14 +23,23 @@ public class WxserviceTest extends BaseTest{
     @Resource
     private WxService wxService;
 
+    @Resource
+    WxJssdkConfigMethod wxJssdkConfigMethod;
+
+    @Test
+    public void testGetConfig(){
+        WxJssdkConfig wxJssdkConfig = wxJssdkConfigMethod.getWxJssdkConfig("http://www.baidu.com");
+        System.out.println(JSON.toJSONString(wxJssdkConfig));
+    }
+
     @Test
     public void test(){
         String result = wxService.getEffectAccessToken(WeiXinConstant.APP_ID, WeiXinConstant.APP_SECRET);
 		System.out.println(result);
-        String content = "{\"action_name\": \"QR_LIMIT_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \"sfgerjgreu\"}}}";
-        System.out.println(content);
-        String ticket = wxService.createQRCode(result,content);
-        System.out.println(ticket);
+//        String content = "{\"action_name\": \"QR_LIMIT_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \"sfgerjgreu\"}}}";
+//        System.out.println(content);
+//        String ticket = wxService.createQRCode(result,content);
+//        System.out.println(ticket);
 
     }
 
@@ -37,11 +50,41 @@ public class WxserviceTest extends BaseTest{
         String urlString = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token="
                 + ACCESS_TOKEN;
         try {
-            String result = HttpClientUtil.sendPost(urlString,getMenuJson());
+            String result = HttpClientUtil.sendPost(urlString,getDbMenuJson());
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Resource
+    private MenuInfoService menuInfoService;
+
+    public String getDbMenuJson(){
+        //查找所有的父菜单
+        Menu menu = new Menu();// 菜单类
+        List<FatherButton> fatherButtons = new ArrayList<>();
+        List<MenuInfo> fatherMenus = menuInfoService.findAllFatherMenu();
+        //遍历父菜单
+        for(MenuInfo menuInfo : fatherMenus){
+            List<MenuInfo> childMenuInfos = menuInfoService.findChildMenuInfo(menuInfo.getId());
+            List<SonButton> sonButtons = new ArrayList<>();
+            for(MenuInfo childMenuInfo : childMenuInfos){
+                SonButton sonButton = new SonButton();
+                sonButton.setName(childMenuInfo.getMenuName());
+                sonButton.setType(childMenuInfo.getMenuType());
+                sonButton.setUrl(childMenuInfo.getWxMenuUrl());
+            }
+            FatherButton fatherButton = new FatherButton();
+            fatherButton.setName(menuInfo.getMenuName());
+            fatherButton.setType(menuInfo.getMenuType());
+            fatherButton.setUrl(menuInfo.getWxMenuUrl());
+            fatherButton.setSonButtons(sonButtons);
+            fatherButtons.add(fatherButton);
+        }
+        menu.setFatherButtons(fatherButtons);
+        System.out.println(JSON.toJSONString(fatherButtons));
+        return JSON.toJSONString(menu);
     }
 
     public String getMenuJson() {

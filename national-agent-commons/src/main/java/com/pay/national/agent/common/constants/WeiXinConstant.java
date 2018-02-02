@@ -7,12 +7,20 @@ public class WeiXinConstant {
     public static final String COMMON_ACCESS_TOKEN_CACHE ="wx_access_token";//微信 access_token在缓存中的key
     public static final String APP_ID ="wx7e3931abd0f15feb";
     public static final String APP_SECRET ="fc410a455971f8ebef1262ecacf53ed4";
+    //微信公众号配置
+//    public static final String APP_ID ="wx9e242df43f4eb301";
+//    public static final String APP_SECRET ="7bedbf2b2ca2c380e5a891096764f9a7";
     public static final String TOKEN = "liuzhenhui";
 
     /**
      * 微信用户同意授权，获取code
      */
     public static final String OAUTH2_AUTHORIZE_URL = "https://open.weixin.qq.com/connect/oauth2/authorize";
+
+    /**
+     * 获取jsApiTicketUrl
+     */
+    public static final String jsApiTicketUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
 
     /**
      * 获取授权网页access_token
@@ -26,6 +34,8 @@ public class WeiXinConstant {
 
     /** 永久二维码 **/
     public static final String qrcodeUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=";// 永久二维码
+
+    public static final String ticketUrl= "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=";
 
     /**
      * 获取访问微信接口的token地址

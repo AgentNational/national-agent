@@ -1,10 +1,10 @@
 package com.pay.national.agent.portal.service.common;
 
-import java.util.List;
-import java.util.Map;
-
 import com.pay.national.agent.common.persistence.Page;
 import com.pay.national.agent.model.entity.AppUser;
+
+import java.util.List;
+import java.util.Map;
 
 public interface AppUserService {
 

@@ -1,16 +1,5 @@
 package com.pay.national.agent.portal.web;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.pay.national.agent.common.persistence.Page;
 import com.pay.national.agent.common.utils.JSONUtils;
 import com.pay.national.agent.common.utils.LogUtil;
@@ -18,6 +7,15 @@ import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.entity.AppUser;
 import com.pay.national.agent.portal.service.common.AppUserService;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 用户相关运营功能
@@ -35,7 +33,7 @@ public class AppUserController {
 	/**
 	 * @Description app用户查询跳转
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	@RequestMapping("/toAppUserQuery.action")
 	public ModelAndView toAppUserQuery(){
@@ -48,7 +46,7 @@ public class AppUserController {
 	 * @Description app菜单查询（分页）
 	 * @param queryParams
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	@RequestMapping("/appUserQuery.action")
 	public ModelAndView appUserQuery(@RequestParam Map<String, Object> queryParams){
@@ -68,7 +66,7 @@ public class AppUserController {
 	/**
 	 * @Description app用户编辑跳转
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	@RequestMapping("/toAppUserEdit.action")
 	public ModelAndView toAppUserEdit(@RequestParam("userId") String userId){
@@ -84,7 +82,7 @@ public class AppUserController {
 	 * @param appMenu
 	 * @param quertParams
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	@RequestMapping("/appUserEdit.action")
 	public ModelAndView appUserEdit(AppUser appUser , @RequestParam Map<String , Object> queryParams){
@@ -102,7 +100,7 @@ public class AppUserController {
 	 * @param userId
 	 * @param status
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	@RequestMapping("/updateUserStatus.action")
 	public @ResponseBody String updateUserStatus(@RequestParam("userId")String userId,@RequestParam("status")String status){
@@ -115,7 +113,7 @@ public class AppUserController {
 	/**
 	 * @Description app用户添加跳转
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	@RequestMapping("/toAppUserAdd.action")
 	public ModelAndView toAppMenuAdd(){
@@ -129,7 +127,7 @@ public class AppUserController {
 	 * @param appMenu
 	 * @param queryParams
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	@RequestMapping("/appUserAdd.action")
 	public ModelAndView appUserAdd(AppUser appUser ,@RequestParam Map<String, Object> queryParams){
@@ -147,7 +145,7 @@ public class AppUserController {
 	 * @Description app用户授权跳转
 	 * @param menuId
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	@RequestMapping("/toAppUserAuthorize.action")
 	public ModelAndView toAppUserAuthorize(@RequestParam("userId") String userId){
@@ -194,7 +192,7 @@ public class AppUserController {
 	 * @param queryParams
 	 * @param meubId
 	 * @return
-	 * @see 需要参考的类或方法
+	 * @see
 	 */
 	@RequestMapping("/appUserAuthorize")
 	public ModelAndView appUserAuthorize(@RequestParam Map<String, Object> queryParams, @RequestParam("userId")String userId ,@RequestParam(value = "roleIds",required=false) String[] roleIds,@RequestParam("appRoleIds")String appRoleIds){
