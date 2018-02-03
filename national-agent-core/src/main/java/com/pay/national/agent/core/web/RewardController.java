@@ -50,10 +50,10 @@ public class RewardController {
         } catch (NationalAgentException e1) {
             result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(e1.getCode(),e1.getMessage()));
         } catch (Exception e){
-            LogUtil.error("Con 奖励汇总信息 error",e);
+            LogUtil.error("Con 奖励汇总信息 openId={},parentBusinessCode={}",openId,parentBusinessCode,e);
             result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01));
         }
-        LogUtil.info("Con 奖励汇总信息 return userNo={},result={}",wxUserInfo.getUserNo(),result);
+        LogUtil.info("Con 奖励汇总信息 return openId={},parentBusinessCode={},result={}",openId,parentBusinessCode,result);
         return result;
     }
 
@@ -77,10 +77,10 @@ public class RewardController {
         } catch (NationalAgentException e1) {
             result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(e1.getCode(),e1.getMessage()));
         } catch (Exception e){
-            LogUtil.error("Con 近三个月的奖励月汇总 error",e);
+            LogUtil.error("Con 近三个月的奖励月汇总 openId={},parentBusinessCode={}",openId,parentBusinessCode,e);
             result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01));
         }
-        LogUtil.info("Con 近三个月的奖励月汇总 return userNo={},parentBusinessCode={},result={}",wxUserInfo.getUserNo(),parentBusinessCode,result);
+        LogUtil.info("Con 近三个月的奖励月汇总 return openId={},parentBusinessCode={},result={}",openId,parentBusinessCode,result);
         return result;
     }
 
@@ -104,10 +104,10 @@ public class RewardController {
         } catch (NationalAgentException e1) {
             result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(e1.getCode(),e1.getMessage()));
         } catch (Exception e){
-            LogUtil.error("Con 奖励日汇总信息 error",e);
+            LogUtil.error("Con 奖励日汇总信息 error openId={},month={},parentBusinessCode={}",openId,month,parentBusinessCode,e);
             result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01));
         }
-        LogUtil.info("Con 奖励日汇总信息 return userNo={},month={},parentBusinessCode={},result={}",wxUserInfo.getUserNo(),month,parentBusinessCode,result);
+        LogUtil.info("Con 奖励日汇总信息 return openId={},month={},parentBusinessCode={},result={}",openId,month,parentBusinessCode,result);
         return result;
     }
 }

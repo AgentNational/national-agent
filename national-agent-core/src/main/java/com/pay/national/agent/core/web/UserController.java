@@ -1,6 +1,7 @@
 package com.pay.national.agent.core.web;
 
 import com.pay.commons.utils.lang.AmountUtils;
+import com.pay.national.agent.common.exception.NationalAgentException;
 import com.pay.national.agent.common.utils.JSONUtils;
 import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.core.service.common.AccountService;
@@ -55,6 +56,9 @@ public class UserController {
 			double balance = AmountUtils.subtract(subtract, account.getFrozenAmount());
 			map.put("balance",balance);
 			returnBean.setData(map);
+		} catch(NationalAgentException e1){
+			returnBean.setCode(e1.getCode());
+			returnBean.setMsg(e1.getMessage());
 		} catch (Exception e) {
 			LogUtil.error("Con 个人中心 error openId={}",openId,e);
 			returnBean.setCode(RetCodeConstants.ERROR);

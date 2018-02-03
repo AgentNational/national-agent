@@ -110,7 +110,7 @@ public class Oauth2AccessTokenInterceptor extends HandlerInterceptorAdapter{
 
                         try {
                             if (userInfoMap != null && null == userInfoMap.get("errcode")) {
-                                WxUserInfo wxUserInfo = wxUserInfoService.selectByOpenId(openId);
+                                WxUserInfo wxUserInfo = wxUserInfoService.selectUserInfoByOpenId(openId);
                                 if (wxUserInfo != null) {
                                     wxUserInfo.setOptimistic(wxUserInfo.getOptimistic()+1);
                                     wxUserInfo.setCountry(userInfoMap.get("country").toString());

@@ -42,14 +42,16 @@ public class AccountController {
      */
     @RequestMapping("/histories")
     @ResponseBody
-    public String accHistories(@RequestParam("openId")String openId,@RequestParam("businessCode")String businessCode, Integer pageIndex){
-        LogUtil.info("Con 账户历史记录 openId={},businessCode={},pageIndex={}",openId,businessCode,pageIndex);
+    public String accHistories(@RequestParam("openId")String openId,@RequestParam("businessCode")String businessCode, Integer pageIndex) {
+        LogUtil.info("Con 账户历史记录 openId={},businessCode={},pageIndex={}", openId, businessCode, pageIndex);
         String result = null;
         try {
             Page<AccountHistory> page = new Page<AccountHistory>();
-            page.setCurrentPage(pageIndex == null?1:pageIndex);
+            page.setCurrentPage(pageIndex == null ? 1 : pageIndex);
             WxUserInfo wxUserInfo = wxUserInfoService.find4Login(openId);
-            result = accountService.accHistories(wxUserInfo.getUserNo(),businessCode,page);
+            result = accountService.accHistories(wxUserInfo.getUserNo(), businessCode, page);
+        } catch(NationalAgentException e1){
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Object>(e1.getCode(),e1.getMessage()));
         } catch (Exception e) {
             LogUtil.error("Con 账户历史记录 error openId={},pageIndex={}",openId,pageIndex,e);
             result = JSONUtils.alibabaJsonString(new ReturnBean<Object>(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01));

@@ -59,7 +59,7 @@ public class WxEventController {
                     textMessage.setMsgType(WxMessageUtil.RESP_MESSAGE_TYPE_TEXT);
 
                     //保存用户openId及订阅状态
-                    WxUserInfo wxUserInfo = wxUserInfoService.selectByOpenId(textMessage.getToUserName());
+                    WxUserInfo wxUserInfo = wxUserInfoService.selectUserInfoByOpenId(textMessage.getToUserName());
                     if(wxUserInfo == null){
                         wxUserInfo = new WxUserInfo();
                         wxUserInfo.setOpenid(textMessage.getToUserName());
@@ -89,7 +89,7 @@ public class WxEventController {
                     textMessage.setFromUserName(map.get("ToUserName"));
                     textMessage.setMsgType(WxMessageUtil.RESP_MESSAGE_TYPE_TEXT);
 
-                    WxUserInfo wxUserInfo = wxUserInfoService.selectByOpenId(textMessage.getToUserName());
+                    WxUserInfo wxUserInfo = wxUserInfoService.selectUserInfoByOpenId(textMessage.getToUserName());
                     if(wxUserInfo != null){
                         wxUserInfo.setSubscribe("0");
                         wxUserInfoService.update(wxUserInfo);

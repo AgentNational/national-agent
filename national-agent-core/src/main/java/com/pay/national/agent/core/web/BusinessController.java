@@ -7,6 +7,7 @@ import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.core.service.common.BusinessService;
 import com.pay.national.agent.core.service.wx.WxUserInfoService;
 import com.pay.national.agent.model.beans.ReturnBean;
+import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.entity.BusinessOrder;
 import com.pay.national.agent.model.entity.WxUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Objects;
 
 /**
  * 代理业务
@@ -52,7 +55,15 @@ public class BusinessController {
     @ResponseBody
     public String createOrder(BusinessOrder order){
         LogUtil.info("Con 创建信用卡业务订单 order={}",order);
-        String result = businessService.createOrder(order);
+        String result = null;
+        try {
+            result = businessService.createOrder(order);
+        } catch (NationalAgentException e1) {
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(e1.getCode(),e1.getMessage()));
+        }catch (Exception e) {
+            LogUtil.error("Con 创建信用卡业务订单 error order={}",order,e);
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01));
+        }
         LogUtil.info("Con 创建信用卡业务订单 return order={},result={}",order,result);
         return result;
     }
@@ -75,7 +86,10 @@ public class BusinessController {
             page.setCurrentPage(pageIndex == null?1:pageIndex);
             result = businessService.orders(wxUserInfo.getUserNo(),parentBusinessCode,page);
         } catch (NationalAgentException e1) {
-            result = JSONUtils.alibabaJsonString(new ReturnBean<Object>(e1.getCode(),e1.getMessage()));
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(e1.getCode(),e1.getMessage()));
+        }catch (Exception e) {
+            LogUtil.error("Con 查询订单 error openId={},parentBusinessCode={},pageIndex={}",openId,parentBusinessCode,pageIndex,e);
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01));
         }
         LogUtil.info("Con 查询订单 return wxUserInfo={},parentBusinessCode={},pageIndex={},result={}",wxUserInfo,parentBusinessCode,pageIndex,result);
         return result;
