@@ -1,24 +1,38 @@
 package com.pay.national.agent.core.service.common.impl;
 
+import com.pay.commons.utils.lang.AmountUtils;
+import com.pay.national.agent.common.exception.NationalAgentException;
 import com.pay.national.agent.common.persistence.Page;
 import com.pay.national.agent.common.utils.JSONUtils;
 import com.pay.national.agent.common.utils.LogUtil;
+import com.pay.national.agent.common.utils.StringUtils;
 import com.pay.national.agent.core.dao.common.AccountHistoryMapper;
 import com.pay.national.agent.core.dao.common.AccountMapper;
 import com.pay.national.agent.core.service.common.AccountService;
-import com.pay.national.agent.core.service.wx.WxPublicPayService;
+import com.pay.national.agent.core.service.wx.EnterPrisePaymentService;
 import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.beans.query.DepositParam;
 import com.pay.national.agent.model.beans.query.RemitParam;
 import com.pay.national.agent.model.beans.results.DepositBean;
 import com.pay.national.agent.model.beans.results.RemitBean;
+import com.pay.national.agent.model.constants.AccountConstants;
 import com.pay.national.agent.model.constants.RetCodeConstants;
+import com.pay.national.agent.model.constants.StatusConstants;
 import com.pay.national.agent.model.entity.Account;
 import com.pay.national.agent.model.entity.AccountHistory;
+import com.pay.national.agent.model.enums.AccountStatus;
+import com.pay.national.agent.model.enums.BusinessCode;
+import com.pay.national.agent.model.enums.ParentBusinessCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -27,12 +41,22 @@ import java.util.List;
  */
 @Service
 public class AccountServiceImpl implements AccountService {
+    private static final String ILLEGAL_ACCOUNT_NO = "非法编号,开户失败";
+    private static final String REMIT_ACC_EXCEPTION = "账户异常,禁止出款";
+    private static final String REMIT_BALANCE_SHORTAGE = "余额不足";
+    private static final String REMIT_AMOUNT_LIMIT = "提现金额必须不低于40元";
+    private static final String REMIT_ERROR="提现异常";
+
+    /**
+     * 押金
+     */
+    public static final double REMIT_YAJIN = 39.0;
     @Autowired
     private AccountMapper accountMapper;
     @Autowired
     private AccountHistoryMapper accountHistoryMapper;
     @Autowired
-    private WxPublicPayService wxPublicPayService;
+    private EnterPrisePaymentService enterPrisePaymentService;
     /**
      * 用户信息
      * @param userNo 用户编号
@@ -46,17 +70,18 @@ public class AccountServiceImpl implements AccountService {
     /**
      * 账户历史记录
      * @param userNo 用户编号
+     * @param parentBusinessCode 业务编码
      * @param page 分页
      * @return
      */
     @Override
-    public String accHistories(String userNo, Page<AccountHistory> page) {
+    public String accHistories(String userNo,String parentBusinessCode, Page<AccountHistory> page) {
         ReturnBean<List<AccountHistory>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
         try {
-            List<AccountHistory> list = accountHistoryMapper.findAllHistory(userNo,page);
+            List<AccountHistory> list = accountHistoryMapper.findAllHistory(userNo,parentBusinessCode,page);
             returnBean.setData(list);
         } catch (Exception e) {
-            LogUtil.error("账户历史记录 error userNo={},page={}",userNo,page,e);
+            LogUtil.error("账户历史记录 error userNo={},parentBusinessCode={},page={}",userNo,parentBusinessCode,page,e);
             returnBean.setCode(RetCodeConstants.ERROR);
             returnBean.setMsg(RetCodeConstants.ERROR_QUERY_DESC);
         }
@@ -81,7 +106,148 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public RemitBean remit(RemitParam param) {
-        //wxPublicPayService.createPayBill();
+        checkRemit(param);
+        AccountHistory accountHistory = new AccountHistory();
+        accountHistory.setAccountNo(param.getAccountNo());
+        accountHistory.setUserNo(param.getUserNo());
+        accountHistory.setParentBusinessCode(ParentBusinessCode.ACCOUNT_REMIT.name());
+        accountHistory.setBusinessCode(BusinessCode.REMIT_USER.name());
+        accountHistory.setSymbol(AccountConstants.SYMBOL_SUBTRACT);
+        accountHistory.setAmount(param.getAmount());
+        List<AccountHistory> yanjin = null;//accountHistoryMapper.selectByBusiness(param.getUserNo(),BusinessCode.REMIT_YAJIN.name());
+        if(yanjin == null || yanjin.size() == 0){
+            double subtract = AmountUtils.subtract(param.getAmount(), REMIT_YAJIN);
+            param.setAmount(subtract);
+            accountHistory.setAmount(subtract);
+            accountHistory.setBusinessCode(BusinessCode.REMIT_YAJIN.name());
+        }
+
+        Map<String,String> payParam =  new HashMap<String,String>();
+        payParam.put("amount",String.valueOf(param.getAmount()));
+        payParam.put("desc","全民代理用户提现");
+        payParam.put("openId",param.getOpenId());
+        payParam.put("ip",param.getUserIp());
+        try {
+            ReturnBean<Object> returnBean = enterPrisePaymentService.createPayBill(payParam);
+            if(returnBean != null && RetCodeConstants.SUCCESS.equals(returnBean.getCode())){
+                accountHistory.setStatus(StatusConstants.SUCCESS);
+                accountHistory.setWxBillNo(returnBean.getData().toString());
+            }else{
+                accountHistory.setStatus(StatusConstants.FAIL);
+                if(returnBean != null){
+                    accountHistory.setErrorMsg("创建付款单失败");
+                }else{
+                    accountHistory.setErrorMsg("创建付款单异常,returnBean is null");
+                }
+            }
+        } catch (Exception e) {
+            LogUtil.error("出款 创建付款单异常 payParam={}",payParam,e);
+            accountHistory.setStatus(StatusConstants.ERROR);
+            accountHistory.setErrorMsg("创建付款单异常;"+e.getMessage());
+        }
+
+        if(StatusConstants.SUCCESS.equals(accountHistory.getStatus())){
+            try {
+                String payResult = enterPrisePaymentService.payment(accountHistory.getWxBillNo());
+                if(StringUtils.isBlank(payResult)){
+                    accountHistory.setStatus(StatusConstants.ERROR);
+                    accountHistory.setErrorMsg("微信企业付款异常,result is null");
+                }
+
+                ReturnBean<Object> returnBean = JSONUtils.toObject(payResult, ReturnBean.class);
+                if(returnBean != null && RetCodeConstants.SUCCESS.equals(returnBean.getCode())){
+                    accountHistory.setStatus(StatusConstants.SUCCESS);
+                }else{
+                    accountHistory.setStatus(StatusConstants.FAIL);
+                    if(returnBean != null){
+                        accountHistory.setErrorMsg("微信企业付款失败");
+                    }else{
+                        accountHistory.setErrorMsg("微信企业付款异常 returnBean is null");
+                    }
+                }
+            } catch (Exception e) {
+                LogUtil.error("出款 微信父企业付款异常 accountHistory={}",accountHistory,e);
+                accountHistory.setStatus(StatusConstants.ERROR);
+                accountHistory.setErrorMsg("微信父企业付款异常;"+e.getMessage());
+            }
+        }
+
+        RemitBean remitBean = new RemitBean();
+       // remitBean.set
+
         return null;
+    }
+
+    /**
+     * 出款校验
+     * @param param
+     */
+    private void checkRemit(RemitParam param) {
+        if(param.getAmount() < 40.0){
+            throw new NationalAgentException(RetCodeConstants.FAIL,REMIT_AMOUNT_LIMIT);
+        }
+        Account account = accountMapper.findByuser(param.getUserNo());
+        if(account == null || AccountStatus.ENABLE != account.getStatus()){
+            throw new NationalAgentException(RetCodeConstants.FAIL,REMIT_ACC_EXCEPTION);
+        }
+        param.setAccountNo(account.getAccountNo());
+        double subtract = AmountUtils.subtract(account.getBalance(), param.getAmount());
+        if(subtract < 0.00){
+            throw new NationalAgentException(RetCodeConstants.FAIL,REMIT_BALANCE_SHORTAGE);
+        }
+
+
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Throwable.class)
+    public void addAmount(String accountNo, double amount) {
+       Account account  = accountMapper.find(accountNo);
+       if(account != null){
+           BigDecimal decimal = new BigDecimal(amount);
+           BigDecimal amount1 = decimal.setScale(2,BigDecimal.ROUND_HALF_DOWN);
+           double add = AmountUtils.add(account.getBalance(), amount1.doubleValue());
+           account.setLastUpdateTime(new Date());
+           account.setBalance(add);
+           accountMapper.updateOnLock(account);
+       }
+       LogUtil.info("账户加钱中"+Thread.currentThread().getName());
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.NESTED, rollbackFor = Throwable.class)
+    public void subAmount(String accountNo, double amount) {
+
+    }
+
+    /**
+     * 开户
+     * @param userNo 用户编号
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+    public void openAccount(String userNo) {
+        try {
+            if(StringUtils.isBlank(userNo)){
+                throw new NationalAgentException(RetCodeConstants.ERROR,ILLEGAL_ACCOUNT_NO);
+            }
+            Account account = accountMapper.findByuser(userNo);
+            if(account != null){
+                LogUtil.info("该账户存在 userNo={}",userNo);
+                return;
+            }
+            account = new Account();
+            account.setUserNo(userNo);
+            account.setAccountNo(userNo);
+            account.setBalance(0.00);
+            account.setFrozenAmount(0.00);
+            account.setTransAmount(0.00);
+            account.setCreateTime(new Date());
+            account.setStatus(AccountStatus.ENABLE);
+            accountMapper.insert(account);
+        } catch (Exception e) {
+            LogUtil.error("开户异常 userNo={}",userNo,e);
+            throw e;
+        }
     }
 }

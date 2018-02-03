@@ -24,10 +24,11 @@ public interface AccountService {
     /**
      * 账户历史记录
      * @param userNo 用户编号
+     * @param parentBusinessCode 业务编码
      * @param page 分页
      * @return
      */
-    String accHistories(String userNo, Page<AccountHistory> page);
+    String accHistories(String userNo,String parentBusinessCode, Page<AccountHistory> page);
 
     /**
      * 入账
@@ -42,4 +43,24 @@ public interface AccountService {
      * @return
      */
     RemitBean remit(RemitParam param);
+
+    /**
+     * 账户余额的加操作
+     * @param accountNo
+     * @param amount
+     */
+    void addAmount(String accountNo,double amount);
+
+    /**
+     * 账户余额的减操作
+     * @param accountNo
+     * @param amount
+     */
+    void subAmount(String accountNo,double amount);
+
+    /**
+     * 开户
+     * @param userNo 用户编号
+     */
+    void openAccount(String userNo);
 }

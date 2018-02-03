@@ -19,6 +19,7 @@ public class RetCodeConstants {
 	public static final String ERROR_DESC = "服务器维护中，请稍后重试";
 	public static final String ERROR_DESC_01 = "操作异常";
 	public static final String ERROR_QUERY_DESC = "查询异常";
+	public static final String ERROR_NO_USER = "未查询到您的信息";
 
 	/**失败*/
 	public static final String FAIL = "0002";

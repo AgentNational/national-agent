@@ -14,10 +14,11 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="last_update_time" property="lastUpdateTime" jdbcType="TIMESTAMP" />
     <result column="wx_bill_no" property="wxBillNo" jdbcType="VARCHAR" />
+    <result column="error_msg" property="errorMsg" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, optimistic, account_no, amount, user_no, business_code, parent_business_code,
-    status, symbol, create_time, last_update_time, wx_bill_no
+    status, symbol, create_time, last_update_time, wx_bill_no,error_msg
   </sql>
 
   <sql id="Web_Column_list" >
@@ -41,11 +42,11 @@
     insert into account_history (optimistic, account_no, amount, 
       user_no, business_code, parent_business_code, 
       status, symbol, create_time, 
-      last_update_time, wx_bill_no)
+      last_update_time, wx_bill_no,error_msg)
     values (0, #{accountNo,jdbcType=VARCHAR}, #{amount,jdbcType=DOUBLE},
       #{userNo,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR}, #{parentBusinessCode,jdbcType=VARCHAR}, 
       #{status,jdbcType=VARCHAR}, #{symbol,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{lastUpdateTime,jdbcType=TIMESTAMP}, #{wxBillNo,jdbcType=VARCHAR})
+      #{lastUpdateTime,jdbcType=TIMESTAMP}, #{wxBillNo,jdbcType=VARCHAR},#{errorMsg,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.AccountHistory" >
     <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
@@ -86,6 +87,9 @@
       <if test="wxBillNo != null" >
         wx_bill_no,
       </if>
+      <if test="errorMsg != null">
+        error_msg
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="optimistic != null" >
@@ -120,6 +124,9 @@
       </if>
       <if test="wxBillNo != null" >
         #{wxBillNo,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        #{errorMsg,jdbcType=VARCHAR}
       </if>
     </trim>
   </insert>
@@ -159,6 +166,9 @@
       <if test="wxBillNo != null" >
         wx_bill_no = #{wxBillNo,jdbcType=VARCHAR},
       </if>
+      <if test="errorMsg != null">
+        error_msg = #{errorMsg,jdbcType=VARCHAR}
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -174,7 +184,8 @@
       symbol = #{symbol,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
-      wx_bill_no = #{wxBillNo,jdbcType=VARCHAR}
+      wx_bill_no = #{wxBillNo,jdbcType=VARCHAR},
+      error_msg = #{errorMsg,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
@@ -182,7 +193,9 @@
     SELECT <include refid="Web_Column_list"/>
     FROM  account_history
     WHERE user_no = #{userNo,jdbcType=VARCHAR}
-    AND status = 'ENABLE'
+    <if test="parentBusinessCode != null and parentBusinessCode != ''">
+      AND parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}
+    </if>
     ORDER BY create_time desc
   </select>
 </mapper>

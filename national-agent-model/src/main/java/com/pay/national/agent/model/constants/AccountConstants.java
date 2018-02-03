@@ -9,6 +9,5 @@ public class AccountConstants {
 	public static final String SYMBOL_SUBTRACT = "sub";//减余额操作标识
 	
 	public static final String SYMBOL_PLUS = "plus";//加余额操作标识
-	
-	
+
 }

@@ -1,14 +1,19 @@
 package com.pay.national.agent.core.web;
 
+import com.pay.national.agent.common.exception.NationalAgentException;
 import com.pay.national.agent.common.persistence.Page;
+import com.pay.national.agent.common.utils.JSONUtils;
 import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.core.service.common.BusinessService;
+import com.pay.national.agent.core.service.wx.WxUserInfoService;
+import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.entity.BusinessOrder;
+import com.pay.national.agent.model.entity.WxUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -23,6 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class BusinessController {
     @Autowired
     private BusinessService businessService;
+    @Autowired
+    private WxUserInfoService wxUserInfoService;
 
 
     /**
@@ -52,17 +59,25 @@ public class BusinessController {
 
     /**
      * 查询订单
-     * @param userNo 用户编号
+     * @param openId 微信用户openId
      * @param parentBusinessCode 父业务编码
      * @return
      */
     @RequestMapping(value = "/orders")
-    public String orders(String userNo,String parentBusinessCode,Integer pageIndex){
-        LogUtil.info("Con 查询订单 userNo={},parentBusinessCode={},pageIndex={}",userNo,parentBusinessCode,pageIndex);
-        Page<BusinessOrder> page = new Page<>();
-        page.setCurrentPage(pageIndex == null?1:pageIndex);
-        String result = businessService.orders(userNo,parentBusinessCode,page);
-        LogUtil.info("Con 查询订单 return userNo={},parentBusinessCode={},pageIndex={},result={}",userNo,parentBusinessCode,pageIndex,result);
+    @ResponseBody
+    public String orders(@RequestParam("openId")String openId , @RequestParam("parentBusinessCode") String parentBusinessCode,Integer pageIndex){
+        LogUtil.info("Con 查询订单 openId={},parentBusinessCode={},pageIndex={}",openId,parentBusinessCode,pageIndex);
+        String result = null;
+        WxUserInfo wxUserInfo = null;
+        try {
+            wxUserInfo = wxUserInfoService.selectByOpenId(openId);
+            Page<BusinessOrder> page = new Page<>();
+            page.setCurrentPage(pageIndex == null?1:pageIndex);
+            result = businessService.orders(wxUserInfo.getUserNo(),parentBusinessCode,page);
+        } catch (NationalAgentException e1) {
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Object>(e1.getCode(),e1.getMessage()));
+        }
+        LogUtil.info("Con 查询订单 return wxUserInfo={},parentBusinessCode={},pageIndex={},result={}",wxUserInfo,parentBusinessCode,pageIndex,result);
         return result;
     }
 }

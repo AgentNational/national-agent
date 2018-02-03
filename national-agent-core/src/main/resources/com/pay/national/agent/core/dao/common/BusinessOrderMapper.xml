@@ -27,8 +27,8 @@
 
   <sql id="Web_Column_List" >
     id, business_name, business_code, parent_business_code, status,
-    customer_name, customer_phone, reward_amount, trans_amount, partner_business_name,
-    partner_business_no, create_time,receive_address
+    customer_name, CONCAT(LEFT(customer_phone,3),'XXXX',RIGHT(customer_phone,4)) customer_phone, reward_amount, trans_amount, partner_business_name,
+    partner_business_no, create_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

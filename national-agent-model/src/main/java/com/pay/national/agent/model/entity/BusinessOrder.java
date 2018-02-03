@@ -1,5 +1,7 @@
 package com.pay.national.agent.model.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 /**
@@ -71,6 +73,7 @@ public class BusinessOrder extends BaseEntity {
     /**
      *创建时间
      */
+    @JSONField(format = "yyyy.MM.dd")
     private Date createTime;
 
     /**

@@ -56,7 +56,7 @@ public class UserController {
 			map.put("balance",balance);
 			returnBean.setData(map);
 		} catch (Exception e) {
-			LogUtil.error("Com 个人中心 error openId={}",openId,e);
+			LogUtil.error("Con 个人中心 error openId={}",openId,e);
 			returnBean.setCode(RetCodeConstants.ERROR);
 			returnBean.setMsg(RetCodeConstants.ERROR_QUERY_DESC);
 		}
