@@ -4,8 +4,6 @@ import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.common.utils.SequenceUtils;
 import com.pay.national.agent.common.utils.StringUtils;
 import com.pay.national.agent.core.dao.wx.AppUserMapper;
-import com.pay.national.agent.core.dao.common.UserMapper;
-import com.pay.national.agent.core.dao.wx.WxUserInfoMapper;
 import com.pay.national.agent.core.service.common.AccountService;
 import com.pay.national.agent.core.service.common.UserService;
 import com.pay.national.agent.core.service.wx.WxUserInfoService;
@@ -38,8 +36,6 @@ public class UserServiceImpl implements UserService{
 
 	@Resource
 	private WxUserInfoService wxUserInfoService;
-	private WxUserInfoMapper wxUserInfoMapper;
-
 	@Resource
 	private AccountService accountService;
 	/**
@@ -50,34 +46,6 @@ public class UserServiceImpl implements UserService{
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
 	public void register(String fromUserName, String eventKey) {
-		//创建用户编号
-		long nextLongValue = incrementerService.nextLongValue(IncrementerConstant.SEQ_USER_NO);
-		String userNo = SequenceUtils.createSequence(nextLongValue, new int[] { 8, 6, 1, 9, 3, 8, 0, 5, 2, 1,5,2},
-				new int[] { 4, 5 }, new int[] { 6, 8 }, new int[] { 7, 8 });
-		WxUserInfo wxUserInfo = new WxUserInfo();
-		//wxUserInfo.setUserId();
-		wxUserInfo.setCreatetime(new Date());
-		wxUserInfo.setOpenid(fromUserName);
-		User appUser = new User();
-		//获取用户父编号
-		String parentUserNo = null;
-		if(StringUtils.isNotBlank(eventKey)){
-			//微信推送的eventKey格式为qrscene_861235988，所以需要进行截取
-			String [] eventKeys = eventKey.split("_");
-			parentUserNo = eventKeys[1];
-		}
-		appUser.setAbleStatus("ENABLE");
-		appUser.setCreateTime(new Date());
-		appUser.setParentUserNo(parentUserNo);
-		appUser.setUserNo(userNo);
-		userMapper.insert(appUser);
-		wxUserInfoMapper.insert(wxUserInfo);
-
-		try {
-			accountService.openAccount(userNo);
-		} catch (Exception e) {
-			LogUtil.error("用户注册 开户失败 userNo={}",userNo,e);
-		}
 		WxUserInfo wxUserInfoDb = wxUserInfoService.selectByOpenId(fromUserName);
 		//openId已经注册
 		if(wxUserInfoDb == null) {
@@ -103,6 +71,12 @@ public class UserServiceImpl implements UserService{
 			appUser.setUserNo(userNo);
 			appUserMapper.insert(appUser);
 			wxUserInfoService.insert(wxUserInfo);
+
+			try {
+				accountService.openAccount(userNo);
+			} catch (Exception e) {
+				LogUtil.error("用户注册 开户失败 userNo={}",userNo,e);
+			}
 		}
 
 	}
