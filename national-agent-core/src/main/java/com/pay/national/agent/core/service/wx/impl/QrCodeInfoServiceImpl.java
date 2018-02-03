@@ -47,7 +47,7 @@ public class QrCodeInfoServiceImpl implements QrCodeInfoService {
             returnBean.setData(qrCodeUrl+ticket);
         }else{//如果不存在当前生效的ticket
             //通过openId查询userNo
-            WxUserInfo wxUserInfo = wxUserInfoService.selectByOpenId(openId);
+            WxUserInfo wxUserInfo = wxUserInfoService.selectUserInfoByOpenId(openId);
             //调用微信接口获取ticket
             String accessToken = wxService.getEffectAccessToken(WeiXinConstant.APP_ID,WeiXinConstant.APP_SECRET);
             //调用微信接口获取ticket
