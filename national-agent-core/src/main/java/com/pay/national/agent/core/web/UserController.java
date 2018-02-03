@@ -45,7 +45,7 @@ public class UserController {
 		ReturnBean<Map<String,Object>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
 
 		try {
-			WxUserInfo wxUserInfo = wxUserInfoService.selectByOpenId(openId);
+			WxUserInfo wxUserInfo = wxUserInfoService.find4Login(openId);
 			Account account = accountService.findByUser(wxUserInfo.getUserNo());
 			Map<String,Object> map = new HashMap<String,Object>(3);
 			map.put("touxiang",wxUserInfo.getHeadimgurl());

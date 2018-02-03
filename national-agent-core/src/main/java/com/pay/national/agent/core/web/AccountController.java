@@ -48,7 +48,7 @@ public class AccountController {
         try {
             Page<AccountHistory> page = new Page<AccountHistory>();
             page.setCurrentPage(pageIndex == null?1:pageIndex);
-            WxUserInfo wxUserInfo = wxUserInfoService.selectByOpenId(openId);
+            WxUserInfo wxUserInfo = wxUserInfoService.find4Login(openId);
             result = accountService.accHistories(wxUserInfo.getUserNo(),businessCode,page);
         } catch (Exception e) {
             LogUtil.error("Con 账户历史记录 error openId={},pageIndex={}",openId,pageIndex,e);
@@ -66,11 +66,11 @@ public class AccountController {
      */
     @RequestMapping("/WD")
     @ResponseBody
-    public String withdraw(@RequestParam("openId")String openId,@RequestParam("userIp")String userIp, Double amount){
+    public String withdraw(@RequestParam("openId")String openId,@RequestParam("userIp")String userIp,@RequestParam("amount") Double amount){
         LogUtil.info("提现 openId={},userIp={},amount={}",openId,userIp,amount);
         ReturnBean<RemitBean> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
         try {
-            WxUserInfo wxUserInfo = wxUserInfoService.selectByOpenId(openId);
+            WxUserInfo wxUserInfo = wxUserInfoService.find4Login(openId);
             RemitParam remitParam = new RemitParam();
             remitParam.setUserNo(wxUserInfo.getUserNo());
             remitParam.setOpenId(wxUserInfo.getOpenid());

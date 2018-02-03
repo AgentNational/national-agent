@@ -70,7 +70,7 @@ public class BusinessController {
         String result = null;
         WxUserInfo wxUserInfo = null;
         try {
-            wxUserInfo = wxUserInfoService.selectByOpenId(openId);
+            wxUserInfo = wxUserInfoService.find4Login(openId);
             Page<BusinessOrder> page = new Page<>();
             page.setCurrentPage(pageIndex == null?1:pageIndex);
             result = businessService.orders(wxUserInfo.getUserNo(),parentBusinessCode,page);

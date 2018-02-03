@@ -24,5 +24,10 @@ public interface AccountMapper {
 
     Account find(@Param("accountNo") String accountNo);
 
-    void updateOnLock(@Param("account") Account account);
+    /**
+     * 操作账户金额的方法，谨慎使用
+     * @param account
+     * @return
+     */
+    int amountOnLock(@Param("account") Account account);
 }

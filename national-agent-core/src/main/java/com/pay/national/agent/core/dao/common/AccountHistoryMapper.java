@@ -23,4 +23,6 @@ public interface AccountHistoryMapper {
     int updateByPrimaryKey(AccountHistory record);
 
     List<AccountHistory> findAllHistory(@Param("userNo") String userNo,@Param("parentBusinessCode") String parentBusinessCode, @Param("page") Page<AccountHistory> page);
+
+    List<AccountHistory> selectByUser(@Param("userNo") String userNo, @Param("businessCode") String businessCode);
 }

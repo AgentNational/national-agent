@@ -198,4 +198,13 @@
     </if>
     ORDER BY create_time desc
   </select>
+
+  <select id="selectByUser" resultMap="BaseResultMap">
+    SELECT <include refid="Web_Column_list"/>
+    FROM  account_history
+    WHERE user_no = #{userNo,jdbcType=VARCHAR}
+    <if test="businessCode != null and businessCode != ''">
+      AND business_code = #{businessCode,jdbcType=VARCHAR}
+    </if>
+  </select>
 </mapper>
