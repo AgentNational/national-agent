@@ -1,16 +1,14 @@
 package com.pay.national.agent.portal.service.common.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.pay.national.agent.common.persistence.Page;
 import com.pay.national.agent.model.entity.AppUser;
 import com.pay.national.agent.portal.dao.common.AppUserMapper;
 import com.pay.national.agent.portal.service.common.AppUserService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: app用户service

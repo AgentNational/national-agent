@@ -4,7 +4,6 @@ import com.pay.commons.web.springmvc.handler.SimpleForwardHttpRequestHandler;
 import com.pay.national.agent.core.interceptor.CommonHttpRequestInterceptor;
 import com.pay.national.agent.core.interceptor.LoginStatusInterceptor;
 import com.pay.national.agent.core.interceptor.Oauth2AccessTokenInterceptor;
-import com.pay.national.agent.core.interceptor.ValidateInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -78,6 +77,15 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 		registry.addResourceHandler("/images/**").addResourceLocations("/images/**");
 	}
 
+	@Bean
+	public InternalResourceViewResolver internalResourceViewResolver() {
+		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+		resolver.setPrefix("/WEB-INF/jsp/");
+		resolver.setSuffix(".jsp");
+		return resolver;
+	}
+
+
 	/**
 	 * @Description 通用异常跳转页面
 	 * @return
@@ -136,9 +144,9 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 				.excludePathPatterns("/web*//**")
 				.excludePathPatterns("/wxMenu*//**");
 		//登录状态校验拦截器
-		registry.addInterceptor(new LoginStatusInterceptor()).addPathPatterns("*//**")
-		.excludePathPatterns("/web*//**")
-		.excludePathPatterns("/file*//**")
+		registry.addInterceptor(new LoginStatusInterceptor()).addPathPatterns("/**")
+		.excludePathPatterns("/web/**")
+		.excludePathPatterns("/file/**")
 		.excludePathPatterns("/user/register")
 		.excludePathPatterns("/user/login")
 		.excludePathPatterns("/user/sendCheckCode")
@@ -149,11 +157,11 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 		.excludePathPatterns("/creditCard/transact")
 		.excludePathPatterns("/appAdvertiseInfo/getAppAdVertiseInfo")
 		.excludePathPatterns("/appVersion/versionCheck")
-		.excludePathPatterns("/weixinEvent*//**")
-		.excludePathPatterns("/wxMenu*//**")
-		.excludePathPatterns("/weiXin*//**");
+		.excludePathPatterns("/weixinEvent/**")
+		.excludePathPatterns("/wxMenu/**")
+		.excludePathPatterns("/weiXin/**");
 
-*/
+
 		super.addInterceptors(registry);
 	}
 

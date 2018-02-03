@@ -3,11 +3,15 @@ package com.pay.national.agent.core.service.wx.gate.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.pay.national.agent.common.constants.WeiXinConstant;
+import com.pay.national.agent.common.exception.NationalAgentException;
 import com.pay.national.agent.common.utils.HttpClientUtil;
 import com.pay.national.agent.common.utils.LogUtil;
+import com.pay.national.agent.common.utils.StringUtils;
 import com.pay.national.agent.core.dao.wx.AccessTokenManagerMapper;
+import com.pay.national.agent.core.dao.wx.ApiTicketManagerMapper;
 import com.pay.national.agent.core.service.wx.gate.WxService;
 import com.pay.national.agent.model.entity.AccessTokenManager;
+import com.pay.national.agent.model.entity.ApiTicketManager;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -38,6 +42,8 @@ import java.util.Map;
 public class WxServiceImpl implements WxService {
     @Resource
     private AccessTokenManagerMapper accessTokenManagerMapper;
+
+
 
     private String lzzymchid = "";//商户号
 
@@ -88,9 +94,7 @@ public class WxServiceImpl implements WxService {
         sb.append(accessToken);
         String result = HttpClientUtil.sendPost(sb.toString(), content);
         LogUtil.info("geta服务createQrcode 返回结果:{}", result);
-        JSONObject obj = JSON.parseObject(result);
-        String ticket = (String) obj.get("ticket");
-        return ticket;
+        return result;
     }
 
     @Override
@@ -216,5 +220,58 @@ public class WxServiceImpl implements WxService {
         String result = HttpClientUtil.sendPost(WeiXinConstant.queryPayOrderUrl, xml);
         LogUtil.info("geta服务getWxPayOrder 返回结果:{}", result);
         return result;
+    }
+
+    @Override
+    public String getApiTicket(String accessToken) {
+        LogUtil.info("geta服务getApiTicket请求参数 accessToken:{}", accessToken);
+        StringBuilder sb = new StringBuilder();
+        sb.append("access_token=");
+        sb.append(accessToken);
+        sb.append("&type=");
+        sb.append("jsapi");
+        String content = HttpClientUtil.sendGet(WeiXinConstant.jsApiTicketUrl, sb.toString());
+        LogUtil.info("geta服务getApiTicket 返回结果:{}", content);
+        return content;
+    }
+
+    @Resource
+    private ApiTicketManagerMapper apiTicketManagerMapper;
+    /**
+     * @return
+     */
+    @Override
+    public  String getEffectApiTicket() {
+        //查询数据库，查看当前是否有生效的apiTicket
+        ApiTicketManager apiTicketManager = apiTicketManagerMapper.findApiTicektByTime(new Date());
+        if (apiTicketManager == null) {//accessToken已经失效
+            apiTicketManager = new ApiTicketManager();
+            //获取accessToken
+            String accessToken = getEffectAccessToken(WeiXinConstant.APP_ID, WeiXinConstant.APP_SECRET);
+            //通过accessToken查询apiTicket
+            String apiTicketJson = getApiTicket(accessToken);
+            String apiTicket = null;
+            if (!StringUtils.isEmpty(apiTicketJson)) {
+                JSONObject parseObject = JSON.parseObject(apiTicketJson);
+                if (parseObject.containsKey("errmsg")) {
+                    String errmsg = (String) parseObject.get("errmsg");
+                    if (errmsg.equals("ok")) {
+                        String ticket = (String) parseObject.get("ticket");
+                        apiTicket = ticket;
+                    }
+                }
+            }
+            if(apiTicket == null){
+                throw new NationalAgentException("0001","apiTicket 获取失败");
+            }
+            apiTicketManager.setApiTicket(apiTicket);
+            apiTicketManager.setCreateTime(new Date());
+            apiTicketManager.setEffectTime(new Date());
+            apiTicketManager.setExpireTime(new Date(System.currentTimeMillis()+60*60*1000));//过期时间往后推一个小时
+            apiTicketManager.setOptimistic(0);
+            apiTicketManager.setStatus("ENABLE");
+            apiTicketManagerMapper.insert(apiTicketManager);
+        }
+        return apiTicketManager.getApiTicket();
     }
 }

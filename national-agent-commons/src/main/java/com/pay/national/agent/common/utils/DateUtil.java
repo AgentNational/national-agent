@@ -298,4 +298,16 @@ public class DateUtil {
         return calendar.getTime();
 
     }
+
+    public  static Date addSeconds(Date date ,Integer seconds){
+		Calendar calendar = Calendar.getInstance ();
+		calendar.setTime(date);
+		calendar.add (Calendar.SECOND, seconds);
+		return calendar.getTime();
+	}
+	public static Date addYears(Integer years){
+		Calendar calendar = Calendar.getInstance ();
+		calendar.add(Calendar.YEAR, years);
+		return calendar.getTime();
+	}
 }

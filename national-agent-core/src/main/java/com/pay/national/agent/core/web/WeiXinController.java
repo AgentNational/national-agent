@@ -1,11 +1,14 @@
 package com.pay.national.agent.core.web;
 
+import com.alibaba.fastjson.JSON;
 import com.pay.national.agent.common.bean.wx.TextMessage;
+import com.pay.national.agent.common.bean.wx.WxJssdkConfig;
 import com.pay.national.agent.common.constants.WeiXinConstant;
 import com.pay.national.agent.common.utils.DigestUtils;
 import com.pay.national.agent.common.utils.StringUtils;
 import com.pay.national.agent.common.utils.WxMessageUtil;
 import com.pay.national.agent.core.service.common.UserService;
+import com.pay.national.agent.core.service.wx.impl.WxJssdkConfigMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -111,6 +114,26 @@ public class WeiXinController {
 			printWriter.close();
 		}
 	}
-	
-	
+
+	@Resource
+	private WxJssdkConfigMethod wxJssdkConfigMethod;
+
+	/**
+	 * @Description 获取jssdk配置
+	 * @param request
+	 * @return
+	 * @see
+	 */
+	@RequestMapping(value = "/jssdkConfig", method = RequestMethod.GET)
+	public @ResponseBody String wxJssdkConfig(HttpServletRequest request,HttpServletResponse response) {
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		String currentUrl = request.getParameter("currentUrl");
+		logger.info("WxController currentUrl:" + currentUrl);
+		WxJssdkConfig wxJssdkConfig = wxJssdkConfigMethod.getWxJssdkConfig(currentUrl);
+		logger.info("WxController wxJssdkConfig:" + JSON.toJSONString(wxJssdkConfig));
+		return JSON.toJSONString(wxJssdkConfig);
+	}
+
+
+
 }
