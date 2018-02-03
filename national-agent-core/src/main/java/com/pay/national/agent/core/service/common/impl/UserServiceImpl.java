@@ -1,9 +1,11 @@
 package com.pay.national.agent.core.service.common.impl;
 
+import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.common.utils.SequenceUtils;
 import com.pay.national.agent.common.utils.StringUtils;
 import com.pay.national.agent.core.dao.common.UserMapper;
 import com.pay.national.agent.core.dao.wx.WxUserInfoMapper;
+import com.pay.national.agent.core.service.common.AccountService;
 import com.pay.national.agent.core.service.common.UserService;
 import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.beans.query.LoginParamBean;
@@ -88,6 +90,9 @@ public class UserServiceImpl implements UserService{
 
 	@Resource
 	private WxUserInfoMapper wxUserInfoMapper;
+
+	@Resource
+	private AccountService accountService;
 	/**
 	 * 公众号注册
 	 * @param fromUserName
@@ -119,6 +124,10 @@ public class UserServiceImpl implements UserService{
 		userMapper.insert(appUser);
 		wxUserInfoMapper.insert(wxUserInfo);
 
-
+		try {
+			accountService.openAccount(userNo);
+		} catch (Exception e) {
+			LogUtil.error("用户注册 开户失败 userNo={}",userNo,e);
+		}
 	}
 }

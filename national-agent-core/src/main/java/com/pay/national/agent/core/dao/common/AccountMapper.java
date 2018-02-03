@@ -1,6 +1,7 @@
 package com.pay.national.agent.core.dao.common;
 
 import com.pay.national.agent.model.entity.Account;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -20,4 +21,8 @@ public interface AccountMapper {
     int updateByPrimaryKey(Account record);
 
     Account findByuser(@RequestParam("userNo") String userNo);
+
+    Account find(@Param("accountNo") String accountNo);
+
+    void updateOnLock(@Param("account") Account account);
 }

@@ -24,13 +24,13 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from WX_USER_INFO
+    from wx_user_info
     where ID = #{id,jdbcType=BIGINT}
   </select>
 
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-     delete from WX_USER_INFO
+     delete from wx_user_info
      where ID = #{id,jdbcType=BIGINT}
    </delete>
 
@@ -39,7 +39,7 @@
       <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
         SELECT LAST_INSERT_ID()
       </selectKey>
-      insert into WX_USER_INFO (OPTIMISTIC,SUBSCRIBE, CREATETIME, OPENID,
+      insert into wx_user_info (OPTIMISTIC,SUBSCRIBE, CREATETIME, OPENID,
         NICKNAME, SEX, LANGUAGE,
         CITY, PROVINCE, COUNTRY,
         HEADIMGURL, SUBCRIBE_TIME,USER_NO)
@@ -54,7 +54,7 @@
   <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
     SELECT LAST_INSERT_ID()
   </selectKey>
-  insert into WX_USER_INFO
+  insert into wx_user_info
   <trim prefix="(" suffix=")" suffixOverrides="," >
     <if test="optimistic != null" >
       OPTIMISTIC,
@@ -141,7 +141,7 @@
 
 
   <update id="updateByPrimaryKeySelective" parameterType="com.pay.national.agent.model.entity.WxUserInfo" >
-   update WX_USER_INFO
+   update wx_user_info
    <set >
      <if test="optimistic != null" >
        OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
@@ -188,7 +188,7 @@
 
 
   <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.WxUserInfo" >
-    update WX_USER_INFO
+    update wx_user_info
     set OPTIMISTIC = #{optimistic,jdbcType=INTEGER},
       SUBSCRIBE = #{subscribe,jdbcType=VARCHAR},
       CREATETIME = #{createtime,jdbcType=TIMESTAMP},
@@ -207,7 +207,7 @@
 
   <select id="selectByOpenId" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List"/>
-    FROM  WX_USER_INFO
+    FROM  wx_user_info
     WHERE OPENID = #{openId,jdbcType=VARCHAR}
   </select>
 </mapper>

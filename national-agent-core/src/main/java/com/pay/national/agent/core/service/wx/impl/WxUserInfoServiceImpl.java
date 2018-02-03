@@ -1,14 +1,18 @@
 package com.pay.national.agent.core.service.wx.impl;
 
+import com.pay.national.agent.common.exception.NationalAgentException;
 import com.pay.national.agent.core.dao.wx.WxUserInfoMapper;
 import com.pay.national.agent.core.service.wx.WxUserInfoService;
+import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.entity.WxUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by shuyan.qi on 2018/1/13.
+ *
+ * @author shuyan.qi
+ * @date 2018/1/13
  */
 @Service
 public class WxUserInfoServiceImpl implements WxUserInfoService {
@@ -22,7 +26,11 @@ public class WxUserInfoServiceImpl implements WxUserInfoService {
      */
     @Override
     public WxUserInfo selectByOpenId(String openId) {
-        return wxUserInfoMapper.selectByOpenId(openId);
+        WxUserInfo wxUserInfo = wxUserInfoMapper.selectByOpenId(openId);
+        if(wxUserInfo == null){
+            throw new NationalAgentException(RetCodeConstants.ERROR,RetCodeConstants.ERROR_NO_USER);
+        }
+        return wxUserInfo;
     }
 
     /**

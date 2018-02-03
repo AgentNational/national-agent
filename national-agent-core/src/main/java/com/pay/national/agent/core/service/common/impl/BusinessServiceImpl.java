@@ -54,6 +54,8 @@ public class BusinessServiceImpl implements BusinessService{
             BusinessOrder dbOrder =  businessOrderMapper.selectByUser(order.getBusinessCode(),order.getCustomerPhone());
             if(dbOrder == null || StatusConstants.DELETE.equals(dbOrder.getStatus())){
                initOrder(order);
+               String jumpUrl = selectBusJumpUrl(order);
+               returnBean.setCode(jumpUrl);
             }else{
                 returnBean.setCode(RetCodeConstants.FAIL);
                 returnBean.setMsg(CUSTOMER_IS_REPEAT);
@@ -64,6 +66,36 @@ public class BusinessServiceImpl implements BusinessService{
             returnBean.setMsg(RetCodeConstants.ERROR_DESC_01);
         }
         return JSONUtils.alibabaJsonString(returnBean);
+    }
+
+    /**
+     * 获取业务跳转链接
+     * @param order
+     * @return
+     */
+    private String selectBusJumpUrl(BusinessOrder order) {
+        BusinessCode businessCode = BusinessCode.valueOf(order.getBusinessCode());
+        String jumpUrl = "";
+        switch (businessCode){
+            case JIAOTONG:
+                jumpUrl =  "http://www.baidu.com";
+            break;
+            case PINGAN:
+                jumpUrl =  "http://www.baidu.com";
+            break;
+            case PUFA:
+                jumpUrl =  "http://www.baidu.com";
+            break;
+            case YIPIAO:
+                jumpUrl =  "http://www.baidu.com";
+            break;
+            case XZF:
+                jumpUrl =  "http://www.baidu.com";
+            break;
+            default:
+            break;
+        }
+        return jumpUrl;
     }
 
     /**
@@ -78,15 +110,15 @@ public class BusinessServiceImpl implements BusinessService{
             throw new NationalAgentException(RetCodeConstants.FAIL,BUSINESS_DISABLE_MSG);
         }
         switch (businessCode){
-            case XINGYE:
+            case JIAOTONG:
             case PUFA:
             case PINGAN:
                 order.setParentBusinessCode(ParentBusinessCode.CREDIT_CARD.name());
                 order.setRewardAmount(rule.getRewardAmount());
                 break;
-            case CXF:
+            case XZF:
                 order.setParentBusinessCode(ParentBusinessCode.POS.name());
-                order.setTransAmount(0.00);
+                break;
             case YIPIAO:
                 order.setParentBusinessCode(ParentBusinessCode.TICKET.name());
                 order.setRewardAmount(rule.getRewardAmount());

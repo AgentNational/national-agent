@@ -58,6 +58,11 @@ public class AccountHistory extends BaseEntity{
      */
     private String wxBillNo;
 
+    /**
+     * 错误信息
+     */
+    private String errorMsg;
+
     public String getAccountNo() {
         return accountNo;
     }
@@ -138,9 +143,17 @@ public class AccountHistory extends BaseEntity{
         this.wxBillNo = wxBillNo;
     }
 
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
     @Override
     public String toString() {
-        return super.toString()+"AccountHistory{" +
+        return "AccountHistory{" +
                 "accountNo='" + accountNo + '\'' +
                 ", amount=" + amount +
                 ", userNo='" + userNo + '\'' +
@@ -151,6 +164,7 @@ public class AccountHistory extends BaseEntity{
                 ", createTime=" + createTime +
                 ", lastUpdateTime=" + lastUpdateTime +
                 ", wxBillNo='" + wxBillNo + '\'' +
+                ", errorMsg='" + errorMsg + '\'' +
                 '}';
     }
 }

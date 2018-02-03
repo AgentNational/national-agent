@@ -21,5 +21,10 @@ public enum ParentBusinessCode {
     /**
      * 全名代理
      */
-    NATIONAL_AGENT
+    NATIONAL_AGENT,
+
+    /**
+     * 账户出款
+     */
+    ACCOUNT_REMIT
 }

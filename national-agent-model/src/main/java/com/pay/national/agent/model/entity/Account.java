@@ -1,5 +1,7 @@
 package com.pay.national.agent.model.entity;
 
+import com.pay.national.agent.model.enums.AccountStatus;
+
 import java.util.Date;
 
 /**
@@ -36,7 +38,7 @@ public class Account extends BaseEntity{
     /**
      *状态
      */
-    private String status;
+    private AccountStatus status;
 
     /**
      *创建时间
@@ -88,11 +90,11 @@ public class Account extends BaseEntity{
         this.userNo = userNo;
     }
 
-    public String getStatus() {
+    public AccountStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AccountStatus status) {
         this.status = status;
     }
 
