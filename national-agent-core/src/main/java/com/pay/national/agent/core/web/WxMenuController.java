@@ -1,6 +1,7 @@
 package com.pay.national.agent.core.web;
 
 import com.alibaba.fastjson.JSON;
+import com.pay.national.agent.common.annotation.NeedOpenId;
 import com.pay.national.agent.common.constants.WeiXinConstant;
 import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.core.service.wx.MenuInfoService;
@@ -21,7 +22,7 @@ public class WxMenuController {
     @Autowired
     private MenuInfoService menuInfoService;
 
-    //@NeedOpenId(needOpenId = true,isLoginFlag = false)
+    @NeedOpenId(needOpenId = true,isLoginFlag = false)
     @RequestMapping(value = "menu/{menuNo}")
     public void menuRedirect(HttpServletRequest request, HttpServletResponse response, @PathVariable("menuNo")String menuNo) throws IOException {
         LogUtil.info("微信菜单统一重定向开始 menuNo:{}",menuNo);

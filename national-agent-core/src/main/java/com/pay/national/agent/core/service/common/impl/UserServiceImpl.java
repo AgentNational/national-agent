@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
 	public void register(String fromUserName, String eventKey) {
-		WxUserInfo wxUserInfoDb = wxUserInfoService.selectByOpenId(fromUserName);
+		WxUserInfo wxUserInfoDb = wxUserInfoService.selectUserInfoByOpenId(fromUserName);
 		//openId已经注册
 		if(wxUserInfoDb == null) {
 			//创建用户编号

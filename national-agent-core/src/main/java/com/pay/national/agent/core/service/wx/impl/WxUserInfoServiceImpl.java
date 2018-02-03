@@ -52,4 +52,11 @@ public class WxUserInfoServiceImpl implements WxUserInfoService {
     public void update(WxUserInfo wxUserInfo) {
         wxUserInfoMapper.updateByPrimaryKey(wxUserInfo);
     }
+
+    @Override
+    public WxUserInfo selectUserInfoByOpenId(String openId) {
+        return wxUserInfoMapper.selectByOpenId(openId);
+    }
+
+
 }

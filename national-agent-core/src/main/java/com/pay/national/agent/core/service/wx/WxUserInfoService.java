@@ -27,4 +27,11 @@ public interface WxUserInfoService {
      * @param wxUserInfo
      */
     void update(WxUserInfo wxUserInfo);
+
+    /**
+     * 根据用户的openId获取微信用户信息
+     * @param openId
+     * @return
+     */
+    WxUserInfo selectUserInfoByOpenId(String openId);
 }
