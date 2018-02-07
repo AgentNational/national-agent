@@ -56,7 +56,7 @@ public class EnterPrisePaymentServiceImpl implements EnterPrisePaymentService {
             wxPayBill.setNonceStr(uuidGenerator.generate());// 获取uuid作为随机字符串
             wxPayBill.setCheckName("NO_CHECK");// 校验用户姓名选项，默认为不校验
             wxPayBill.setAmount(amount);// 打款金额
-            wxPayBill.setDesc(param.get("desc"));// 企业付款描述
+            wxPayBill.setDescription(param.get("desc"));// 企业付款描述
             wxPayBill.setIp(param.get("ip"));// 操作ip
             wxPayBill.setReturnCode(SuccessFail.FAIL.name());// 通信标示默认FAIL
             wxPayBill.setResultCode(SuccessFail.FAIL.name());// 下单业务结果默认FAIL
@@ -104,7 +104,7 @@ public class EnterPrisePaymentServiceImpl implements EnterPrisePaymentService {
                 enterPrisePaymentBean.setOpenid(wxPayBill.getOpenid());// 用户openid
                 enterPrisePaymentBean.setCheck_name("NO_CHECK");// 校验用户姓名选项，默认为不校验
                 enterPrisePaymentBean.setAmount(String.valueOf(wxPayBill.getAmount().multiply(new BigDecimal(100)).toBigInteger()));// 企业付款金额，单位为分
-                enterPrisePaymentBean.setDesc(wxPayBill.getDesc());// 企业付款描述信息
+                enterPrisePaymentBean.setDesc(wxPayBill.getDescription());// 企业付款描述信息
                 enterPrisePaymentBean.setSpbill_create_ip(wxPayBill.getIp());// 操作ip
                 LogUtil.info("EnterPrisePaymentServiceFacadeImpl/payment/enterPrisePaymentBean:{}",
                         JSON.toJSON(enterPrisePaymentBean));

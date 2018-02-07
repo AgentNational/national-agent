@@ -38,8 +38,8 @@ public class WxMenuController {
 
             }else{
                 String redirectUrl = menuInfo.getRedirectMenuUrl();//重定向地址
+                redirectUrl = redirectUrl.replace("openIdZhanWeiFu",openId);
                 sb.append(redirectUrl);
-                sb.append(openId);
             }
         }catch (Exception e){
 

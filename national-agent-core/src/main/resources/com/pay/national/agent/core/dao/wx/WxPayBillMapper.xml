@@ -16,7 +16,6 @@
     <result column="CHECK_NAME" property="checkName" jdbcType="VARCHAR" />
     <result column="RE_USER_NAME" property="reUserName" jdbcType="VARCHAR" />
     <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
-    <result column="DESC" property="desc" jdbcType="VARCHAR" />
     <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
     <result column="IP" property="ip" jdbcType="VARCHAR" />
     <result column="RETURN_CODE" property="returnCode" jdbcType="VARCHAR" />
@@ -35,7 +34,7 @@
       This element was generated on Sun Jan 28 11:24:07 GMT+08:00 2018.
     -->
     ID, OPTIMISTIC, PARTNER_TRADE_NO, PAYMENT_NO, OPENID, NONCE_STR, CHECK_NAME, RE_USER_NAME, 
-    AMOUNT, DESC, DESCRIPTION, IP, RETURN_CODE, RETURN_MSG, RESULT_CODE, ERR_CODE, ERR_CODE_DESC, 
+    AMOUNT, DESCRIPTION, IP, RETURN_CODE, RETURN_MSG, RESULT_CODE, ERR_CODE, ERR_CODE_DESC,
     PAYMENT_TIME, CREATE_TIME, REMARK
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -69,14 +68,14 @@
     </selectKey>
     insert into wx_pay_bill (OPTIMISTIC, PARTNER_TRADE_NO, PAYMENT_NO, 
       OPENID, NONCE_STR, CHECK_NAME, 
-      RE_USER_NAME, AMOUNT, DESC, 
+      RE_USER_NAME, AMOUNT,
       DESCRIPTION, IP, RETURN_CODE, 
       RETURN_MSG, RESULT_CODE, ERR_CODE, 
       ERR_CODE_DESC, PAYMENT_TIME, CREATE_TIME, 
       REMARK)
-    values (#{optimistic,jdbcType=INTEGER}, #{partnerTradeNo,jdbcType=VARCHAR}, #{paymentNo,jdbcType=VARCHAR}, 
+    values (0, #{partnerTradeNo,jdbcType=VARCHAR}, #{paymentNo,jdbcType=VARCHAR},
       #{openid,jdbcType=VARCHAR}, #{nonceStr,jdbcType=VARCHAR}, #{checkName,jdbcType=VARCHAR}, 
-      #{reUserName,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{desc,jdbcType=VARCHAR}, 
+      #{reUserName,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL},
       #{description,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{returnCode,jdbcType=VARCHAR}, 
       #{returnMsg,jdbcType=VARCHAR}, #{resultCode,jdbcType=VARCHAR}, #{errCode,jdbcType=VARCHAR}, 
       #{errCodeDesc,jdbcType=VARCHAR}, #{paymentTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
@@ -116,9 +115,6 @@
       </if>
       <if test="amount != null" >
         AMOUNT,
-      </if>
-      <if test="desc != null" >
-        DESC,
       </if>
       <if test="description != null" >
         DESCRIPTION,
@@ -175,9 +171,6 @@
       </if>
       <if test="amount != null" >
         #{amount,jdbcType=DECIMAL},
-      </if>
-      <if test="desc != null" >
-        #{desc,jdbcType=VARCHAR},
       </if>
       <if test="description != null" >
         #{description,jdbcType=VARCHAR},
@@ -243,9 +236,6 @@
       <if test="amount != null" >
         AMOUNT = #{amount,jdbcType=DECIMAL},
       </if>
-      <if test="desc != null" >
-        DESC = #{desc,jdbcType=VARCHAR},
-      </if>
       <if test="description != null" >
         DESCRIPTION = #{description,jdbcType=VARCHAR},
       </if>
@@ -294,7 +284,6 @@
       CHECK_NAME = #{checkName,jdbcType=VARCHAR},
       RE_USER_NAME = #{reUserName,jdbcType=VARCHAR},
       AMOUNT = #{amount,jdbcType=DECIMAL},
-      DESC = #{desc,jdbcType=VARCHAR},
       DESCRIPTION = #{description,jdbcType=VARCHAR},
       IP = #{ip,jdbcType=VARCHAR},
       RETURN_CODE = #{returnCode,jdbcType=VARCHAR},
