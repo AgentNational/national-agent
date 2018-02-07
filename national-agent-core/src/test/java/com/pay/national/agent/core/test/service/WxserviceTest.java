@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.pay.national.agent.common.bean.wx.WxJssdkConfig;
 import com.pay.national.agent.common.constants.WeiXinConstant;
 import com.pay.national.agent.common.utils.HttpClientUtil;
+import com.pay.national.agent.core.service.wx.EnterPrisePaymentService;
 import com.pay.national.agent.core.service.wx.MenuInfoService;
 import com.pay.national.agent.core.service.wx.gate.WxService;
 import com.pay.national.agent.core.service.wx.impl.WxJssdkConfigMethod;
@@ -16,7 +17,9 @@ import org.junit.Test;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WxserviceTest extends BaseTest{
 
@@ -25,6 +28,17 @@ public class WxserviceTest extends BaseTest{
 
     @Resource
     WxJssdkConfigMethod wxJssdkConfigMethod;
+
+    @Resource
+    EnterPrisePaymentService enterPrisePaymentService;
+
+    @Test
+    public void testWxpayBill(){
+        Map<String,String> map = new HashMap<>();
+        map.put("openId","dsfeqwrtgdfs");
+        map.put("amount","100");
+        enterPrisePaymentService.createPayBill(map);
+    }
 
     @Test
     public void testGetConfig(){
@@ -188,4 +202,7 @@ public class WxserviceTest extends BaseTest{
         return json;
 
     }
+
+
+
 }

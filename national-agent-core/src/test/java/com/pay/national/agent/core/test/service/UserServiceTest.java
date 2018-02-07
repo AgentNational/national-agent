@@ -1,25 +1,20 @@
 package com.pay.national.agent.core.test.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.junit.Test;
-
 import com.pay.national.agent.core.facade.UserFacade;
 import com.pay.national.agent.core.test.context.BaseTest;
+
+import javax.annotation.Resource;
 
 public class UserServiceTest extends BaseTest{
 
 	@Resource
 	private UserFacade userFacade;
 	
-	@Test
-	public void testSendRegisterCheckCode (){
-		Map<String, String> params = new HashMap<>();
-		params.put("phoneNo", "13622211426");
-		userFacade.sendRegisterCheckCode(params);
+
+	public static void  main (String [] args){
+		String redirectUrl = "http://git.javams.com/na-source/index.html?openId=openIdZhanWeiFu#/home";//重定向地址
+		redirectUrl = redirectUrl.replace("openIdZhanWeiFu","12346465464");
+		System.out.println(redirectUrl);
 	}
 	
 	/*@Test
