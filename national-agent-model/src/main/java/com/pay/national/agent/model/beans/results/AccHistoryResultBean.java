@@ -1,17 +1,15 @@
-package com.pay.national.agent.model.entity;
+package com.pay.national.agent.model.beans.results;
+
+import com.alibaba.fastjson.annotation.JSONField;
 
 import java.util.Date;
 
 /**
+ *
  * @author shuyan.qi
+ * @date 2018/2/6
  */
-public class AccountHistory extends BaseEntity{
-    private static final long serialVersionUID = -5004473018513268379L;
-
-    /**
-     * 账户编号
-     */
-    private String accountNo;
+public class AccHistoryResultBean {
 
     /**
      * 金额
@@ -19,9 +17,9 @@ public class AccountHistory extends BaseEntity{
     private Double amount;
 
     /**
-     * 用户编号
+     * 业务名称
      */
-    private String userNo;
+    private String businessName;
 
     /**
      *业务编码
@@ -46,6 +44,7 @@ public class AccountHistory extends BaseEntity{
     /**
      *创建时间
      */
+    @JSONField(format = "yyyy-MM-dd")
     private Date createTime;
 
     /**
@@ -58,19 +57,6 @@ public class AccountHistory extends BaseEntity{
      */
     private String wxBillNo;
 
-    /**
-     * 错误信息
-     */
-    private String errorMsg;
-
-    public String getAccountNo() {
-        return accountNo;
-    }
-
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
-    }
-
     public Double getAmount() {
         return amount;
     }
@@ -79,12 +65,12 @@ public class AccountHistory extends BaseEntity{
         this.amount = amount;
     }
 
-    public String getUserNo() {
-        return userNo;
+    public String getBusinessName() {
+        return businessName;
     }
 
-    public void setUserNo(String userNo) {
-        this.userNo = userNo;
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
 
     public String getBusinessCode() {
@@ -143,20 +129,11 @@ public class AccountHistory extends BaseEntity{
         this.wxBillNo = wxBillNo;
     }
 
-    public String getErrorMsg() {
-        return errorMsg;
-    }
-
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
-    }
-
     @Override
     public String toString() {
-        return "AccountHistory{" +
-                "accountNo='" + accountNo + '\'' +
-                ", amount=" + amount +
-                ", userNo='" + userNo + '\'' +
+        return "AccHistoryResultBean{" +
+                "amount=" + amount +
+                ", businessName='" + businessName + '\'' +
                 ", businessCode='" + businessCode + '\'' +
                 ", parentBusinessCode='" + parentBusinessCode + '\'' +
                 ", status='" + status + '\'' +
@@ -164,7 +141,6 @@ public class AccountHistory extends BaseEntity{
                 ", createTime=" + createTime +
                 ", lastUpdateTime=" + lastUpdateTime +
                 ", wxBillNo='" + wxBillNo + '\'' +
-                ", errorMsg='" + errorMsg + '\'' +
                 '}';
     }
 }

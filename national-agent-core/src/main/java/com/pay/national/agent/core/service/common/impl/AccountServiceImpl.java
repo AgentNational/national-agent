@@ -3,6 +3,7 @@ package com.pay.national.agent.core.service.common.impl;
 import com.pay.commons.utils.lang.AmountUtils;
 import com.pay.national.agent.common.exception.NationalAgentException;
 import com.pay.national.agent.common.persistence.Page;
+import com.pay.national.agent.common.utils.BeanUtils;
 import com.pay.national.agent.common.utils.JSONUtils;
 import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.common.utils.StringUtils;
@@ -13,6 +14,7 @@ import com.pay.national.agent.core.service.wx.EnterPrisePaymentService;
 import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.beans.query.DepositParam;
 import com.pay.national.agent.model.beans.query.RemitParam;
+import com.pay.national.agent.model.beans.results.AccHistoryResultBean;
 import com.pay.national.agent.model.beans.results.DepositBean;
 import com.pay.national.agent.model.beans.results.RemitBean;
 import com.pay.national.agent.model.constants.AccountConstants;
@@ -29,10 +31,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -76,15 +75,25 @@ public class AccountServiceImpl implements AccountService {
      * 账户历史记录
      * @param userNo 用户编号
      * @param parentBusinessCode 业务编码
+     * @param month 月份 格式 yyyy-MM-dd
      * @param page 分页
      * @return
      */
     @Override
-    public String accHistories(String userNo,String parentBusinessCode, Page<AccountHistory> page) {
-        ReturnBean<List<AccountHistory>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
+    public String accHistories(String userNo,String parentBusinessCode,String month, Page<AccountHistory> page) {
+        ReturnBean<List<AccHistoryResultBean>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
         try {
-            List<AccountHistory> list = accountHistoryMapper.findAllHistory(userNo,parentBusinessCode,page);
-            returnBean.setData(list);
+            List<AccountHistory> list = accountHistoryMapper.findAllHistory(userNo,parentBusinessCode,month,page);
+            if(list != null && list.size() >0){
+                List<AccHistoryResultBean> resultList = new ArrayList<AccHistoryResultBean>(10);
+                for (AccountHistory history:list) {
+                    AccHistoryResultBean accHistoryResultBean = new AccHistoryResultBean();
+                    BeanUtils.applyIf(accHistoryResultBean,history);
+                    accHistoryResultBean.setBusinessName(BusinessCode.valueOf(accHistoryResultBean.getBusinessCode()).getBusienssName());
+                    resultList.add(accHistoryResultBean);
+                }
+                returnBean.setData(resultList);
+            }
         } catch (Exception e) {
             LogUtil.error("账户历史记录 error userNo={},parentBusinessCode={},page={}",userNo,parentBusinessCode,page,e);
             returnBean.setCode(RetCodeConstants.ERROR);
@@ -112,6 +121,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public RemitBean remit(RemitParam param) {
         RemitBean remitBean = null;
+        double remitAmount = 0.00D;//真正付款的金额
         try {
             checkRemit(param);
             AccountHistory accountHistory = new AccountHistory();
@@ -125,12 +135,14 @@ public class AccountServiceImpl implements AccountService {
             List<AccountHistory> yanjin = accountHistoryMapper.selectByUser(param.getUserNo(),BusinessCode.REMIT_YAJIN.name());
             if(yanjin == null || yanjin.size() == 0){
                 double subtract = AmountUtils.subtract(param.getAmount(), REMIT_YAJIN);
-                accountHistory.setAmount(subtract);
+                remitAmount = subtract;
                 accountHistory.setBusinessCode(BusinessCode.REMIT_YAJIN.name());
+            }else{
+                remitAmount = param.getAmount();
             }
 
             Map<String,String> payParam =  new HashMap<String,String>(4);
-            payParam.put("amount",String.valueOf(accountHistory.getAmount()));
+            payParam.put("amount",String.valueOf(remitAmount));
             payParam.put("desc","全民代理用户提现");
             payParam.put("openId",param.getOpenId());
             payParam.put("ip",param.getUserIp());
@@ -139,6 +151,7 @@ public class AccountServiceImpl implements AccountService {
             try {
                 //生成付款单
                 ReturnBean<Object> returnBean = enterPrisePaymentService.createPayBill(payParam);
+
                 if(returnBean != null && RetCodeConstants.SUCCESS.equals(returnBean.getCode())){
                     accountHistory.setStatus(StatusConstants.SUCCESS);
                     accountHistory.setWxBillNo(returnBean.getData().toString());
@@ -157,7 +170,7 @@ public class AccountServiceImpl implements AccountService {
             }
 
             //调用微信企业付款进行出款操作
-            if(StatusConstants.SUCCESS.equals(accountHistory.getStatus())){
+           /*if(StatusConstants.SUCCESS.equals(accountHistory.getStatus())){
                 try {
                     String payResult = enterPrisePaymentService.payment(accountHistory.getWxBillNo());
                     if(StringUtils.isBlank(payResult)){
@@ -181,7 +194,7 @@ public class AccountServiceImpl implements AccountService {
                     accountHistory.setStatus(StatusConstants.ERROR);
                     accountHistory.setErrorMsg("微信父企业付款异常;"+e.getMessage());
                 }
-            }
+            }*/
 
             //减去账户金额
             if(StatusConstants.SUCCESS.equals(accountHistory.getStatus())){
@@ -227,7 +240,7 @@ public class AccountServiceImpl implements AccountService {
         }
         param.setAccountNo(account.getAccountNo());
         double subtract = AmountUtils.subtract(account.getBalance(), param.getAmount());
-        if(subtract < 0.00){
+        if(subtract <= 0.00){
             throw new NationalAgentException(RetCodeConstants.FAIL,REMIT_BALANCE_SHORTAGE);
         }
 

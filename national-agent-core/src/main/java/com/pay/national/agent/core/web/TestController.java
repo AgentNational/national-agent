@@ -14,6 +14,7 @@ import com.pay.national.agent.model.entity.MenuInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -29,6 +30,12 @@ public class TestController {
 
     @Resource
     private WxService wxService;
+
+
+    @RequestMapping(value = "/hello",method = RequestMethod.GET)
+    public @ResponseBody  String hello(){
+       return "hello";
+    }
 
     @RequestMapping(value = "/testMenu",method = RequestMethod.GET)
     public @ResponseBody String testMenu(){
