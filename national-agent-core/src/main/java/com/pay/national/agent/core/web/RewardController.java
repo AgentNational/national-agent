@@ -1,11 +1,11 @@
 package com.pay.national.agent.core.web;
 
-import com.pay.national.agent.common.utils.DateUtil;
-import com.pay.national.agent.common.utils.LogUtil;
-import com.pay.national.agent.common.utils.SimpleDateUtils;
-import com.pay.national.agent.common.utils.StringUtils;
+import com.pay.national.agent.common.exception.NationalAgentException;
+import com.pay.national.agent.common.utils.*;
 import com.pay.national.agent.core.service.common.RewardService;
 import com.pay.national.agent.core.service.wx.WxUserInfoService;
+import com.pay.national.agent.model.beans.ReturnBean;
+import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.entity.WxUserInfo;
 import com.pay.national.agent.model.enums.ParentBusinessCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  *奖励
@@ -44,12 +45,15 @@ public class RewardController {
         WxUserInfo wxUserInfo = null;
         String result = null;
         try {
-            wxUserInfo = wxUserInfoService.selectByOpenId(openId);
+            wxUserInfo = wxUserInfoService.find4Login(openId);
             result = rewardService.rewardGather(wxUserInfo.getUserNo(), StringUtils.isBlank(parentBusinessCode)?null:ParentBusinessCode.valueOf(parentBusinessCode));
-        } catch (Exception e) {
-            LogUtil.error("Con 奖励汇总信息 error",e);
+        } catch (NationalAgentException e1) {
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(e1.getCode(),e1.getMessage()));
+        } catch (Exception e){
+            LogUtil.error("Con 奖励汇总信息 openId={},parentBusinessCode={}",openId,parentBusinessCode,e);
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01));
         }
-        LogUtil.info("Con 奖励汇总信息 return userNo={},result={}",wxUserInfo.getUserNo(),result);
+        LogUtil.info("Con 奖励汇总信息 return openId={},parentBusinessCode={},result={}",openId,parentBusinessCode,result);
         return result;
     }
 
@@ -63,11 +67,20 @@ public class RewardController {
     @ResponseBody
     public String gatherOfThreeMonth(@RequestParam("openId")String openId,String parentBusinessCode){
         LogUtil.info("Con 近三个月的奖励月汇总 openId={},parentBusinessCode={}",openId,parentBusinessCode);
-        Date startDate = DateUtil.getFirstDay(new Date(), 0);
-        Date endDate = DateUtil.getFirstDay(new Date(), 2);
-        WxUserInfo wxUserInfo = wxUserInfoService.selectByOpenId(openId);
-        String result =  rewardService.gatherOfMonth(wxUserInfo.getUserNo(),StringUtils.isBlank(parentBusinessCode)?null:ParentBusinessCode.valueOf(parentBusinessCode),startDate,endDate);
-        LogUtil.info("Con 近三个月的奖励月汇总 return userNo={},parentBusinessCode={},result={}",wxUserInfo.getUserNo(),parentBusinessCode,result);
+        WxUserInfo wxUserInfo = null;
+        String result = null;
+        try {
+            Date startDate = DateUtil.getFirstDay(new Date(), 0);
+            Date endDate = DateUtil.getFirstDay(new Date(), 2);
+            wxUserInfo = wxUserInfoService.find4Login(openId);
+            result = rewardService.gatherOfMonth(wxUserInfo.getUserNo(), StringUtils.isBlank(parentBusinessCode)?null: ParentBusinessCode.valueOf(parentBusinessCode),startDate,endDate);
+        } catch (NationalAgentException e1) {
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(e1.getCode(),e1.getMessage()));
+        } catch (Exception e){
+            LogUtil.error("Con 近三个月的奖励月汇总 openId={},parentBusinessCode={}",openId,parentBusinessCode,e);
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01));
+        }
+        LogUtil.info("Con 近三个月的奖励月汇总 return openId={},parentBusinessCode={},result={}",openId,parentBusinessCode,result);
         return result;
     }
 
@@ -81,11 +94,20 @@ public class RewardController {
     @ResponseBody
     public String gatherOfDay(@RequestParam("month")String month,@RequestParam("openId")String openId,String parentBusinessCode){
         LogUtil.info("Con 奖励日汇总信息 openId={},month={},parentBusinessCode={}",openId,month,parentBusinessCode);
-        Date startDate = SimpleDateUtils.parseDate(month+"-01");
-        Date endDate = DateUtil.getLastDay(startDate,0);
-        WxUserInfo wxUserInfo = wxUserInfoService.selectByOpenId(openId);
-        String result = rewardService.gatherOfDay(wxUserInfo.getUserNo(),StringUtils.isBlank(parentBusinessCode)?null:ParentBusinessCode.valueOf(parentBusinessCode),startDate,endDate);
-        LogUtil.info("Con 奖励日汇总信息 return userNo={},month={},parentBusinessCode={},result={}",wxUserInfo.getUserNo(),month,parentBusinessCode,result);
+        WxUserInfo wxUserInfo = null;
+        String result = null;
+        try {
+            Date startDate = SimpleDateUtils.parseDate(month+"-01");
+            Date endDate = DateUtil.getLastDay(startDate,0);
+            wxUserInfo = wxUserInfoService.find4Login(openId);
+            result = rewardService.gatherOfDay(wxUserInfo.getUserNo(), StringUtils.isBlank(parentBusinessCode)?null: ParentBusinessCode.valueOf(parentBusinessCode),startDate,endDate);
+        } catch (NationalAgentException e1) {
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(e1.getCode(),e1.getMessage()));
+        } catch (Exception e){
+            LogUtil.error("Con 奖励日汇总信息 error openId={},month={},parentBusinessCode={}",openId,month,parentBusinessCode,e);
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01));
+        }
+        LogUtil.info("Con 奖励日汇总信息 return openId={},month={},parentBusinessCode={},result={}",openId,month,parentBusinessCode,result);
         return result;
     }
 }

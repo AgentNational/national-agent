@@ -10,11 +10,11 @@ import com.pay.national.agent.model.entity.WxUserInfo;
 public interface WxUserInfoService {
 
     /**
-     * 根据用户的openId获取微信用户信息
+     *
      * @param openId
      * @return
      */
-    WxUserInfo selectByOpenId(String openId);
+    WxUserInfo find4Login(String openId);
 
     /**
      * 插入

@@ -1,6 +1,7 @@
 package com.pay.national.agent.core.web;
 
 import com.pay.commons.utils.lang.AmountUtils;
+import com.pay.national.agent.common.exception.NationalAgentException;
 import com.pay.national.agent.common.utils.JSONUtils;
 import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.core.service.common.AccountService;
@@ -45,7 +46,7 @@ public class UserController {
 		ReturnBean<Map<String,Object>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
 
 		try {
-			WxUserInfo wxUserInfo = wxUserInfoService.selectByOpenId(openId);
+			WxUserInfo wxUserInfo = wxUserInfoService.find4Login(openId);
 			Account account = accountService.findByUser(wxUserInfo.getUserNo());
 			Map<String,Object> map = new HashMap<String,Object>(3);
 			map.put("touxiang",wxUserInfo.getHeadimgurl());
@@ -55,6 +56,9 @@ public class UserController {
 			double balance = AmountUtils.subtract(subtract, account.getFrozenAmount());
 			map.put("balance",balance);
 			returnBean.setData(map);
+		} catch(NationalAgentException e1){
+			returnBean.setCode(e1.getCode());
+			returnBean.setMsg(e1.getMessage());
 		} catch (Exception e) {
 			LogUtil.error("Con 个人中心 error openId={}",openId,e);
 			returnBean.setCode(RetCodeConstants.ERROR);

@@ -162,4 +162,14 @@
     FROM  account
     WHERE account_no = #{accountNo,jdbcType=VARCHAR}
   </select>
+
+  <!-- 操作账户金额的方法，谨慎使用 -->
+  <update id="amountOnLock">
+    UPDATE account
+    SET balance = #{account.balance,jdbcType=DOUBLE},
+        optimistic = optimistic +1,
+        last_update_time = #{account.lastUpdateTime,jdbcType=TIMESTAMP}
+    WHERE  id = #{account.id,jdbcType=BIGINT}
+    AND  optimistic = #{account.optimistic,jdbcType=INTEGER}
+  </update>
 </mapper>

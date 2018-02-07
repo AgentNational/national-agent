@@ -68,7 +68,7 @@ public class RemitBean {
     }
 
     public void setRemitAmount(double remitAmount) {
-        remitAmount = remitAmount;
+        this.remitAmount = remitAmount;
     }
 
     public double getFee() {

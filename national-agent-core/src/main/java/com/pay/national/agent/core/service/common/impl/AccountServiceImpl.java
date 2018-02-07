@@ -47,6 +47,11 @@ public class AccountServiceImpl implements AccountService {
     private static final String REMIT_AMOUNT_LIMIT = "提现金额必须不低于40元";
     private static final String REMIT_ERROR="提现异常";
 
+
+    /**
+     * 用户提现最低金额限制
+     */
+    public static final double USER_WITHDRAW_LIMIT = 40.0;
     /**
      * 押金
      */
@@ -106,76 +111,106 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public RemitBean remit(RemitParam param) {
-        checkRemit(param);
-        AccountHistory accountHistory = new AccountHistory();
-        accountHistory.setAccountNo(param.getAccountNo());
-        accountHistory.setUserNo(param.getUserNo());
-        accountHistory.setParentBusinessCode(ParentBusinessCode.ACCOUNT_REMIT.name());
-        accountHistory.setBusinessCode(BusinessCode.REMIT_USER.name());
-        accountHistory.setSymbol(AccountConstants.SYMBOL_SUBTRACT);
-        accountHistory.setAmount(param.getAmount());
-        List<AccountHistory> yanjin = null;//accountHistoryMapper.selectByBusiness(param.getUserNo(),BusinessCode.REMIT_YAJIN.name());
-        if(yanjin == null || yanjin.size() == 0){
-            double subtract = AmountUtils.subtract(param.getAmount(), REMIT_YAJIN);
-            param.setAmount(subtract);
-            accountHistory.setAmount(subtract);
-            accountHistory.setBusinessCode(BusinessCode.REMIT_YAJIN.name());
-        }
-
-        Map<String,String> payParam =  new HashMap<String,String>();
-        payParam.put("amount",String.valueOf(param.getAmount()));
-        payParam.put("desc","全民代理用户提现");
-        payParam.put("openId",param.getOpenId());
-        payParam.put("ip",param.getUserIp());
+        RemitBean remitBean = null;
         try {
-            ReturnBean<Object> returnBean = enterPrisePaymentService.createPayBill(payParam);
-            if(returnBean != null && RetCodeConstants.SUCCESS.equals(returnBean.getCode())){
-                accountHistory.setStatus(StatusConstants.SUCCESS);
-                accountHistory.setWxBillNo(returnBean.getData().toString());
-            }else{
-                accountHistory.setStatus(StatusConstants.FAIL);
-                if(returnBean != null){
-                    accountHistory.setErrorMsg("创建付款单失败");
-                }else{
-                    accountHistory.setErrorMsg("创建付款单异常,returnBean is null");
-                }
+            checkRemit(param);
+            AccountHistory accountHistory = new AccountHistory();
+            accountHistory.setAccountNo(param.getAccountNo());
+            accountHistory.setUserNo(param.getUserNo());
+            accountHistory.setParentBusinessCode(ParentBusinessCode.ACCOUNT_REMIT.name());
+            accountHistory.setBusinessCode(BusinessCode.REMIT_USER.name());
+            accountHistory.setSymbol(AccountConstants.SYMBOL_SUBTRACT);
+            accountHistory.setAmount(param.getAmount());
+            accountHistory.setCreateTime(new Date());
+            List<AccountHistory> yanjin = accountHistoryMapper.selectByUser(param.getUserNo(),BusinessCode.REMIT_YAJIN.name());
+            if(yanjin == null || yanjin.size() == 0){
+                double subtract = AmountUtils.subtract(param.getAmount(), REMIT_YAJIN);
+                accountHistory.setAmount(subtract);
+                accountHistory.setBusinessCode(BusinessCode.REMIT_YAJIN.name());
             }
-        } catch (Exception e) {
-            LogUtil.error("出款 创建付款单异常 payParam={}",payParam,e);
-            accountHistory.setStatus(StatusConstants.ERROR);
-            accountHistory.setErrorMsg("创建付款单异常;"+e.getMessage());
-        }
 
-        if(StatusConstants.SUCCESS.equals(accountHistory.getStatus())){
+            Map<String,String> payParam =  new HashMap<String,String>(4);
+            payParam.put("amount",String.valueOf(accountHistory.getAmount()));
+            payParam.put("desc","全民代理用户提现");
+            payParam.put("openId",param.getOpenId());
+            payParam.put("ip",param.getUserIp());
+
+
             try {
-                String payResult = enterPrisePaymentService.payment(accountHistory.getWxBillNo());
-                if(StringUtils.isBlank(payResult)){
-                    accountHistory.setStatus(StatusConstants.ERROR);
-                    accountHistory.setErrorMsg("微信企业付款异常,result is null");
-                }
-
-                ReturnBean<Object> returnBean = JSONUtils.toObject(payResult, ReturnBean.class);
+                //生成付款单
+                ReturnBean<Object> returnBean = enterPrisePaymentService.createPayBill(payParam);
                 if(returnBean != null && RetCodeConstants.SUCCESS.equals(returnBean.getCode())){
                     accountHistory.setStatus(StatusConstants.SUCCESS);
+                    accountHistory.setWxBillNo(returnBean.getData().toString());
                 }else{
                     accountHistory.setStatus(StatusConstants.FAIL);
                     if(returnBean != null){
-                        accountHistory.setErrorMsg("微信企业付款失败");
+                        accountHistory.setErrorMsg("创建付款单失败");
                     }else{
-                        accountHistory.setErrorMsg("微信企业付款异常 returnBean is null");
+                        accountHistory.setErrorMsg("创建付款单异常,returnBean is null");
                     }
                 }
             } catch (Exception e) {
-                LogUtil.error("出款 微信父企业付款异常 accountHistory={}",accountHistory,e);
+                LogUtil.error("出款 创建付款单异常 payParam={}",payParam,e);
                 accountHistory.setStatus(StatusConstants.ERROR);
-                accountHistory.setErrorMsg("微信父企业付款异常;"+e.getMessage());
+                accountHistory.setErrorMsg("创建付款单异常;"+e.getMessage());
             }
+
+            //调用微信企业付款进行出款操作
+            if(StatusConstants.SUCCESS.equals(accountHistory.getStatus())){
+                try {
+                    String payResult = enterPrisePaymentService.payment(accountHistory.getWxBillNo());
+                    if(StringUtils.isBlank(payResult)){
+                        accountHistory.setStatus(StatusConstants.ERROR);
+                        accountHistory.setErrorMsg("微信企业付款异常,result is null");
+                    }
+
+                    ReturnBean<Object> returnBean = JSONUtils.toObject(payResult, ReturnBean.class);
+                    if(returnBean != null && RetCodeConstants.SUCCESS.equals(returnBean.getCode())){
+                        accountHistory.setStatus(StatusConstants.SUCCESS);
+                    }else{
+                        accountHistory.setStatus(StatusConstants.FAIL);
+                        if(returnBean != null){
+                            accountHistory.setErrorMsg("微信企业付款失败");
+                        }else{
+                            accountHistory.setErrorMsg("微信企业付款异常 returnBean is null");
+                        }
+                    }
+                } catch (Exception e) {
+                    LogUtil.error("出款 微信父企业付款异常 accountHistory={}",accountHistory,e);
+                    accountHistory.setStatus(StatusConstants.ERROR);
+                    accountHistory.setErrorMsg("微信父企业付款异常;"+e.getMessage());
+                }
+            }
+
+            //减去账户金额
+            if(StatusConstants.SUCCESS.equals(accountHistory.getStatus())){
+                try {
+                    subAmount(accountHistory.getAccountNo(),accountHistory.getAmount());
+                } catch (Exception e) {
+                    LogUtil.error("出款 减去账户的金额异常 accountHistory={}",accountHistory,e);
+                    accountHistory.setStatus(StatusConstants.ERROR);
+                    accountHistory.setErrorMsg("减去账户金额异常;"+e.getMessage());
+                }
+            }
+
+            accountHistoryMapper.insert(accountHistory);
+
+            remitBean = new RemitBean();
+            remitBean.setAmount(param.getAmount());
+            remitBean.setRemitAmount(accountHistory.getAmount());
+            remitBean.setPayBillNo(accountHistory.getWxBillNo());
+            remitBean.setPayStatus(accountHistory.getStatus());
+            remitBean.setFee(0.00);
+            if(BusinessCode.REMIT_YAJIN.name().equals(accountHistory.getBusinessCode())){
+                remitBean.setYajin(REMIT_YAJIN);
+            }
+            remitBean.setTransTime(accountHistory.getCreateTime());
+        } catch (Exception e) {
+            LogUtil.error("出款异常 param={}",param,e);
+            throw new NationalAgentException(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01);
         }
-
-        RemitBean remitBean = new RemitBean();
-       // remitBean.set
-
-        return null;
+        return remitBean;
     }
 
     /**
@@ -183,7 +218,7 @@ public class AccountServiceImpl implements AccountService {
      * @param param
      */
     private void checkRemit(RemitParam param) {
-        if(param.getAmount() < 40.0){
+        if(param.getAmount() < USER_WITHDRAW_LIMIT){
             throw new NationalAgentException(RetCodeConstants.FAIL,REMIT_AMOUNT_LIMIT);
         }
         Account account = accountMapper.findByuser(param.getUserNo());
@@ -209,15 +244,22 @@ public class AccountServiceImpl implements AccountService {
            double add = AmountUtils.add(account.getBalance(), amount1.doubleValue());
            account.setLastUpdateTime(new Date());
            account.setBalance(add);
-           accountMapper.updateOnLock(account);
+           accountMapper.amountOnLock(account);
        }
-       LogUtil.info("账户加钱中"+Thread.currentThread().getName());
     }
 
     @Override
     @Transactional(propagation = Propagation.NESTED, rollbackFor = Throwable.class)
     public void subAmount(String accountNo, double amount) {
-
+        Account account = accountMapper.find(accountNo);
+        if(account != null){
+            BigDecimal decimal = new BigDecimal(amount);
+            BigDecimal amount1 = decimal.setScale(2,BigDecimal.ROUND_HALF_DOWN);
+            double subtract = AmountUtils.subtract(account.getBalance(), amount1.doubleValue());
+            account.setLastUpdateTime(new Date());
+            account.setBalance(subtract);
+            int low = accountMapper.amountOnLock(account);
+        }
     }
 
     /**

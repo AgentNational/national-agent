@@ -25,7 +25,7 @@ public class WxUserInfoServiceImpl implements WxUserInfoService {
      * @return
      */
     @Override
-    public WxUserInfo selectByOpenId(String openId) {
+    public WxUserInfo find4Login(String openId) {
         WxUserInfo wxUserInfo = wxUserInfoMapper.selectByOpenId(openId);
         if(wxUserInfo == null){
             throw new NationalAgentException(RetCodeConstants.ERROR,RetCodeConstants.ERROR_NO_USER);
