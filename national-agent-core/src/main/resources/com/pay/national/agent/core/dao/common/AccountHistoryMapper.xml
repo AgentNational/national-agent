@@ -210,4 +210,10 @@
       AND business_code = #{businessCode,jdbcType=VARCHAR}
     </if>
   </select>
+
+  <select id="findRemitHistory" resultMap="BaseResultMap">
+    SELECT <include refid="Web_Column_list"/>
+    FROM  account_history
+    WHERE wx_bill_no = #{wxBillNo,jdbcType=VARCHAR}
+  </select>
 </mapper>

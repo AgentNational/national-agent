@@ -3,10 +3,7 @@ package com.pay.national.agent.core.service.common.impl;
 import com.pay.commons.utils.lang.AmountUtils;
 import com.pay.national.agent.common.exception.NationalAgentException;
 import com.pay.national.agent.common.persistence.Page;
-import com.pay.national.agent.common.utils.BeanUtils;
-import com.pay.national.agent.common.utils.JSONUtils;
-import com.pay.national.agent.common.utils.LogUtil;
-import com.pay.national.agent.common.utils.StringUtils;
+import com.pay.national.agent.common.utils.*;
 import com.pay.national.agent.core.dao.common.AccountHistoryMapper;
 import com.pay.national.agent.core.dao.common.AccountMapper;
 import com.pay.national.agent.core.service.common.AccountService;
@@ -50,17 +47,24 @@ public class AccountServiceImpl implements AccountService {
     /**
      * 用户提现最低金额限制
      */
-    public static final double USER_WITHDRAW_LIMIT = 40.0;
+    public static double USER_WITHDRAW_LIMIT = 0.00;
     /**
      * 押金
      */
-    public static final double REMIT_YAJIN = 39.0;
+    public static double REMIT_YAJIN = 0.00;
+
+    private static PropertiesLoader system = new PropertiesLoader("system.properties");
     @Autowired
     private AccountMapper accountMapper;
     @Autowired
     private AccountHistoryMapper accountHistoryMapper;
     @Autowired
     private EnterPrisePaymentService enterPrisePaymentService;
+
+    static {
+        USER_WITHDRAW_LIMIT = system.getDouble("user.withdraw.limit");
+        REMIT_YAJIN = system.getDouble("user.withdraw.yajin");
+    }
     /**
      * 用户信息
      * @param userNo 用户编号
@@ -121,7 +125,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public RemitBean remit(RemitParam param) {
         RemitBean remitBean = null;
-        double remitAmount = 0.00D;//真正付款的金额
+        //真正付款的金额
+        double remitAmount = 0.00D;
         try {
             checkRemit(param);
             AccountHistory accountHistory = new AccountHistory();
@@ -134,8 +139,7 @@ public class AccountServiceImpl implements AccountService {
             accountHistory.setCreateTime(new Date());
             List<AccountHistory> yanjin = accountHistoryMapper.selectByUser(param.getUserNo(),BusinessCode.REMIT_YAJIN.name());
             if(yanjin == null || yanjin.size() == 0){
-                double subtract = AmountUtils.subtract(param.getAmount(), REMIT_YAJIN);
-                remitAmount = subtract;
+                remitAmount = AmountUtils.subtract(param.getAmount(), REMIT_YAJIN);
                 accountHistory.setBusinessCode(BusinessCode.REMIT_YAJIN.name());
             }else{
                 remitAmount = param.getAmount();
@@ -170,7 +174,7 @@ public class AccountServiceImpl implements AccountService {
             }
 
             //调用微信企业付款进行出款操作
-           /*if(StatusConstants.SUCCESS.equals(accountHistory.getStatus())){
+           if(StatusConstants.SUCCESS.equals(accountHistory.getStatus())){
                 try {
                     String payResult = enterPrisePaymentService.payment(accountHistory.getWxBillNo());
                     if(StringUtils.isBlank(payResult)){
@@ -194,7 +198,7 @@ public class AccountServiceImpl implements AccountService {
                     accountHistory.setStatus(StatusConstants.ERROR);
                     accountHistory.setErrorMsg("微信父企业付款异常;"+e.getMessage());
                 }
-            }*/
+            }
 
             //减去账户金额
             if(StatusConstants.SUCCESS.equals(accountHistory.getStatus())){
@@ -221,7 +225,7 @@ public class AccountServiceImpl implements AccountService {
             remitBean.setTransTime(accountHistory.getCreateTime());
         } catch (Exception e) {
             LogUtil.error("出款异常 param={}",param,e);
-            throw new NationalAgentException(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01);
+            throw new NationalAgentException(RetCodeConstants.ERROR,REMIT_ERROR);
         }
         return remitBean;
     }
@@ -304,5 +308,10 @@ public class AccountServiceImpl implements AccountService {
             LogUtil.error("开户异常 userNo={}",userNo,e);
             throw e;
         }
+    }
+
+    @Override
+    public AccountHistory findRemitHistory(String billNo) {
+        return accountHistoryMapper.findRemitHistory(billNo);
     }
 }

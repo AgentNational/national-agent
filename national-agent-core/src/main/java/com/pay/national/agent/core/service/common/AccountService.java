@@ -64,4 +64,11 @@ public interface AccountService {
      * @param userNo 用户编号
      */
     void openAccount(String userNo);
+
+    /**
+     * 查询提现记录
+     * @param billNo
+     * @return
+     */
+    AccountHistory findRemitHistory(String billNo);
 }

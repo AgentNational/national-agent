@@ -25,4 +25,6 @@ public interface AccountHistoryMapper {
     List<AccountHistory> findAllHistory(@Param("userNo") String userNo,@Param("parentBusinessCode") String parentBusinessCode,@Param("month") String month, @Param("page") Page<AccountHistory> page);
 
     List<AccountHistory> selectByUser(@Param("userNo") String userNo, @Param("businessCode") String businessCode);
+
+    AccountHistory findRemitHistory(@Param("wxBillNo") String billNo);
 }
