@@ -1,5 +1,7 @@
 package com.pay.national.agent.model.beans.results;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 /**
@@ -33,7 +35,7 @@ public class RemitBean {
     /**
      *押金
      */
-    private double yajin;
+    private Double yajin;
     /**
      *交易时间
      */
@@ -79,11 +81,11 @@ public class RemitBean {
         this.fee = fee;
     }
 
-    public double getYajin() {
+    public Double getYajin() {
         return yajin;
     }
 
-    public void setYajin(double yajin) {
+    public void setYajin(Double yajin) {
         this.yajin = yajin;
     }
 

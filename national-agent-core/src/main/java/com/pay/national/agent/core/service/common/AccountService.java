@@ -25,10 +25,11 @@ public interface AccountService {
      * 账户历史记录
      * @param userNo 用户编号
      * @param parentBusinessCode 业务编码
+     * @param month 月份 格式 yyyy-MM-dd
      * @param page 分页
      * @return
      */
-    String accHistories(String userNo,String parentBusinessCode, Page<AccountHistory> page);
+    String accHistories(String userNo,String parentBusinessCode,String month, Page<AccountHistory> page);
 
     /**
      * 入账
@@ -63,4 +64,11 @@ public interface AccountService {
      * @param userNo 用户编号
      */
     void openAccount(String userNo);
+
+    /**
+     * 查询提现记录
+     * @param billNo
+     * @return
+     */
+    AccountHistory findRemitHistory(String billNo);
 }

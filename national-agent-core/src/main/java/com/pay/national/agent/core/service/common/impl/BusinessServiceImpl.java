@@ -23,6 +23,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import sun.rmi.runtime.Log;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -36,11 +39,26 @@ public class BusinessServiceImpl implements BusinessService{
     private static final String ORDER_INCOMPLETE_MSG = "订单缺失必要参数";
     private static final String CUSTOMER_IS_REPEAT = "该用户已被推荐过";
     private static final String BUSINESS_DISABLE_MSG = "该业务不存在或已下架";
+
+    private static String jiaotongUrl;
+    private static String pufaUrl;
+    private static String pinganUrl;
+    private static String xzfUrl;
+    private static String yipiaoUrl;
+
+    private static PropertiesLoader system = new PropertiesLoader("system.properties");
     @Autowired
     private BusinessOrderMapper businessOrderMapper;
     @Autowired
     private BusinessRewardRuleMapper businessRewardRuleMapper;
 
+    static {
+        jiaotongUrl = system.getProperty("business.jiaotong.url").trim();
+        pufaUrl = system.getProperty("business.pufa.url").trim();
+        pinganUrl = system.getProperty("business.pingan.url").trim();
+        xzfUrl = system.getProperty("business.xzf.url").trim();
+        yipiaoUrl = system.getProperty("business.yipiao.url").trim();
+    }
     /**
      * 创建订单
      * @param order
@@ -48,14 +66,16 @@ public class BusinessServiceImpl implements BusinessService{
      */
     @Override
     public String createOrder(BusinessOrder order) {
-       ReturnBean<Object> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
+       ReturnBean<Map<String,Object>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
         try {
             checkOrder(order);
             BusinessOrder dbOrder =  businessOrderMapper.selectByUser(order.getBusinessCode(),order.getCustomerPhone());
             if(dbOrder == null || StatusConstants.DELETE.equals(dbOrder.getStatus())){
                initOrder(order);
-               String jumpUrl = selectBusJumpUrl(order);
-               returnBean.setCode(jumpUrl);
+               Map<String,Object> returnMap = new HashMap<String,Object>(2);
+               returnMap.put("orderId",order.getId());
+               returnMap.put("jumpUrl",selectBusJumpUrl(order));
+               returnBean.setData(returnMap);
             }else{
                 returnBean.setCode(RetCodeConstants.FAIL);
                 returnBean.setMsg(CUSTOMER_IS_REPEAT);
@@ -78,19 +98,19 @@ public class BusinessServiceImpl implements BusinessService{
         String jumpUrl = "";
         switch (businessCode){
             case JIAOTONG:
-                jumpUrl =  "http://www.baidu.com";
+                jumpUrl =  jiaotongUrl;
             break;
             case PINGAN:
-                jumpUrl =  "http://www.baidu.com";
+                jumpUrl =  pinganUrl;
             break;
             case PUFA:
-                jumpUrl =  "http://www.baidu.com";
+                jumpUrl =  pufaUrl;
             break;
             case YIPIAO:
-                jumpUrl =  "http://www.baidu.com";
+                jumpUrl =  yipiaoUrl;
             break;
             case XZF:
-                jumpUrl =  "http://www.baidu.com";
+                jumpUrl = xzfUrl;
             break;
             default:
             break;

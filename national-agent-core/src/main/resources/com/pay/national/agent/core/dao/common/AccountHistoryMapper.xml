@@ -196,6 +196,9 @@
     <if test="parentBusinessCode != null and parentBusinessCode != ''">
       AND parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}
     </if>
+    <if test="month != null and month != ''">
+      AND DATE_FORMAT(create_time,'%Y-%m') = #{month,jdbcType=VARCHAR}
+    </if>
     ORDER BY create_time desc
   </select>
 
@@ -206,5 +209,11 @@
     <if test="businessCode != null and businessCode != ''">
       AND business_code = #{businessCode,jdbcType=VARCHAR}
     </if>
+  </select>
+
+  <select id="findRemitHistory" resultMap="BaseResultMap">
+    SELECT <include refid="Web_Column_list"/>
+    FROM  account_history
+    WHERE wx_bill_no = #{wxBillNo,jdbcType=VARCHAR}
   </select>
 </mapper>
