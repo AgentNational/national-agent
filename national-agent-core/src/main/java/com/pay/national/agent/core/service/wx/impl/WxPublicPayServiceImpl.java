@@ -65,8 +65,8 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
             }
 
             Float totalFee = Float.valueOf(amount);
-            // 总金额
-            Integer total_fee = totalFee.intValue();
+            // 微信支付默认单位为分 而全民代理默认单位为元 所以需要乘100总金额
+            Integer total_fee = Math.round(totalFee * 100);
             // 商品描述
             String body = "全民代理";
             // 随机数

@@ -91,6 +91,9 @@ public class WxPublicPayDetail {
      */
     private String remark;
 
+    public WxPublicPayDetail() {
+    }
+
     public WxPublicPayDetail(String outerTradeNo, String returnCode, String returnMsg, String resultCode,
                              String errCode, String errCodeDes, String busiType, String remark) {
         super();

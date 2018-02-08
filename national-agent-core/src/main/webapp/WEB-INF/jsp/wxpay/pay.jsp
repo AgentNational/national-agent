@@ -10,10 +10,11 @@
     <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="format-detection" content="telephone=no" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <script type="text/javascript" src="/js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="http://git.javams.com/na-source/js/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script type="text/javascript">
         $(function(){
+            alert('afdasf');
             $.ajax({
                 type : "get",
                 url : "${ctx}/weiXin/jssdkConfig",
@@ -23,6 +24,7 @@
                     "currentUrl" : location.href
                 },
                 success : function(data) {
+                    alert('afdasf1');
                     console.log(data.signature);
                     wx.config({
                         debug : false,
@@ -54,12 +56,15 @@
                                 window.location.href = "${ctx}/wxpay/success?outerTradeNo=${outerTradeNo}";
                             },
                             cancel:function(res){
+                                alert(res);
                                 window.location.href = "${cancelUrl}";
                             }
                         })
+
                     });
                 }
             });
+
         })
     </script>
     <title>订单-支付</title>

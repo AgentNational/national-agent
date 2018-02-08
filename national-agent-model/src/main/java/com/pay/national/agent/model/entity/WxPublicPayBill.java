@@ -107,6 +107,9 @@ public class WxPublicPayBill {
      */
     private String remark;
 
+    public WxPublicPayBill() {
+    }
+
     public WxPublicPayBill(Long prepayBillId, String outerTradeNo, String transactionId, String returnCode,
                            String resultCode, String bankType, Integer totalFee, Date timeEnd, String remark) {
         super();

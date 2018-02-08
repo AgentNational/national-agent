@@ -10,6 +10,8 @@ import com.pay.national.agent.common.utils.wx.RequestUtil;
 import com.pay.national.agent.common.utils.wx.XmlUtil;
 import com.pay.national.agent.core.service.wx.EnterPrisePaymentService;
 import com.pay.national.agent.core.service.wx.WxPublicPayService;
+import com.pay.national.agent.model.beans.ReturnBean;
+import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.enums.SuccessFail;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +32,7 @@ public class WxPayController {
     private static final String paySecret = "FBBF29289BCB4AE604735470B6A638A8";
     private static String url;// 项目路径
     static {
-        PropertiesLoader propertyUtil = new PropertiesLoader("system");
+        PropertiesLoader propertyUtil = new PropertiesLoader("system.properties");
         url = propertyUtil.getProperty("pay.weixin.system.url");
     }
 
@@ -61,7 +63,7 @@ public class WxPayController {
         return "/wxpay/topay";
     }
     /**
-     * @Description 统一支付下单
+     * @Description jsp统一支付下单
      * @param request
      * @param response
      * @param model
@@ -117,6 +119,46 @@ public class WxPayController {
             model.addAttribute("returnMsg", "系统异常");
         }
         return "/wxpay/payerror";
+    }
+
+    /**
+     * @Description  h5统一支付下单
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @see
+     */
+    @RequestMapping(value = "/h5pay")
+    public @ResponseBody  String h5Pay(HttpServletRequest request, HttpServletResponse response, Model model,
+                        @RequestParam Map<String, String> params) {
+        LogUtil.info("h5统一下单请求参数：{}", JSON.toJSONString(params));
+        ReturnBean<Map<String,String>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
+        try {
+            String ip = request.getRemoteAddr();// 订单生成的机器 IP
+            String payNotifyUrl = url + "/wxpay/notify";// 支付成功回调地址
+            params.put("ip", ip);
+            params.put("payNotifyUrl", payNotifyUrl);
+            // 调用微信统一下单
+            Map<String, String> map = wxPublicPayService.createPayBill(params);
+            if (map != null) {
+                String returnCode = map.get("returnCode");
+                String resultCode = map.get("resultCode");
+                //   下单成功，唤起微信支付密码框
+                if (SuccessFail.SUCCESS.name().equals(returnCode)
+                        && SuccessFail.SUCCESS.name().equals(resultCode)) {
+                    returnBean.setData(map);
+                } else {
+                    returnBean.setData(map);
+                    returnBean.setCode(RetCodeConstants.FAIL);
+                    returnBean.setMsg(map.get("returnMsg"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.info("微信支付下单dubbo服务异常", e);
+        }
+        return JSON.toJSONString(returnBean);
     }
 
     /**

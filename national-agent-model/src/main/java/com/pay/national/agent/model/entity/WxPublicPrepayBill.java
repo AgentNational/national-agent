@@ -962,6 +962,10 @@ public class WxPublicPrepayBill {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+    public WxPublicPrepayBill() {
+    }
+
     public WxPublicPrepayBill(String outerTradeNo, String prepayId, String partnerId, String busiNo,
                               String busiNotifyUrl, String busiSyncUrl, String openid, String deviceInfo, String nonceStr, String body,
                               String detail, String attach, String feeType, Integer totalFee, String spbillCreateIp, String timeStart,
