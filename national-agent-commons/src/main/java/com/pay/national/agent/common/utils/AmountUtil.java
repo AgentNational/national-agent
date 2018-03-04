@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class AmountUtil {
 
+
 	private static final String TAX_RATE = "taxRate";// 适用税率
 	
 	private static final String MINUS_AMOUNT = "minusAmount";// 速算扣除数
