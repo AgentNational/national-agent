@@ -50,7 +50,7 @@ public interface RewardService {
     /**
      * 奖励
      * @param orderId 订单Id
-     * @param rewardAmount 奖励金额(该值不为null，使用该金额进行奖励，成功后更新订单表中的奖励金额字段。为null，根据订单进行奖励)
+     * @param rewardAmount 奖励金额(该值不为null，使用该金额进行奖励，成功后更新订单表中的奖励金额字段。为null，根据订单进行奖励rewardservice)
      * @return
      */
     RewardRecord reward(Long orderId,Double rewardAmount);
