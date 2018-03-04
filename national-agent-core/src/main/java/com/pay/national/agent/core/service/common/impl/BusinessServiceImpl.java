@@ -73,11 +73,11 @@ public class BusinessServiceImpl implements BusinessService{
             BusinessOrder dbOrder =  businessOrderMapper.selectByUser(order.getBusinessCode(),order.getCustomerPhone());
             if(dbOrder == null || StatusConstants.DELETE.equals(dbOrder.getStatus())){
                initOrder(order);
-               Map<String,Object> returnMap = new HashMap<String,Object>(2);
-               returnMap.put("orderId",order.getId());
-               returnMap.put("jumpUrl",selectBusJumpUrl(order));
-               returnBean.setData(returnMap);
             }
+            Map<String,Object> returnMap = new HashMap<String,Object>(2);
+            returnMap.put("orderId",order.getId());
+            returnMap.put("jumpUrl",selectBusJumpUrl(order));
+            returnBean.setData(returnMap);
         } catch (Exception e) {
             LogUtil.error("创建订单异常 order={}",order,e);
             returnBean.setCode(RetCodeConstants.ERROR);
