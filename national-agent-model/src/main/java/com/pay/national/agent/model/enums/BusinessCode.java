@@ -17,7 +17,9 @@ public enum BusinessCode {
 
 	REMIT_YAJIN("提现(扣除押金39元)"),
 
-	REMIT_USER("提现");
+	REMIT_USER("提现"),
+
+	AGENT_FEE("代理费用");
 
 	private String busienssName;
 

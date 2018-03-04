@@ -5,17 +5,19 @@ import com.pay.national.agent.common.annotation.NeedOpenId;
 import com.pay.national.agent.common.constants.WeiXinConstant;
 import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.common.utils.PropertiesLoader;
+import com.pay.national.agent.common.utils.StringUtils;
 import com.pay.national.agent.common.utils.wx.CodecUtil;
 import com.pay.national.agent.common.utils.wx.RequestUtil;
 import com.pay.national.agent.common.utils.wx.XmlUtil;
 import com.pay.national.agent.core.service.wx.EnterPrisePaymentService;
 import com.pay.national.agent.core.service.wx.WxPublicPayService;
-import com.pay.national.agent.model.beans.ReturnBean;
-import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.enums.SuccessFail;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.WebUtils;
 
 import javax.annotation.Resource;
@@ -75,6 +77,10 @@ public class WxPayController {
     public String toPay(HttpServletRequest request, HttpServletResponse response, Model model,
                         @RequestParam Map<String, String> params) {
         LogUtil.info("统一下单请求参数：{}", JSON.toJSONString(params));
+        String orderId = params.get("orderId");
+        if(StringUtils.isBlank(orderId)){
+            return "/wxpay/payerror";
+        }
         try {
             // 下单之前进行参数验签
             if (true/*checkSign(params)*/) {
@@ -82,8 +88,10 @@ public class WxPayController {
                 LogUtil.info("支付openId:{}", openId);
                 String ip = request.getRemoteAddr();// 订单生成的机器 IP
                 String payNotifyUrl = url + "/wxpay/notify";// 支付成功回调地址
+                String redirectURL = url +"/jump/jsp?url=/wxpay/payResult";
                 params.put("openId", openId);
                 params.put("ip", ip);
+                params.put("redirectURL",redirectURL);
                 params.put("payNotifyUrl", payNotifyUrl);
 
                 // 调用微信统一下单
@@ -119,46 +127,6 @@ public class WxPayController {
             model.addAttribute("returnMsg", "系统异常");
         }
         return "/wxpay/payerror";
-    }
-
-    /**
-     * @Description  h5统一支付下单
-     * @param request
-     * @param response
-     * @param model
-     * @return
-     * @see
-     */
-    @RequestMapping(value = "/h5pay")
-    public @ResponseBody  String h5Pay(HttpServletRequest request, HttpServletResponse response, Model model,
-                        @RequestParam Map<String, String> params) {
-        LogUtil.info("h5统一下单请求参数：{}", JSON.toJSONString(params));
-        ReturnBean<Map<String,String>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
-        try {
-            String ip = request.getRemoteAddr();// 订单生成的机器 IP
-            String payNotifyUrl = url + "/wxpay/notify";// 支付成功回调地址
-            params.put("ip", ip);
-            params.put("payNotifyUrl", payNotifyUrl);
-            // 调用微信统一下单
-            Map<String, String> map = wxPublicPayService.createPayBill(params);
-            if (map != null) {
-                String returnCode = map.get("returnCode");
-                String resultCode = map.get("resultCode");
-                //   下单成功，唤起微信支付密码框
-                if (SuccessFail.SUCCESS.name().equals(returnCode)
-                        && SuccessFail.SUCCESS.name().equals(resultCode)) {
-                    returnBean.setData(map);
-                } else {
-                    returnBean.setData(map);
-                    returnBean.setCode(RetCodeConstants.FAIL);
-                    returnBean.setMsg(map.get("returnMsg"));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogUtil.info("微信支付下单dubbo服务异常", e);
-        }
-        return JSON.toJSONString(returnBean);
     }
 
     /**

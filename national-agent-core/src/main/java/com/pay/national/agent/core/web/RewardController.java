@@ -110,4 +110,59 @@ public class RewardController {
         LogUtil.info("Con 奖励日汇总信息 return openId={},month={},parentBusinessCode={},result={}",openId,month,parentBusinessCode,result);
         return result;
     }
+
+
+
+    /**
+     * 查询某一业务日汇总信息
+     * @param parentBusinessCode 父业务编码
+     * @param openId 微信用户openId
+     * @return
+     */
+    @RequestMapping("/bussGatherOfDay")
+    @ResponseBody
+    public String bussGatherOfDay(@RequestParam("openId")String openId,String parentBusinessCode){
+        LogUtil.info("Con 业务日汇总信息 openId={},parentBusinessCode={}",openId,parentBusinessCode);
+        WxUserInfo wxUserInfo = null;
+        String result = null;
+        try {
+            Date queryDate = DateUtil.getFixedDays(new Date(),-1);
+            wxUserInfo = wxUserInfoService.find4Login(openId);
+            result = rewardService.bussGatherOfDay(wxUserInfo.getUserNo(),queryDate,parentBusinessCode);
+        } catch (NationalAgentException e1) {
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(e1.getCode(),e1.getMessage()));
+        } catch (Exception e){
+            LogUtil.error("Con 业务日汇总信息 error openId={},parentBusinessCode={}",openId,parentBusinessCode,e);
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01));
+        }
+        LogUtil.info("Con 业务日汇总信息 return openId={},parentBusinessCode={},result={}",openId,parentBusinessCode,result);
+        return result;
+    }
+
+    /**
+     * 查询某一业务明细信息
+     * @param parentBusinessCode 父业务编码
+     * @param openId 微信用户openId
+     * @return
+     */
+    @RequestMapping("/bussGatherOfDetail")
+    @ResponseBody
+    public String bussGatherOfDetail(@RequestParam("openId")String openId,@RequestParam("parentBusinessCode") String parentBusinessCode,
+    @RequestParam("lowerUserNo")String lowerUserNo){
+        LogUtil.info("Con 奖励明细信息 openId={},parentBusinessCode={}，lowerUserNo：{}",openId,parentBusinessCode,lowerUserNo);
+        WxUserInfo wxUserInfo = null;
+        String result = null;
+        try {
+            Date queryDate = DateUtil.getFixedDays(new Date(),-1);
+            wxUserInfo = wxUserInfoService.find4Login(openId);
+            result = rewardService.bussGatherOfDetail(lowerUserNo,queryDate,parentBusinessCode);
+        } catch (NationalAgentException e1) {
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(e1.getCode(),e1.getMessage()));
+        } catch (Exception e){
+            LogUtil.error("Con 奖励明细信息 error openId={},parentBusinessCode={}",openId,parentBusinessCode,e);
+            result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(RetCodeConstants.ERROR,RetCodeConstants.ERROR_DESC_01));
+        }
+        LogUtil.info("Con 奖励明细信息 return openId={},parentBusinessCode={},result={}",openId,parentBusinessCode,result);
+        return result;
+    }
 }

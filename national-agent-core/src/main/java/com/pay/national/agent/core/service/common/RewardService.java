@@ -1,6 +1,5 @@
 package com.pay.national.agent.core.service.common;
 
-import com.pay.national.agent.model.entity.BusinessOrder;
 import com.pay.national.agent.model.entity.RewardRecord;
 import com.pay.national.agent.model.enums.ParentBusinessCode;
 
@@ -55,4 +54,21 @@ public interface RewardService {
      * @return
      */
     RewardRecord reward(Long orderId,Long rewardRuleId,double rewardAmount);
+
+    /**
+     * 查询某一业务某一天的数据
+     * @param userNo
+     * @param queryDate
+     * @return
+     */
+    String bussGatherOfDay(String userNo, Date queryDate,String parentBusinessCode);
+
+    /**
+     * 查询某一业务明细数据
+     * @param lowerUserNo
+     * @param queryDate
+     * @param parentBusinessCode
+     * @return
+     */
+    String bussGatherOfDetail(String lowerUserNo, Date queryDate, String parentBusinessCode);
 }

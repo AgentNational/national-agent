@@ -241,4 +241,25 @@
     AND  parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}
     ORDER BY create_time DESC
   </select>
+
+  <select id="selectByUserNoAndBusinessCode" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM business_order
+    WHERE business_code = #{businessCode,jdbcType=VARCHAR}
+    AND  user_no = #{userNo,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="selectUserAgentRight" resultMap="BaseResultMap">
+    SELECT
+    o.business_code,
+    o.user_no
+    FROM
+    business_order o
+    INNER JOIN wx_public_prepay_bill w ON o.id = w.BUSI_NO
+    INNER JOIN wx_public_pay_bill wp on w.OUTER_TRADE_NO=wp.OUTER_TRADE_NO
+    WHERE business_code = 'AGNET_FEE'
+    AND  user_no = #{userNo,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

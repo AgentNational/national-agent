@@ -1,6 +1,7 @@
 package com.pay.national.agent.core.dao.common;
 
 import com.pay.national.agent.core.bean.result.DayRewardGatherBean;
+import com.pay.national.agent.model.beans.results.DayBussRewardGatherBean;
 import com.pay.national.agent.model.entity.RewardGatherDay;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,4 +28,7 @@ public interface RewardGatherDayMapper {
     void summary(@Param("userNo") String userNo,@Param("startDate")String startDate,@Param("endDate")String endDate);
 
     List<RewardGatherDay> selectByRewardDay(@Param("day") Date day, @Param("userNo") String userNo);
+
+
+    List<DayBussRewardGatherBean> bussGatherOfDay(@Param("userNo") String userNo, @Param("queryDate") Date queryDate, @Param("parentBusinessCode") String parentBusinessCode);
 }

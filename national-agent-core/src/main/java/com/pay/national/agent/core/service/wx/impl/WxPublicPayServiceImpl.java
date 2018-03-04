@@ -53,6 +53,7 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
         String redirectURL = params.get("redirectURL");// 支付成功跳转地址
         String amount = params.get("amount");// 订单金额
         String ip = params.get("ip");// 访问ip
+        String orderId = params.get("orderId");
         String payNotifyUrl = params.get("payNotifyUrl");// 支付成功微信回调地址
         String openId = params.get("openId");//
         try {
@@ -115,7 +116,7 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
                 result.put("returnMsg", returnMsg);
             }
             // 生成微信预订单
-            WxPublicPrepayBill wxPublicPrepayBill = new WxPublicPrepayBill(outerTradeNo, prepayId, null, null,
+            WxPublicPrepayBill wxPublicPrepayBill = new WxPublicPrepayBill(outerTradeNo, prepayId, null, orderId,
                     null, redirectURL, openId, null, nonceStr, body, null, null, null, total_fee, ip, null, null,
                     null, WxPubTradeType.JSAPI.name(), null, null, null, returnCode, resultCode, null, null);
             // 预订单详情
@@ -214,14 +215,14 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
                                     wxPublicPayBill.setCreateTime(publicPayBill.getCreateTime());
                                     updateWxPublicPayBill(wxPublicPayBill, wxPublicPayDetail);
                                 }
-                                try {
+                                /*try {
                                     boolean flag = toNotifyBusi(publicPrepayBill);
                                     if (flag) {
                                         map.put("resultCode", resultCode);
                                     }
                                 } catch (Exception e) {
                                     LogUtil.error("微信支付异步回调业务方异常，异常信息：{}", e.getMessage());
-                                }
+                                }*/
                             } else {
                                 LogUtil.info("微信支付异步回调预支付订单不存在，商户订单号：{}", outerTradeNo);
                             }
@@ -334,7 +335,6 @@ public class WxPublicPayServiceImpl implements WxPublicPayService{
                     if (prepayBill != null) {
                         map.put("handlerResult", "0000");
                         StringBuffer sb = new StringBuffer(prepayBill.getBusiSyncUrl());
-                        sb.append("?handlerResult=").append("0000").append("&").append(prepayBill.getAttach());
                         map.put("redirectUrl", sb.toString());
                         return map;
                     }

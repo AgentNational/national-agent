@@ -1,5 +1,7 @@
 package com.pay.national.agent.core.service.common;
 
+import com.aliyuncs.exceptions.ClientException;
+
 /**
  * @Description: 短信相关service
  * @see: 需要参考的类
@@ -32,4 +34,6 @@ public interface SmsService {
 	 * @see 需要参考的类或方法
 	 */
 	boolean sendKaYouPosCheckCode(String phoneNo);
+
+	Boolean sendSms (String openId,String phoneNo) throws ClientException;
 }

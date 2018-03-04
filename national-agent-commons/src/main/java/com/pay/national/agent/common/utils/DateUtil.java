@@ -86,6 +86,21 @@ public class DateUtil {
        String nextDay = simpleDateFormat.format(day.getTime());
        return nextDay;
    }
+
+
+	/**
+	 * 获取与当前时间
+	 * @param date
+	 * @param days
+	 * @return
+	 */
+	public static Date getFixedDays(Date date, Integer days)
+	{
+		Calendar day = Calendar.getInstance();
+		day.setTime(date);
+		day.add(Calendar.DATE, days);
+		return day.getTime();
+	}
  	
      /**
       * 计算两个日期的日差

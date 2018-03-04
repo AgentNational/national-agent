@@ -24,4 +24,13 @@ public interface BusinessOrderMapper {
 
     List<BusinessOrder> findAllOrders(@Param("userNo") String userNo, @Param("parentBusinessCode") String parentBusinessCode,
                                       @Param("page") Page<BusinessOrder> page);
+
+    BusinessOrder selectByUserNoAndBusinessCode(@Param("userNo") String userNo, @Param("businessCode") String businessCode);
+
+    /**
+     * 查询是否存在支付成功的订单
+     * @param userNo
+     * @return
+     */
+    BusinessOrder selectUserAgentRight(String userNo);
 }

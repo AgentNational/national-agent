@@ -6,6 +6,7 @@
     <result column="optimistic" jdbcType="INTEGER" property="optimistic" />
     <result column="business_code" jdbcType="VARCHAR" property="businessCode" />
     <result column="parent_business_code" jdbcType="VARCHAR" property="parentBusinessCode" />
+    <result column="lower_user_no" jdbcType="VARCHAR" property="lowerUserNo" />
     <result column="user_no" jdbcType="VARCHAR" property="userNo" />
     <result column="amount" jdbcType="DOUBLE" property="amount" />
     <result column="status" jdbcType="VARCHAR" property="status" />
@@ -17,6 +18,13 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
   </resultMap>
+  <resultMap id="GatherMap" type="com.pay.national.agent.model.beans.results.DayBussRewardGatherBean">
+    <result column="day" jdbcType="VARCHAR" property="day" />
+    <result column="amount" jdbcType="DOUBLE" property="amount" />
+    <result column="total_amount" jdbcType="DOUBLE" property="totalAmount" />
+    <result column="lower_user_no" jdbcType="TIMESTAMP" property="lowerUserNo" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, optimistic, business_code, parent_business_code, user_no, amount, status, reward_time,
     error_code, error_msg, order_id, rule_id, create_time, last_update_time
@@ -202,5 +210,29 @@
   	where  USER_NO = #{userNo,jdbcType=VARCHAR}
   	and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   	and RULE_ID = #{ruleId,jdbcType=INTEGER}
+  </select>
+
+  <select id="bussGatherOfDay" resultMap="GatherMap">
+    select
+    sum(amount) as amount,
+	20*sum(amount) as total_amount,
+    DATE_FORMAT(reward_time,'%Y-%m-%d') as day,
+    lower_user_no
+    from reward_record
+    where  USER_NO = #{userNo,jdbcType=VARCHAR}
+    AND DATE_FORMAT(reward_time,'%Y-%m-%d') = DATE_FORMAT(#{queryDate,jdbcType=TIMESTAMP},'%Y-%m-%d')
+	AND parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}
+    group by lower_user_no ,DATE_FORMAT(reward_time,'%Y-%m-%d')
+  </select>
+
+  <select id="bussGatherOfDetail" resultMap="GatherMap">
+    select
+    amount,
+    20*amount as total_amount,
+    DATE_FORMAT(reward_time,'%Y-%m-%d') as day
+    from reward_record
+    where  LOWER_USER_NO = #{lowerUserNo,jdbcType=VARCHAR}
+    AND DATE_FORMAT(reward_time,'%Y-%m-%d') = DATE_FORMAT(#{queryDate,jdbcType=TIMESTAMP},'%Y-%m-%d')
+    AND parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}
   </select>
 </mapper>

@@ -56,7 +56,12 @@ public class BusinessController {
     public String createOrder(BusinessOrder order){
         LogUtil.info("Con 创建信用卡业务订单 order={}",order);
         String result = null;
+        WxUserInfo wxUserInfo = null;
         try {
+            wxUserInfo = wxUserInfoService.find4Login(order.getOpenId());
+            if(wxUserInfo != null){
+                order.setUserNo(wxUserInfo.getUserNo());
+            }
             result = businessService.createOrder(order);
         } catch (NationalAgentException e1) {
             result = JSONUtils.alibabaJsonString(new ReturnBean<Objects>(e1.getCode(),e1.getMessage()));
@@ -94,4 +99,5 @@ public class BusinessController {
         LogUtil.info("Con 查询订单 return wxUserInfo={},parentBusinessCode={},pageIndex={},result={}",wxUserInfo,parentBusinessCode,pageIndex,result);
         return result;
     }
+
 }

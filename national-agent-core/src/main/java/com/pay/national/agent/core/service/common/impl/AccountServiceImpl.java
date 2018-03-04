@@ -62,7 +62,7 @@ public class AccountServiceImpl implements AccountService {
     private EnterPrisePaymentService enterPrisePaymentService;
 
     static {
-        USER_WITHDRAW_LIMIT = system.getDouble("user.withdraw.limit");
+        //USER_WITHDRAW_LIMIT = system.getDouble("user.withdraw.limit");
         REMIT_YAJIN = system.getDouble("user.withdraw.yajin");
     }
     /**
@@ -139,6 +139,7 @@ public class AccountServiceImpl implements AccountService {
             accountHistory.setCreateTime(new Date());
             List<AccountHistory> yanjin = accountHistoryMapper.selectByUser(param.getUserNo(),BusinessCode.REMIT_YAJIN.name());
             if(yanjin == null || yanjin.size() == 0){
+                //首次提现，未扣过押金，需要创建两条提现记录。一条扣款一条提现
                 remitAmount = AmountUtils.subtract(param.getAmount(), REMIT_YAJIN);
                 accountHistory.setBusinessCode(BusinessCode.REMIT_YAJIN.name());
             }else{
@@ -244,7 +245,7 @@ public class AccountServiceImpl implements AccountService {
         }
         param.setAccountNo(account.getAccountNo());
         double subtract = AmountUtils.subtract(account.getBalance(), param.getAmount());
-        if(subtract <= 0.00){
+        if(subtract < 0.00){
             throw new NationalAgentException(RetCodeConstants.FAIL,REMIT_BALANCE_SHORTAGE);
         }
 

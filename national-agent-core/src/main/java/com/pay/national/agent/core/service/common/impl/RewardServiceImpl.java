@@ -10,6 +10,7 @@ import com.pay.national.agent.core.bean.result.RewardGatherBean;
 import com.pay.national.agent.core.dao.common.*;
 import com.pay.national.agent.core.service.common.RewardService;
 import com.pay.national.agent.model.beans.ReturnBean;
+import com.pay.national.agent.model.beans.results.DayBussRewardGatherBean;
 import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.constants.StatusConstants;
 import com.pay.national.agent.model.entity.*;
@@ -299,7 +300,7 @@ public class RewardServiceImpl implements RewardService {
      * @param userNo 用户编号
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-    private void executeSummaryOfDay(Date day,String userNo){
+    public void executeSummaryOfDay(Date day,String userNo){
         try {
             String dayStr = DateUtil.formatDate(day, "yyyy-MM-dd");
             String startDate = dayStr +" 00:00:00";
@@ -317,7 +318,7 @@ public class RewardServiceImpl implements RewardService {
      * @param userNo 用户编号
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-    private void executeSummaryOfMonth(Date day,String userNo){
+    public void executeSummaryOfMonth(Date day,String userNo){
         try {
             List<RewardGatherDay> gatherDays = rewardGatherDayMapper.selectByRewardDay(day,userNo);
             if(gatherDays != null && gatherDays.size() > 0){
@@ -352,7 +353,7 @@ public class RewardServiceImpl implements RewardService {
      * @param userNo 用户编号
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-    private void executeSummaryOfAll(Date day,String userNo){
+    public void executeSummaryOfAll(Date day,String userNo){
         try {
             List<RewardGatherDay> gatherDays = rewardGatherDayMapper.selectByRewardDay(day,userNo);
             if(gatherDays != null && gatherDays.size() > 0) {
@@ -419,5 +420,35 @@ public class RewardServiceImpl implements RewardService {
 
         rewardRecordMapper.insert(rewardRecord);
         return rewardRecord;
+    }
+
+    @Override
+    public String bussGatherOfDay(String userNo, Date queryDate, String parentBusinessCode) {
+        ReturnBean<List<DayBussRewardGatherBean>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
+        List<DayBussRewardGatherBean> list = null;
+        try {
+            list = rewardRecordMapper.bussGatherOfDay(userNo,queryDate,parentBusinessCode);
+            returnBean.setData(list);
+        } catch (Exception e) {
+            LogUtil.error("userNo={},parentBusinessCode={},startDate={},endDate={}",userNo,parentBusinessCode,e);
+            returnBean.setCode(RetCodeConstants.ERROR);
+            returnBean.setMsg(RetCodeConstants.ERROR_QUERY_DESC);
+        }
+        return JSONUtils.alibabaJsonString(returnBean);
+    }
+
+    @Override
+    public String bussGatherOfDetail(String lowerUserNo, Date queryDate, String parentBusinessCode) {
+        ReturnBean<List<DayBussRewardGatherBean>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
+        List<DayBussRewardGatherBean> list = null;
+        try {
+            list = rewardRecordMapper.bussGatherOfDetail(lowerUserNo,queryDate,parentBusinessCode);
+            returnBean.setData(list);
+        } catch (Exception e) {
+            LogUtil.error("lowerUserNo={},parentBusinessCode={},startDate={},endDate={}",lowerUserNo,parentBusinessCode,e);
+            returnBean.setCode(RetCodeConstants.ERROR);
+            returnBean.setMsg(RetCodeConstants.ERROR_QUERY_DESC);
+        }
+        return JSONUtils.alibabaJsonString(returnBean);
     }
 }

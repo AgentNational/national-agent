@@ -1,14 +1,18 @@
 package com.pay.national.agent.core.service.common.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.aliyuncs.exceptions.ClientException;
 import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.common.utils.SequenceUtils;
 import com.pay.national.agent.common.utils.StringUtils;
 import com.pay.national.agent.core.dao.wx.AppUserMapper;
-import com.pay.national.agent.core.service.common.AccountService;
-import com.pay.national.agent.core.service.common.UserService;
+import com.pay.national.agent.core.service.common.*;
 import com.pay.national.agent.core.service.wx.WxUserInfoService;
+import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.constants.IncrementerConstant;
+import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.entity.AppUser;
+import com.pay.national.agent.model.entity.CheckCodeInfo;
 import com.pay.national.agent.model.entity.WxUserInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Description: 用户service
@@ -80,4 +86,126 @@ public class UserServiceImpl implements UserService{
 		}
 
 	}
+
+	/**
+	 * 校验是否需要填写手机号
+	 * @param openId
+	 * @return
+	 */
+	@Override
+	public String checkPhone(String openId) {
+		ReturnBean<Map<String,String>> returnBean = new ReturnBean(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
+		Map<String,String> map = new HashMap<>();
+		//通过openId查询用户信息
+		AppUser appUser = appUserMapper.findUserByOpenId(openId);
+		if(appUser != null){//若查询到用户信息
+			//判断是否已经存在手机号
+			if(StringUtils.isNotBlank(appUser.getUserName())){
+				map.put("STATUS","FALSE");
+				returnBean.setData(map);
+			}else {
+				map.put("STATUS","TRUE");
+				returnBean.setData(map);
+			}
+		}else{
+			returnBean.setCode(RetCodeConstants.FAIL);
+			returnBean.setMsg("用户信息不存在！");
+		}
+		return JSON.toJSONString(returnBean);
+	}
+
+	@Resource
+	private CheckCodeInfoService checkCodeInfoService;
+
+	/**
+	 * 完善手机号
+	 * @param openId
+	 * @param checkCode
+	 * @param phoneNo
+	 * @return
+	 */
+	@Override
+	public String completelPhone(String openId, String checkCode, String phoneNo) {
+		ReturnBean<Object> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
+		//校验手机号是否已经存在
+		AppUser appUser = appUserMapper.findUserByUserName(phoneNo);
+		if(appUser != null){
+			returnBean.setCode(RetCodeConstants.FAIL);
+			returnBean.setMsg("手机号已经存在!");
+			return  JSON.toJSONString(returnBean);
+		}
+		//校验验证码的正确性 通过数据表来实现
+		CheckCodeInfo checkCodeInfo = checkCodeInfoService.getEffectCheckCode(openId,phoneNo,new Date());
+		if(checkCodeInfo == null){
+			//未获取验证码或验证码已经过期
+			returnBean.setCode(RetCodeConstants.FAIL);
+			returnBean.setMsg("未获取验证码或验证码已经过期!");
+			return JSON.toJSONString(returnBean);
+		}else{//查询到了验证码
+			if(!checkCodeInfo.getCode().equals(checkCode)){
+				returnBean.setCode(RetCodeConstants.FAIL);
+				returnBean.setMsg("验证码不正确!");
+				return JSON.toJSONString(returnBean);
+			}
+		}
+		//更新appuser表
+		//查询用户编号
+		AppUser appUser1 = appUserMapper.findUserByOpenId(openId);
+		if(appUser1 == null){
+			returnBean.setCode(RetCodeConstants.FAIL);
+			returnBean.setMsg("用户信息不存在!");
+			return JSON.toJSONString(returnBean);
+		}else{
+			//修改用户手机号
+			appUserMapper.updateUserNameByUserNo(appUser1.getUserNo(),phoneNo);
+		}
+		return JSON.toJSONString(returnBean);
+	}
+
+	@Resource
+	private SmsService smsService;
+
+
+	@Override
+	public String sendCheckCode(String openId, String phoneNo) {
+		ReturnBean<Object> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
+
+		try {
+			CheckCodeInfo checkCodeInfo = checkCodeInfoService.getEffectCheckCode(openId, phoneNo, new Date());
+			if(checkCodeInfo != null){
+				returnBean.setCode(RetCodeConstants.FAIL);
+				returnBean.setMsg("已经获取过验证码！");
+				return  JSON.toJSONString(returnBean);
+			}
+			Boolean result =  smsService.sendSms(openId,phoneNo);
+			if(result){
+				return JSON.toJSONString(returnBean);
+			}else{
+				returnBean.setCode(RetCodeConstants.FAIL);
+				returnBean.setMsg("短信验证码获取失败！");
+				return  JSON.toJSONString(returnBean);
+			}
+		} catch (ClientException e) {
+			LogUtil.error("获取短信验证码异常",e);
+			returnBean.setCode(RetCodeConstants.FAIL);
+			returnBean.setMsg("短信验证码获取失败！");
+			return  JSON.toJSONString(returnBean);
+		}
+	}
+
+	/**
+	 * 业务service
+	 */
+	@Resource
+	private BusinessService businessService;
+	/**
+	 * 校验是否有发展全民代理业务权限
+	 * @param userNo
+	 * @return
+	 */
+	@Override
+	public String checkAgentRight(String userNo) {
+		return businessService.checkAgentRight(userNo);
+	}
+
 }

@@ -25,4 +25,11 @@ public interface BusinessService {
      * @return
      */
     String orders(String userNo, String parentBusinessCode, Page<BusinessOrder> page);
+
+    /**
+     *检验是否有代理权限
+     * @param userNo
+     * @return
+     */
+    String checkAgentRight(String userNo);
 }

@@ -24,7 +24,6 @@
                     "currentUrl" : location.href
                 },
                 success : function(data) {
-                    alert('afdasf1');
                     console.log(data.signature);
                     wx.config({
                         debug : false,
@@ -56,7 +55,6 @@
                                 window.location.href = "${ctx}/wxpay/success?outerTradeNo=${outerTradeNo}";
                             },
                             cancel:function(res){
-                                alert(res);
                                 window.location.href = "${cancelUrl}";
                             }
                         })

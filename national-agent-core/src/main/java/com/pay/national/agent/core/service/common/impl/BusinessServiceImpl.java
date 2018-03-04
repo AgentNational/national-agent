@@ -1,32 +1,31 @@
 package com.pay.national.agent.core.service.common.impl;
 
-import com.pay.commons.utils.lang.AmountUtils;
+import com.alibaba.fastjson.JSON;
 import com.pay.national.agent.common.exception.NationalAgentException;
 import com.pay.national.agent.common.persistence.Page;
-import com.pay.national.agent.common.utils.*;
+import com.pay.national.agent.common.utils.JSONUtils;
+import com.pay.national.agent.common.utils.LogUtil;
+import com.pay.national.agent.common.utils.PropertiesLoader;
+import com.pay.national.agent.common.utils.StringUtils;
 import com.pay.national.agent.core.dao.common.BusinessOrderMapper;
 import com.pay.national.agent.core.dao.common.BusinessRewardRuleMapper;
 import com.pay.national.agent.core.service.common.BusinessService;
 import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.constants.StatusConstants;
-import com.pay.national.agent.model.entity.AgentBusiness;
-import com.pay.national.agent.model.entity.BusinessExpantion;
 import com.pay.national.agent.model.entity.BusinessOrder;
 import com.pay.national.agent.model.entity.BusinessRewardRule;
 import com.pay.national.agent.model.enums.BusinessCode;
 import com.pay.national.agent.model.enums.ParentBusinessCode;
-import com.pay.national.agent.model.enums.RewardType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import sun.rmi.runtime.Log;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -69,7 +68,15 @@ public class BusinessServiceImpl implements BusinessService{
        ReturnBean<Map<String,Object>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
         try {
             checkOrder(order);
-            BusinessOrder dbOrder =  businessOrderMapper.selectByUser(order.getBusinessCode(),order.getCustomerPhone());
+            BusinessOrder dbOrder;
+            if(order.getBusinessCode().equals(BusinessCode.AGENT_FEE.name())){
+                //如果是代理费相关的业务通过用户编号和业务编码查询
+                dbOrder = businessOrderMapper.selectByUserNoAndBusinessCode(order.getUserNo(),order.getBusinessCode());
+            }else{
+                //
+                dbOrder = businessOrderMapper.selectByUser(order.getBusinessCode(),order.getCustomerPhone());
+            }
+
             if(dbOrder == null || StatusConstants.DELETE.equals(dbOrder.getStatus())){
                initOrder(order);
                Map<String,Object> returnMap = new HashMap<String,Object>(2);
@@ -77,8 +84,14 @@ public class BusinessServiceImpl implements BusinessService{
                returnMap.put("jumpUrl",selectBusJumpUrl(order));
                returnBean.setData(returnMap);
             }else{
-                returnBean.setCode(RetCodeConstants.FAIL);
-                returnBean.setMsg(CUSTOMER_IS_REPEAT);
+                if(order.getBusinessCode().equals(BusinessCode.AGENT_FEE.name())){
+                    Map<String,Object> returnMap = new HashMap<String,Object>(2);
+                    returnMap.put("orderId",dbOrder.getId());
+                    returnBean.setData(returnMap);
+                }else{
+                    returnBean.setCode(RetCodeConstants.FAIL);
+                    returnBean.setMsg(CUSTOMER_IS_REPEAT);
+                }
             }
         } catch (Exception e) {
             LogUtil.error("创建订单异常 order={}",order,e);
@@ -123,7 +136,7 @@ public class BusinessServiceImpl implements BusinessService{
      * @param order
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-    private void initOrder(BusinessOrder order) {
+    public void initOrder(BusinessOrder order) {
         BusinessCode businessCode = BusinessCode.valueOf(order.getBusinessCode());
         BusinessRewardRule rule = businessRewardRuleMapper.selectByBusiness(order.getBusinessCode());
         if(rule == null || !StatusConstants.ENABLE.equals(rule.getStatus())){
@@ -142,6 +155,9 @@ public class BusinessServiceImpl implements BusinessService{
             case YIPIAO:
                 order.setParentBusinessCode(ParentBusinessCode.TICKET.name());
                 order.setRewardAmount(rule.getRewardAmount());
+                break;
+            case AGENT_FEE:
+                order.setParentBusinessCode(ParentBusinessCode.NATIONAL_AGENT.name());
                 break;
             default:
                 break;
@@ -168,10 +184,17 @@ public class BusinessServiceImpl implements BusinessService{
             throw new NationalAgentException(RetCodeConstants.FAIL,BUSINESS_DISABLE_MSG);
         }
 
-        if(StringUtils.isBlank(order.getBusinessCode()) || StringUtils.isBlank(order.getCustomerName()) ||
-                StringUtils.isBlank(order.getCustomerPhone()) || StringUtils.isBlank(order.getUserNo())){
-            throw new NationalAgentException(RetCodeConstants.FAIL,ORDER_INCOMPLETE_MSG);
+        if(order.getBusinessCode().equals(BusinessCode.AGENT_FEE.name())){
+            if(StringUtils.isBlank(order.getBusinessCode()) || StringUtils.isBlank(order.getUserNo())){
+                throw new NationalAgentException(RetCodeConstants.FAIL,ORDER_INCOMPLETE_MSG);
+            }
+        }else{
+            if(StringUtils.isBlank(order.getBusinessCode()) || StringUtils.isBlank(order.getCustomerName()) ||
+                    StringUtils.isBlank(order.getCustomerPhone()) || StringUtils.isBlank(order.getUserNo())){
+                throw new NationalAgentException(RetCodeConstants.FAIL,ORDER_INCOMPLETE_MSG);
+            }
         }
+
     }
 
     /**
@@ -194,5 +217,21 @@ public class BusinessServiceImpl implements BusinessService{
             returnBean.setMsg(RetCodeConstants.ERROR_DESC);
         }
         return JSONUtils.alibabaJsonString(returnBean);
+    }
+
+    @Override
+    public String checkAgentRight(String userNo) {
+        ReturnBean<Map<String,String>> returnBean = new ReturnBean<>(RetCodeConstants.SUCCESS,RetCodeConstants.SUCCESS_DESC);
+        Map<String,String> map = new HashMap<>();
+        BusinessOrder businessOrder = businessOrderMapper.selectUserAgentRight(userNo);
+        if(businessOrder != null){//支付成功
+            map.put("STATUS","TRUE");
+            returnBean.setData(map);
+        }else{
+            map.put("STATUS","FALSE");
+            returnBean.setData(map);
+        }
+        LogUtil.info("校验是否有代理权限 userNo:{},returnBean:{}",userNo,JSON.toJSONString(returnBean));
+        return JSON.toJSONString(returnBean);
     }
 }

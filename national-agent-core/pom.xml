@@ -38,36 +38,6 @@
 	</dependency>
   </dependencies>
 
-  <profiles>
-	<profile>
-		<id>production</id>
-		<dependencies>
-
-		</dependencies>
-		<properties>
-			<profiles.active>production</profiles.active>
-		</properties>
-		<build>
-			<resources>
-				<resource>
-					<directory>src/main/resources</directory>
-					<filtering>true</filtering>
-					<excludes>
-						<exclude>dubbo.properties</exclude>
-						<exclude>redis_extension.properties</exclude>
-						<exclude>sms.properties</exclude>
-						<exclude>system.properties</exclude>
-					</excludes>
-				</resource>
-				<resource>
-					<directory>src/main/conf/production</directory>
-					<filtering>true</filtering>
-				</resource>
-			</resources>
-		</build>
-	</profile>
-   </profiles>
-
 	<build>
 		<plugins>
 			<!-- maven mybatis自动生成插件-->
@@ -83,5 +53,18 @@
 				</configuration>
 			</plugin>
 		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>*.properties</include>
+					<include>*.xml</include>
+					<include>**/*.xml</include>
+					<include>*.p12</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
 	</build>
 </project>

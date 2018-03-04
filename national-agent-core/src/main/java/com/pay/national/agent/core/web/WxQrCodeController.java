@@ -7,10 +7,7 @@ import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.constants.RetCodeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 微信二维码相关controller
@@ -27,7 +24,7 @@ public class WxQrCodeController {
      * 获取微信二维码图片地址
      * @return
      */
-    @RequestMapping("/getQrCodeUrl")
+    @RequestMapping(value = "/getQrCodeUrl",method = RequestMethod.POST)
     public @ResponseBody String getQrCodeUrl(@RequestParam("openId")String openId){
         LogUtil.info("获取微信二维码地址开始openId：{}",openId);
         ReturnBean<Object> returnBean = new ReturnBean<>();

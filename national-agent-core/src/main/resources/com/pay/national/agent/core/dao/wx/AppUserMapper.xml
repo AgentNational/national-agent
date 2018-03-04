@@ -343,4 +343,32 @@
       ABLE_STATUS = #{ableStatus,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=BIGINT}
   </update>
+
+
+
+  <select id="findUserByOpenId" resultMap="BaseResultMap" >
+    select
+    a.USER_NO,
+    a.USER_NAME
+    from app_user a INNER JOIN wx_user_info w on a.user_no = w.user_no
+    where w.OPENID = #{openId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="findUserByUserName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from app_user
+    where USER_NAME = #{userName,jdbcType=VARCHAR}
+    <![CDATA[
+    AND ABLE_STATUS <> 'DELETE'
+    ]]>
+  </select>
+
+  <update id="updateUserNameByUserNo" >
+    update app_user
+    set
+    USER_NAME = #{userName,jdbcType=VARCHAR}
+    where USER_NO = #{userNo,jdbcType=VARCHAR}
+  </update>
+
 </mapper>

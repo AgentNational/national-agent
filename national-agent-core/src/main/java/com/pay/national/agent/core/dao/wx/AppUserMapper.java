@@ -1,6 +1,7 @@
 package com.pay.national.agent.core.dao.wx;
 
 import com.pay.national.agent.model.entity.AppUser;
+import org.apache.ibatis.annotations.Param;
 
 public interface AppUserMapper {
     /**
@@ -50,4 +51,25 @@ public interface AppUserMapper {
      * @mbggenerated Mon Jan 29 17:12:37 GMT+08:00 2018
      */
     int updateByPrimaryKey(AppUser record);
+
+    /**
+     * 通过openId查找用户信息
+     * @param openId
+     * @return
+     */
+    AppUser findUserByOpenId(@Param("openId") String openId);
+
+    /**
+     * 通过手机号查询用户信息
+     * @param phoneNo
+     * @return
+     */
+    AppUser findUserByUserName(@Param("userName") String phoneNo);
+
+    /**
+     * 修改用户手机号
+     * @param userNo
+     * @param phoneNo
+     */
+    void updateUserNameByUserNo(@Param("userNo") String userNo, @Param("userName") String userName);
 }

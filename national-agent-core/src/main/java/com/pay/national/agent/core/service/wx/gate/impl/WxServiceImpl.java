@@ -2,6 +2,7 @@ package com.pay.national.agent.core.service.wx.gate.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.pay.national.agent.common.constants.PayConstants;
 import com.pay.national.agent.common.constants.WeiXinConstant;
 import com.pay.national.agent.common.exception.NationalAgentException;
 import com.pay.national.agent.common.utils.HttpClientUtil;
@@ -45,7 +46,6 @@ public class WxServiceImpl implements WxService {
 
 
 
-    private String lzzymchid = "";//商户号
 
     @Override
     public  String getAccessToken(String appId, String appsecret) {
@@ -112,13 +112,13 @@ public class WxServiceImpl implements WxService {
         FileInputStream instream = new FileInputStream(
                 new File(WxServiceImpl.class.getResource("/").getPath() + "apiclient_cert.p12"));
         try {
-            keyStore.load(instream, lzzymchid.toCharArray());
+            keyStore.load(instream, PayConstants.mchid.toCharArray());
         } finally {
             instream.close();
         }
 
         // Trust own CA and all self-signed certs
-        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, lzzymchid.toCharArray())
+        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, PayConstants.mchid.toCharArray())
                 .build();
         // Allow TLSv1 protocol only
         SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1" }, null,
