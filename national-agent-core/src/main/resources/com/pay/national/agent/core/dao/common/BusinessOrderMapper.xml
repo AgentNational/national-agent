@@ -258,7 +258,7 @@
     business_order o
     INNER JOIN wx_public_prepay_bill w ON o.id = w.BUSI_NO
     INNER JOIN wx_public_pay_bill wp on w.OUTER_TRADE_NO=wp.OUTER_TRADE_NO
-    WHERE business_code = 'AGNET_FEE'
+    WHERE business_code = 'AGENT_FEE'
     AND  user_no = #{userNo,jdbcType=VARCHAR}
   </select>
 
