@@ -241,4 +241,8 @@
     AND  parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}
     ORDER BY create_time DESC
   </select>
+
+  <select id="matchPUFA" resultMap="java.util.Map">
+
+  </select>
 </mapper>

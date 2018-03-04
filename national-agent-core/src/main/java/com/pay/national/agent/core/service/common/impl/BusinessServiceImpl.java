@@ -8,6 +8,7 @@ import com.pay.national.agent.core.dao.common.BusinessOrderMapper;
 import com.pay.national.agent.core.dao.common.BusinessRewardRuleMapper;
 import com.pay.national.agent.core.service.common.BusinessService;
 import com.pay.national.agent.model.beans.ReturnBean;
+import com.pay.national.agent.model.beans.results.OrderMatchBean;
 import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.constants.StatusConstants;
 import com.pay.national.agent.model.entity.AgentBusiness;
@@ -76,9 +77,6 @@ public class BusinessServiceImpl implements BusinessService{
                returnMap.put("orderId",order.getId());
                returnMap.put("jumpUrl",selectBusJumpUrl(order));
                returnBean.setData(returnMap);
-            }else{
-                returnBean.setCode(RetCodeConstants.FAIL);
-                returnBean.setMsg(CUSTOMER_IS_REPEAT);
             }
         } catch (Exception e) {
             LogUtil.error("创建订单异常 order={}",order,e);
@@ -194,5 +192,33 @@ public class BusinessServiceImpl implements BusinessService{
             returnBean.setMsg(RetCodeConstants.ERROR_DESC);
         }
         return JSONUtils.alibabaJsonString(returnBean);
+    }
+
+    /**
+     * 匹配需要奖励的订单
+     * @return
+     */
+    @Override
+    public List<OrderMatchBean> matchRewardOrder() {
+        List<OrderMatchBean> allOrders = new ArrayList<>();
+        //信用卡订单匹配
+        List<OrderMatchBean> creditCardOrders  = matchCreditCardOrder();
+        allOrders.addAll(creditCardOrders);
+        return allOrders;
+    }
+
+    /**
+     * 匹配需要奖励的信用卡订单
+     * @return
+     */
+    private List<OrderMatchBean> matchCreditCardOrder() {
+        List<OrderMatchBean> all = new ArrayList<>();
+        List<OrderMatchBean> pufa = businessOrderMapper.matchPUFA();
+        all.addAll(pufa);
+        List<OrderMatchBean> jiaotong = businessOrderMapper.matchJIAOTONG();
+        all.addAll(jiaotong);
+        List<OrderMatchBean> pingan = businessOrderMapper.matchPINGAN();
+        all.addAll(pingan);
+        return all;
     }
 }

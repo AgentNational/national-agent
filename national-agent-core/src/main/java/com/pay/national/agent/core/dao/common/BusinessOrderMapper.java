@@ -1,6 +1,7 @@
 package com.pay.national.agent.core.dao.common;
 
 import com.pay.national.agent.common.persistence.Page;
+import com.pay.national.agent.model.beans.results.OrderMatchBean;
 import com.pay.national.agent.model.entity.BusinessOrder;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,4 +25,10 @@ public interface BusinessOrderMapper {
 
     List<BusinessOrder> findAllOrders(@Param("userNo") String userNo, @Param("parentBusinessCode") String parentBusinessCode,
                                       @Param("page") Page<BusinessOrder> page);
+
+    List<OrderMatchBean> matchPUFA();
+
+    List<OrderMatchBean> matchJIAOTONG();
+
+    List<OrderMatchBean> matchPINGAN();
 }

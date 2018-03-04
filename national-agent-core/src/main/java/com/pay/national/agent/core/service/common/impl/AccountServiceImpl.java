@@ -22,6 +22,7 @@ import com.pay.national.agent.model.entity.AccountHistory;
 import com.pay.national.agent.model.enums.AccountStatus;
 import com.pay.national.agent.model.enums.BusinessCode;
 import com.pay.national.agent.model.enums.ParentBusinessCode;
+import com.sun.xml.internal.ws.api.message.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -114,7 +115,31 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public DepositBean deposit(DepositParam param) {
-        return null;
+        DepositBean depositBean = new DepositBean();
+
+        AccountHistory accountHistory = new AccountHistory();
+        accountHistory.setAccountNo(param.getAccountNo());
+        accountHistory.setUserNo(param.getUserNo());
+        accountHistory.setParentBusinessCode(param.getParentBusinessCode());
+        accountHistory.setBusinessCode(param.getBusinessCode());
+        accountHistory.setAmount(param.getAmount());
+        accountHistory.setSymbol(AccountConstants.SYMBOL_PLUS);
+        accountHistory.setCreateTime(new Date());
+
+        try {
+            addAmount(accountHistory.getAccountNo(),accountHistory.getAmount());
+            accountHistory.setStatus(StatusConstants.SUCCESS);
+            depositBean.setResult(StatusConstants.SUCCESS);
+        } catch (Exception e) {
+            LogUtil.error("入账异常：accountNo={},amount={}",accountHistory.getAccountNo(),accountHistory.getAmount(),e);
+            accountHistory.setStatus(StatusConstants.ERROR);
+            depositBean.setResult(StatusConstants.FAIL);
+            depositBean.setMsg(e.getMessage());
+        }
+
+        accountHistoryMapper.insert(accountHistory);
+        depositBean.setAccountHistoryId(accountHistory.getId().toString());
+        return depositBean;
     }
 
     /**
@@ -150,7 +175,6 @@ public class AccountServiceImpl implements AccountService {
             payParam.put("desc","全民代理用户提现");
             payParam.put("openId",param.getOpenId());
             payParam.put("ip",param.getUserIp());
-
 
             try {
                 //生成付款单
@@ -251,6 +275,11 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    /**
+     * 加账户余额
+     * @param accountNo
+     * @param amount
+     */
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Throwable.class)
     public void addAmount(String accountNo, double amount) {
@@ -265,6 +294,11 @@ public class AccountServiceImpl implements AccountService {
        }
     }
 
+    /**
+     * 减账户余额
+     * @param accountNo
+     * @param amount
+     */
     @Override
     @Transactional(propagation = Propagation.NESTED, rollbackFor = Throwable.class)
     public void subAmount(String accountNo, double amount) {
@@ -273,6 +307,9 @@ public class AccountServiceImpl implements AccountService {
             BigDecimal decimal = new BigDecimal(amount);
             BigDecimal amount1 = decimal.setScale(2,BigDecimal.ROUND_HALF_DOWN);
             double subtract = AmountUtils.subtract(account.getBalance(), amount1.doubleValue());
+            if(subtract <0.0){
+                throw new NationalAgentException(RetCodeConstants.ERROR,"余额不足");
+            }
             account.setLastUpdateTime(new Date());
             account.setBalance(subtract);
             int low = accountMapper.amountOnLock(account);

@@ -1,6 +1,8 @@
 package com.pay.national.agent.core.service.common.impl;
 
+import com.pay.commons.utils.lang.AmountUtils;
 import com.pay.national.agent.common.exception.NationalAgentException;
+import com.pay.national.agent.common.utils.AmountUtil;
 import com.pay.national.agent.common.utils.DateUtil;
 import com.pay.national.agent.common.utils.JSONUtils;
 import com.pay.national.agent.common.utils.LogUtil;
@@ -8,8 +10,11 @@ import com.pay.national.agent.core.bean.result.DayRewardGatherBean;
 import com.pay.national.agent.core.bean.result.MonthRewardGatherBean;
 import com.pay.national.agent.core.bean.result.RewardGatherBean;
 import com.pay.national.agent.core.dao.common.*;
+import com.pay.national.agent.core.service.common.AccountService;
 import com.pay.national.agent.core.service.common.RewardService;
 import com.pay.national.agent.model.beans.ReturnBean;
+import com.pay.national.agent.model.beans.query.DepositParam;
+import com.pay.national.agent.model.beans.results.DepositBean;
 import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.constants.StatusConstants;
 import com.pay.national.agent.model.entity.*;
@@ -19,11 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -34,7 +37,7 @@ import java.util.Map;
 public class RewardServiceImpl implements RewardService {
     private static final String REWARD_FAIL_01 = "订单不存在或该订单不可奖励";
     private static final String REWARD_FAIL_02 = "奖励规则不存在或规则已失效";
-    private static final String REWARD_FAIL_03 = "奖励金额必须大于0";
+    private static final String REWARD_FAIL_03 = "奖励金额不得小于0元";
     private static final SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM-dd");
     @Autowired
     private BusinessOrderMapper businessOrderMapper;
@@ -48,6 +51,8 @@ public class RewardServiceImpl implements RewardService {
     private RewardGatherMonthMapper rewardGatherMonthMapper;
     @Autowired
     private RewardGatherMapper rewardGatherMapper;
+    @Autowired
+    private AccountService accountService;
 
     /**
      * 奖励总汇总信息
@@ -115,13 +120,6 @@ public class RewardServiceImpl implements RewardService {
             returnBean.setMsg(RetCodeConstants.ERROR_QUERY_DESC);
         }
         return JSONUtils.alibabaJsonString(returnBean);
-    }
-
-    public static void main(String[] args) {
-        RewardServiceImpl impl = new RewardServiceImpl();
-        RewardGatherBean gatherBean = new RewardGatherBean();
-        List<RewardGatherBean.RewardGatherDetailBean> details = new ArrayList<>();
-        impl.defaultRewardGather(gatherBean,details);
     }
 
     private void defaultRewardGather(RewardGatherBean gatherBean,List<RewardGatherBean.RewardGatherDetailBean> details){
@@ -384,39 +382,64 @@ public class RewardServiceImpl implements RewardService {
     /**
      * 奖励
      * @param orderId 订单Id
-     * @param rewardRuleId 奖励规则Id
      * @param rewardAmount 奖励金额
      * @return
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-     public RewardRecord reward(Long orderId,Long rewardRuleId,double rewardAmount){
+     public RewardRecord reward(Long orderId,Double rewardAmount){
         BusinessOrder order = businessOrderMapper.selectByPrimaryKey(orderId);
+        //验证订单正确性
         if(order == null || !"INIT".equals(order.getStatus())){
            throw new NationalAgentException(RetCodeConstants.FAIL,REWARD_FAIL_01);
         }
-        BusinessRewardRule rule = businessRewardRuleMapper.selectByPrimaryKey(rewardRuleId);
-        if(rule == null || StatusConstants.ENABLE.equals(rule.getStatus())){
-            throw new NationalAgentException(RetCodeConstants.FAIL,REWARD_FAIL_02);
+
+        BusinessRewardRule rule = null;
+        if(rewardAmount == null){
+            rule = businessRewardRuleMapper.selectByBusiness(order.getBusinessCode());
+            //验证奖励规则正确性
+            if(rule == null || StatusConstants.ENABLE.equals(rule.getStatus())){
+                throw new NationalAgentException(RetCodeConstants.FAIL,REWARD_FAIL_02);
+            }
+
+            //计算奖励金额
+            String rewardType = rule.getRewardType();
+            if("amount".equals(rewardType)){
+                //固定
+                rewardAmount=rule.getRewardAmount();
+            }else if("proportion".equals(rewardType)){
+                //比例
+                double multiply = AmountUtils.multiply(order.getTransAmount(), rule.getRewardProportion());
+                BigDecimal decimal = new BigDecimal(multiply);
+                rewardAmount = decimal.setScale(2,BigDecimal.ROUND_HALF_DOWN).doubleValue();
+            }
+        }else{
+            //验证金额正确性
+            if(rewardAmount < 0.0){
+                throw new NationalAgentException(RetCodeConstants.FAIL,REWARD_FAIL_03);
+            }
         }
 
-        if(rewardAmount <= 0.0){
-            throw new NationalAgentException(RetCodeConstants.FAIL,REWARD_FAIL_03);
-        }
+        //奖励操作
+        DepositParam depositParam = new DepositParam();
+        depositParam.setAccountNo(order.getUserNo());
+        depositParam.setAccountNo(order.getUserNo());
+        depositParam.setBusinessCode(order.getBusinessCode());
+        depositParam.setParentBusinessCode(order.getParentBusinessCode());
+        DepositBean depositBean = accountService.deposit(depositParam);
 
-        //TODO 奖励操作
 
+        //生成奖励记录
         RewardRecord rewardRecord = new RewardRecord();
-        rewardRecord.setStatus(StatusConstants.SUCCESS);
+        rewardRecord.setStatus(depositBean.getResult());
         rewardRecord.setUserNo(order.getUserNo());
         rewardRecord.setAmount(rewardAmount);
         rewardRecord.setBusinessCode(order.getBusinessCode());
         rewardRecord.setParentBusinessCode(order.getParentBusinessCode());
         rewardRecord.setOrderId(order.getId());
-        rewardRecord.setRuleId(rule.getId());
+        rewardRecord.setRuleId(rule == null?null:rule.getId());
         rewardRecord.setCreateTime(new Date());
         rewardRecord.setRewardTime(new Date());
-
         rewardRecordMapper.insert(rewardRecord);
         return rewardRecord;
     }
