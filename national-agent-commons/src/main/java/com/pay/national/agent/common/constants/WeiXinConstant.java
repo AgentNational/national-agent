@@ -51,4 +51,9 @@ public class WeiXinConstant {
     public static final String payOrderUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";// 公众号支付
     public static final String queryPayOrderUrl = "https://api.mch.weixin.qq.com/pay/orderquery";// 公众号支付订单查询
 
+    /**
+     * 拉取用户基本信息
+     */
+    public static final String getUserInfoUrl = "https://api.weixin.qq.com/cgi-bin/user/info";
+
 }

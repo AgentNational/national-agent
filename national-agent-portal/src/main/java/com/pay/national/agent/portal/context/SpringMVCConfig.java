@@ -1,8 +1,6 @@
 package com.pay.national.agent.portal.context;
 
-import java.util.List;
-import java.util.Properties;
-
+import com.pay.commons.web.springmvc.handler.SimpleForwardHttpRequestHandlerForToHTM;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -18,8 +16,8 @@ import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import com.pay.commons.web.springmvc.handler.SimpleForwardHttpRequestHandlerForToHTM;
-import com.pay.national.agent.common.interceptor.LoginPermissionInterceptor;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @Description: springmvc上下文环境配置
@@ -39,9 +37,9 @@ public class SpringMVCConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new LoginPermissionInterceptor("/common/permit.action?type=A"))
-		.addPathPatterns("/**")
-		.excludePathPatterns("/common/permit.action*");
+//		registry.addInterceptor(new LoginPermissionInterceptor("/common/permit.action?type=A"))
+//		.addPathPatterns("/**")
+//		.excludePathPatterns("/common/permit.action*");
 		super.addInterceptors(registry);
 	}
 

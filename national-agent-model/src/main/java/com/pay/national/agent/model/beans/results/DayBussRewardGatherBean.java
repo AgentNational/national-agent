@@ -7,6 +7,8 @@ public class DayBussRewardGatherBean implements Serializable{
 
     private String day;//时间
 
+    private String nickName;//昵称
+
     private Double amount;//金额
 
     private Double totalAmount;//总金额
@@ -48,10 +50,20 @@ public class DayBussRewardGatherBean implements Serializable{
     @Override
     public String toString() {
         return "DayBussRewardGatherBean{" +
-                "day=" + day +
+                "day='" + day + '\'' +
+                ", nickName='" + nickName + '\'' +
                 ", amount=" + amount +
                 ", totalAmount=" + totalAmount +
                 ", lowerUserNo='" + lowerUserNo + '\'' +
                 '}';
     }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
 }

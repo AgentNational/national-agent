@@ -43,33 +43,32 @@
 	</dependency>
   </dependencies>
 
-  <profiles>
-		<profile>
-			<id>production</id>
-			<properties>
-				<profiles.active>production</profiles.active>
-			</properties>
-			<build>
-				<resources>
-					<resource>
-						<directory>src/main/resources</directory>
-						<filtering>true</filtering>
-						<excludes>
-							<exclude>dict.properties</exclude>
-							<exclude>dubbo.properties</exclude>
-							<exclude>redis_extension.properties</exclude>
-							<exclude>redis.properties</exclude>
-							<exclude>serverHost.properties</exclude>
-							<exclude>sms.properties</exclude>
-							<exclude>system.properties</exclude>
-						</excludes>
-					</resource>
-					<resource>
-						<directory>src/main/conf/production</directory>
-						<filtering>true</filtering>
-					</resource>
-				</resources>
-			</build>
-		</profile>
-	</profiles>
+	<build>
+		<plugins>
+			<!-- maven mybatis自动生成插件-->
+			<plugin>
+				<groupId>org.mybatis.generator</groupId>
+				<artifactId>mybatis-generator-maven-plugin</artifactId>
+				<version>1.3.2</version>
+				<configuration>
+					<!--配置文件的位置-->
+					<configurationFile>src/main/resources/generatorConfig.xml</configurationFile>
+					<verbose>true</verbose>
+					<overwrite>true</overwrite>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>*.properties</include>
+					<include>*.xml</include>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+	</build>
 </project>

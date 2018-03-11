@@ -23,6 +23,7 @@
     <result column="amount" jdbcType="DOUBLE" property="amount" />
     <result column="total_amount" jdbcType="DOUBLE" property="totalAmount" />
     <result column="lower_user_no" jdbcType="TIMESTAMP" property="lowerUserNo" />
+    <result column="nick_name" jdbcType="TIMESTAMP" property="nickName" />
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -213,16 +214,25 @@
   </select>
 
   <select id="bussGatherOfDay" resultMap="GatherMap">
-    select
-    sum(amount) as amount,
-	20*sum(amount) as total_amount,
-    DATE_FORMAT(reward_time,'%Y-%m-%d') as day,
-    lower_user_no
-    from reward_record
-    where  USER_NO = #{userNo,jdbcType=VARCHAR}
-    AND DATE_FORMAT(reward_time,'%Y-%m-%d') = DATE_FORMAT(#{queryDate,jdbcType=TIMESTAMP},'%Y-%m-%d')
-	AND parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}
-    group by lower_user_no ,DATE_FORMAT(reward_time,'%Y-%m-%d')
+    SELECT
+        sum(r.amount) AS amount,
+        20 * sum(r.amount) AS total_amount,
+        DATE_FORMAT(r.reward_time, '%Y-%m-%d') AS DAY,
+        r.lower_user_no,
+        w.NICKNAME AS nick_name
+    FROM
+        app_user au
+    INNER JOIN wx_user_info w ON au.USER_NO = w.USER_NO
+    LEFT JOIN reward_record r ON au.USER_NO = r.lower_user_no
+    WHERE
+        au.PARENT_USER_NO = #{userNo,jdbcType=VARCHAR}
+    AND DATE_FORMAT(r.reward_time, '%Y-%m-%d') = DATE_FORMAT(
+        #{queryDate,jdbcType=TIMESTAMP},'%Y-%m-%d')
+        AND r.parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}
+        GROUP BY
+            r.lower_user_no,
+            DATE_FORMAT(r.reward_time, '%Y-%m-%d'),
+            w.NICKNAME
   </select>
 
   <select id="bussGatherOfDetail" resultMap="GatherMap">
@@ -234,5 +244,16 @@
     where  LOWER_USER_NO = #{lowerUserNo,jdbcType=VARCHAR}
     AND DATE_FORMAT(reward_time,'%Y-%m-%d') = DATE_FORMAT(#{queryDate,jdbcType=TIMESTAMP},'%Y-%m-%d')
     AND parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR}
+  </select>
+
+  <select id="findYesterdayRewardRecord"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from reward_record
+    where status = 'TRUE' AND
+    <![CDATA[
+    business_code <> 'COMMISSION' AND
+    DATE_FORMAT(reward_time,'%Y-%m-%d') = DATE_FORMAT(#{rewardTime,jdbcType=TIMESTAMP},'%Y-%m-%d')
+    ]]>
   </select>
 </mapper>

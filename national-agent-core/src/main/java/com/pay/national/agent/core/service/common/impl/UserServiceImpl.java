@@ -1,6 +1,7 @@
 package com.pay.national.agent.core.service.common.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.exceptions.ClientException;
 import com.pay.national.agent.common.utils.LogUtil;
 import com.pay.national.agent.common.utils.SequenceUtils;
@@ -8,6 +9,7 @@ import com.pay.national.agent.common.utils.StringUtils;
 import com.pay.national.agent.core.dao.wx.AppUserMapper;
 import com.pay.national.agent.core.service.common.*;
 import com.pay.national.agent.core.service.wx.WxUserInfoService;
+import com.pay.national.agent.core.service.wx.gate.WxService;
 import com.pay.national.agent.model.beans.ReturnBean;
 import com.pay.national.agent.model.constants.IncrementerConstant;
 import com.pay.national.agent.model.constants.RetCodeConstants;
@@ -44,6 +46,9 @@ public class UserServiceImpl implements UserService{
 	private WxUserInfoService wxUserInfoService;
 	@Resource
 	private AccountService accountService;
+
+	@Resource
+	private WxService wxService;
 	/**
 	 * 公众号注册
 	 * @param fromUserName
@@ -85,6 +90,46 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 
+		getUserInfo(fromUserName);
+
+	}
+
+	private void getUserInfo(String openId){
+		//拉取用户信息
+		String result = wxService.getUserInfo(openId);
+		Map<String, Object> userMap = JSONObject.parseObject(result, Map.class);
+		try {
+			if (userMap != null && null == userMap.get("errcode")) {
+				WxUserInfo wxUserInfo = wxUserInfoService.selectUserInfoByOpenId(openId);
+				if (wxUserInfo != null) {
+					wxUserInfo.setOptimistic(wxUserInfo.getOptimistic()+1);
+					wxUserInfo.setCountry(userMap.get("country").toString());
+					wxUserInfo.setProvince(userMap.get("province").toString());
+					wxUserInfo.setCity(userMap.get("city").toString());
+					wxUserInfo.setLanguage(userMap.get("language").toString());
+					wxUserInfo.setNickname(userMap.get("nickname").toString());
+					wxUserInfo.setSex(userMap.get("sex").toString());
+					wxUserInfo.setHeadimgurl(userMap.get("headimgurl").toString());
+					wxUserInfoService.update(wxUserInfo);
+				}else{
+					wxUserInfo = new WxUserInfo();
+					wxUserInfo.setCountry(userMap.get("country").toString());
+					wxUserInfo.setProvince(userMap.get("province").toString());
+					wxUserInfo.setCity(userMap.get("city").toString());
+					wxUserInfo.setLanguage(userMap.get("language").toString());
+					wxUserInfo.setNickname(userMap.get("nickname").toString());
+					wxUserInfo.setSex(userMap.get("sex").toString());
+					wxUserInfo.setCreatetime(new Date());
+					wxUserInfo.setHeadimgurl(userMap.get("headimgurl").toString());
+					wxUserInfo.setOpenid(openId);
+					wxUserInfo.setCreatetime(new Date());
+					wxUserInfo.setOptimistic(0);
+					wxUserInfoService.insert(wxUserInfo);
+				}
+			}
+		} catch (Exception e) {
+			LogUtil.error("保存微信用户信息到数据库异常  e:{}",e);
+		}
 	}
 
 	/**
@@ -206,6 +251,11 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public String checkAgentRight(String userNo) {
 		return businessService.checkAgentRight(userNo);
+	}
+
+	@Override
+	public AppUser findUserInfo(String userNo) {
+		return appUserMapper.findUserInfo(userNo);
 	}
 
 }

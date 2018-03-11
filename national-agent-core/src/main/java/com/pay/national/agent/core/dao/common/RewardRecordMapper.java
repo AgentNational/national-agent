@@ -30,4 +30,6 @@ public interface RewardRecordMapper {
     List<DayBussRewardGatherBean> bussGatherOfDay(@Param("userNo") String userNo, @Param("queryDate") Date queryDate, @Param("parentBusinessCode") String parentBusinessCode);
 
     List<DayBussRewardGatherBean> bussGatherOfDetail(@Param("lowerUserNo") String userNo, @Param("queryDate") Date queryDate, @Param("parentBusinessCode") String parentBusinessCode);
+
+    List<RewardRecord> findYesterdayRewardRecord(@Param("yesterday") Date yesterday);
 }

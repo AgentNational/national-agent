@@ -1,7 +1,5 @@
 package com.pay.national.agent.portal.context;
 
-import javax.sql.DataSource;
-
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.pay.national.agent.common.utils.LogUtil;
 import org.slf4j.Logger;
@@ -11,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 
 
@@ -35,7 +34,7 @@ public class MariaDBConfig {
 		logger.info("marDs = {} , {}",dsName,l);
 		ComboPooledDataSource ds = new ComboPooledDataSource();
 		ds.setDriverClass("com.mysql.jdbc.Driver");//设置连接池连接数据库所需的驱动
-		ds.setJdbcUrl("jdbc:mysql://localhost:3306/mysql");//设置连接数据库的URL
+		ds.setJdbcUrl("jdbc:mysql://localhost:3306/mysql?autoReconnect=true");//设置连接数据库的URL
 		ds.setUser("root");//设置连接数据库的用户名
 		ds.setPassword("admin");//设置连接数据库的密码
 		ds.setMaxPoolSize(40);//设置连接池的最大连接数

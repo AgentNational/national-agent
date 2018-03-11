@@ -274,4 +274,22 @@ public class WxServiceImpl implements WxService {
         }
         return apiTicketManager.getApiTicket();
     }
+
+    /**
+     * 获取用户基本信息
+     * @param openId
+     * @return
+     */
+    @Override
+    public String getUserInfo(String openId) {
+        LogUtil.info("拉取用户信息：openId：{}",openId);
+        String accessToken = getEffectAccessToken(WeiXinConstant.APP_ID, WeiXinConstant.APP_SECRET);
+        StringBuilder sb = new StringBuilder(WeiXinConstant.getUserInfoUrl);
+        sb.append("?access_token="+accessToken);
+        sb.append("&openid="+openId);
+        sb.append("&lang=zh_CN");
+        String content = HttpClientUtil.sendGet(sb.toString(), null);
+        LogUtil.info("拉取用户信息返回结果 返回结果content:{}", content);
+        return content;
+    }
 }

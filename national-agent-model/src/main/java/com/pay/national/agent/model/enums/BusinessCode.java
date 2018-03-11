@@ -19,7 +19,9 @@ public enum BusinessCode {
 
 	REMIT_USER("提现"),
 
-	AGENT_FEE("代理费用");
+	AGENT_FEE("代理费用"),
+
+	COMMISSION("分润");
 
 	private String busienssName;
 

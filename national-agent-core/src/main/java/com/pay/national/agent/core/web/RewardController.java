@@ -70,8 +70,8 @@ public class RewardController {
         WxUserInfo wxUserInfo = null;
         String result = null;
         try {
-            Date startDate = DateUtil.getFirstDay(new Date(), 0);
-            Date endDate = DateUtil.getFirstDay(new Date(), 2);
+            Date startDate = DateUtil.getFirstDay(new Date(), -2);
+            Date endDate = DateUtil.getFirstDay(new Date(), 0);
             wxUserInfo = wxUserInfoService.find4Login(openId);
             result = rewardService.gatherOfMonth(wxUserInfo.getUserNo(), StringUtils.isBlank(parentBusinessCode)?null: ParentBusinessCode.valueOf(parentBusinessCode),startDate,endDate);
         } catch (NationalAgentException e1) {

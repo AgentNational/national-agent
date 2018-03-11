@@ -371,4 +371,13 @@
     where USER_NO = #{userNo,jdbcType=VARCHAR}
   </update>
 
+  <select id="findUserInfo" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from app_user
+    where  USER_NO = #{userNo,jdbcType=VARCHAR}
+    <![CDATA[
+    AND ABLE_STATUS <> 'DELETE'
+    ]]>
+  </select>
 </mapper>

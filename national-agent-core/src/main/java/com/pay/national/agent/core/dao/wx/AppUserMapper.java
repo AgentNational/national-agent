@@ -69,7 +69,15 @@ public interface AppUserMapper {
     /**
      * 修改用户手机号
      * @param userNo
-     * @param phoneNo
+     * @param
      */
     void updateUserNameByUserNo(@Param("userNo") String userNo, @Param("userName") String userName);
+
+
+    /**
+     *查找用户信息
+     * @param userNo
+     * @return
+     */
+    AppUser findUserInfo(@Param("userNo") String userNo);
 }

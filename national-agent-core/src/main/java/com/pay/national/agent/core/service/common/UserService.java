@@ -1,5 +1,7 @@
 package com.pay.national.agent.core.service.common;
 
+import com.pay.national.agent.model.entity.AppUser;
+
 public interface UserService {
 
 
@@ -41,4 +43,12 @@ public interface UserService {
 	 * @return
 	 */
 	String checkAgentRight(String userNo);
+
+
+	/**
+	 * 查找用户信息
+	 * @param userNo
+	 * @return
+	 */
+	AppUser findUserInfo(String userNo);
 }

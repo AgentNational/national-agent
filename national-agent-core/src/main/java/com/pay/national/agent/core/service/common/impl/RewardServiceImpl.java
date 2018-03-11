@@ -294,6 +294,11 @@ public class RewardServiceImpl implements RewardService {
         }
     }
 
+    @Override
+    public RewardRecord reward(Long orderId, Double rewardAmount) {
+        return null;
+    }
+
     /**
      * 执行奖励的日汇总
      * @param day 日期
@@ -389,7 +394,6 @@ public class RewardServiceImpl implements RewardService {
      * @param rewardAmount 奖励金额
      * @return
      */
-    @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
      public RewardRecord reward(Long orderId,Long rewardRuleId,double rewardAmount){
         BusinessOrder order = businessOrderMapper.selectByPrimaryKey(orderId);

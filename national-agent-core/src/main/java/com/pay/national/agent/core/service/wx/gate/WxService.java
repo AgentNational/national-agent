@@ -69,4 +69,7 @@ public interface WxService {
      * @return
      */
     String getEffectApiTicket();
+
+
+    String getUserInfo(String openId);
 }

@@ -21,7 +21,7 @@ public class MariaDBConfig {
 	public DataSource dataSource() throws PropertyVetoException {
 		ComboPooledDataSource ds = new ComboPooledDataSource();
 		ds.setDriverClass("com.mysql.jdbc.Driver");//设置连接池连接数据库所需的驱动  
-		ds.setJdbcUrl("jdbc:mysql://139.129.165.74:3306/nationalagent?useUnicode=true&characterEncoding=utf8");//设置连接数据库的URL
+		ds.setJdbcUrl("jdbc:mysql://139.129.165.74:3306/nationalagent?useUnicode=true&autoReconnect=true&characterEncoding=utf8");//设置连接数据库的URL
 		ds.setUser("root");//设置连接数据库的用户名
 		ds.setPassword("123456abc");//设置连接数据库的密码
 		ds.setMaxPoolSize(40);//设置连接池的最大连接数  

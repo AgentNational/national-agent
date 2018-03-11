@@ -82,7 +82,7 @@ public class WeiXinController {
 				textMessage.setFromUserName(ToUserName);
 				textMessage.setToUserName(FromUserName);
 				textMessage.setMsgType("text");
-				textMessage.setContent("欢迎关注我的公众号。哈哈哈哈哈");
+				textMessage.setContent("欢迎关注全民代理公众号！");
 				textMessage.setCreateTime(System.currentTimeMillis());
 				String message = WxMessageUtil.textMessageToXml(textMessage);
 				System.out.println(message);
@@ -93,7 +93,15 @@ public class WeiXinController {
 					textMessage.setFromUserName(ToUserName);
 					textMessage.setToUserName(FromUserName);
 					textMessage.setMsgType("text");
-					textMessage.setContent("欢迎关注我的公众号。11111哈哈哈哈哈");
+					textMessage.setContent("欢迎您来到全民代理平台，我们为您准备了各种便于线上分享推广的高奖励任务，如：\n" +
+							"推荐办理信用卡：30-50元/张\n" +
+							"推荐免费领取快速发票码：50元/单\n" +
+							"推荐免费领取信用卡刷卡工具：0.0005*刷卡交易额\n" +
+							"更多业务，请点击下方“代理产品”菜单查看详情\n" +
+							"\n" +
+							"除此之外，您还可以推荐他人关注公众号，您将获得推荐人收益的5%作为奖励，请通过点击下方“我的海报”菜单，获取您的专属推广海报，再将海报图片发送给其他好友关注，切勿直接分享公众号给好友奥；\n" +
+							"\n" +
+							"所有的收益可随时提现至您的微信零钱，详情请点击下方“提现”菜单；");
 					textMessage.setCreateTime(System.currentTimeMillis());
 					String message = WxMessageUtil.textMessageToXml(textMessage);
 					String EventKey = map.get("EventKey");
