@@ -261,5 +261,8 @@
     WHERE business_code = 'AGENT_FEE'
     AND  user_no = #{userNo,jdbcType=VARCHAR}
   </select>
+  <select id="matchPUFA" resultMap="java.util.Map">
+
+  </select>
 
 </mapper>

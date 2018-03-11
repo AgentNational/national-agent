@@ -8,7 +8,9 @@ import com.pay.national.agent.common.utils.DigestUtils;
 import com.pay.national.agent.common.utils.StringUtils;
 import com.pay.national.agent.common.utils.WxMessageUtil;
 import com.pay.national.agent.core.service.common.UserService;
+import com.pay.national.agent.core.service.wx.WxUserInfoService;
 import com.pay.national.agent.core.service.wx.impl.WxJssdkConfigMethod;
+import com.pay.national.agent.model.entity.WxUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,6 +64,9 @@ public class WeiXinController {
 	@Resource
 	private UserService userService;
 
+	@Resource
+	private WxUserInfoService wxUserInfoService;
+
 	@RequestMapping(value = "/wxNotice" , method = RequestMethod.POST)
 	public @ResponseBody
     void wxNoticePost(HttpServletRequest request, HttpServletResponse response) throws IOException{
@@ -114,6 +119,12 @@ public class WeiXinController {
 					printWriter.print(message);
 				}else if(WxMessageUtil.EVENT_TYPE_CLICK.equals(Event)){
 					String EventKey = map.get("EventKey");
+				}
+			}else if(WxMessageUtil.EVENT_TYPE_UNSUBSCRIBE.equals(MsgType)){
+				WxUserInfo wxUserInfo = wxUserInfoService.selectUserInfoByOpenId(FromUserName);
+				if(wxUserInfo != null){
+					wxUserInfo.setSubscribe("0");
+					wxUserInfoService.update(wxUserInfo);
 				}
 			}
 		} catch (Exception e) {

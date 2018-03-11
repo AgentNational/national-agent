@@ -114,7 +114,32 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public DepositBean deposit(DepositParam param) {
-        return null;
+
+        DepositBean depositBean = new DepositBean();
+
+        AccountHistory accountHistory = new AccountHistory();
+        accountHistory.setAccountNo(param.getAccountNo());
+        accountHistory.setUserNo(param.getUserNo());
+        accountHistory.setParentBusinessCode(param.getParentBusinessCode());
+        accountHistory.setBusinessCode(param.getBusinessCode());
+        accountHistory.setAmount(param.getAmount());
+        accountHistory.setSymbol(AccountConstants.SYMBOL_PLUS);
+        accountHistory.setCreateTime(new Date());
+
+        try {
+            addAmount(accountHistory.getAccountNo(),accountHistory.getAmount());
+            accountHistory.setStatus(StatusConstants.SUCCESS);
+            depositBean.setResult(StatusConstants.SUCCESS);
+        } catch (Exception e) {
+            LogUtil.error("入账异常：accountNo={},amount={}",accountHistory.getAccountNo(),accountHistory.getAmount(),e);
+            accountHistory.setStatus(StatusConstants.ERROR);
+            depositBean.setResult(StatusConstants.FAIL);
+            depositBean.setMsg(e.getMessage());
+        }
+
+        accountHistoryMapper.insert(accountHistory);
+        depositBean.setAccountHistoryId(accountHistory.getId().toString());
+        return depositBean;
     }
 
     /**
@@ -274,6 +299,9 @@ public class AccountServiceImpl implements AccountService {
             BigDecimal decimal = new BigDecimal(amount);
             BigDecimal amount1 = decimal.setScale(2,BigDecimal.ROUND_HALF_DOWN);
             double subtract = AmountUtils.subtract(account.getBalance(), amount1.doubleValue());
+            if(subtract <0.0){
+                throw new NationalAgentException(RetCodeConstants.ERROR,"余额不足");
+            }
             account.setLastUpdateTime(new Date());
             account.setBalance(subtract);
             int low = accountMapper.amountOnLock(account);

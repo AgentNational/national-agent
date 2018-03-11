@@ -3,11 +3,14 @@ package com.pay.national.agent.core.job;
 import com.pay.commons.utils.lang.DateUtils;
 import com.pay.national.agent.common.utils.DateUtil;
 import com.pay.national.agent.common.utils.LogUtil;
+import com.pay.national.agent.core.service.common.BusinessService;
 import com.pay.national.agent.core.service.common.RewardService;
+import com.pay.national.agent.model.beans.results.OrderMatchBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -34,6 +37,23 @@ public class MyJob {
     @Autowired
     private RewardService rewardService;
 
+    @Autowired
+    private BusinessService businessService;
+
+    /**
+     * 业务奖励发放定时
+     */
+    public void orderReward(){
+        LogUtil.info("信用卡奖励开始发放..."+DateUtil.formatDate(new Date(),"yyyy-MM-dd"));
+        //TODO 匹配成功的业务订单数据
+        List<OrderMatchBean> orders = businessService.matchRewardOrder();
+        if(orders != null && orders.size() >0){
+            for (OrderMatchBean order:orders) {
+                rewardService.reward(order.getOrderId(),null);
+            }
+        }
+
+    }
     /**
      * 奖励汇总定时
      */

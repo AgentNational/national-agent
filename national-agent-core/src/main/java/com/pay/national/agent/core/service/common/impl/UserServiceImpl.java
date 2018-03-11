@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService{
 			WxUserInfo wxUserInfo = new WxUserInfo();
 			wxUserInfo.setUserNo(userNo);
 			wxUserInfo.setCreatetime(new Date());
+			wxUserInfo.setSubscribe("1");
 			wxUserInfo.setOpenid(fromUserName);
 			AppUser appUser = new AppUser();
 			//获取用户父编号
@@ -88,6 +89,9 @@ public class UserServiceImpl implements UserService{
 			} catch (Exception e) {
 				LogUtil.error("用户注册 开户失败 userNo={}",userNo,e);
 			}
+		}else{
+			wxUserInfoDb.setSubscribe("1");
+			wxUserInfoService.update(wxUserInfoDb);
 		}
 
 		getUserInfo(fromUserName);

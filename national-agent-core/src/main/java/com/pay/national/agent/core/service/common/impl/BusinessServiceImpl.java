@@ -11,6 +11,7 @@ import com.pay.national.agent.core.dao.common.BusinessOrderMapper;
 import com.pay.national.agent.core.dao.common.BusinessRewardRuleMapper;
 import com.pay.national.agent.core.service.common.BusinessService;
 import com.pay.national.agent.model.beans.ReturnBean;
+import com.pay.national.agent.model.beans.results.OrderMatchBean;
 import com.pay.national.agent.model.constants.RetCodeConstants;
 import com.pay.national.agent.model.constants.StatusConstants;
 import com.pay.national.agent.model.entity.BusinessOrder;
@@ -22,10 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -233,5 +231,32 @@ public class BusinessServiceImpl implements BusinessService{
         }
         LogUtil.info("校验是否有代理权限 userNo:{},returnBean:{}",userNo,JSON.toJSONString(returnBean));
         return JSON.toJSONString(returnBean);
+    }
+    /**
+     * 匹配需要奖励的订单
+     * @return
+     */
+    @Override
+    public List<OrderMatchBean> matchRewardOrder() {
+        List<OrderMatchBean> allOrders = new ArrayList<>();
+        //信用卡订单匹配
+        List<OrderMatchBean> creditCardOrders  = matchCreditCardOrder();
+        allOrders.addAll(creditCardOrders);
+        return allOrders;
+    }
+
+    /**
+     * 匹配需要奖励的信用卡订单
+     * @return
+     */
+    private List<OrderMatchBean> matchCreditCardOrder() {
+        List<OrderMatchBean> all = new ArrayList<>();
+        List<OrderMatchBean> pufa = businessOrderMapper.matchPUFA();
+        all.addAll(pufa);
+        List<OrderMatchBean> jiaotong = businessOrderMapper.matchJIAOTONG();
+        all.addAll(jiaotong);
+        List<OrderMatchBean> pingan = businessOrderMapper.matchPINGAN();
+        all.addAll(pingan);
+        return all;
     }
 }

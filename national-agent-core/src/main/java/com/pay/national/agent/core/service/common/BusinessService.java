@@ -1,7 +1,10 @@
 package com.pay.national.agent.core.service.common;
 
 import com.pay.national.agent.common.persistence.Page;
+import com.pay.national.agent.model.beans.results.OrderMatchBean;
 import com.pay.national.agent.model.entity.BusinessOrder;
+
+import java.util.List;
 
 /**
  *
@@ -32,4 +35,10 @@ public interface BusinessService {
      * @return
      */
     String checkAgentRight(String userNo);
+
+    /**
+     * 匹配需要奖励的订单
+     * @return
+     */
+    List<OrderMatchBean> matchRewardOrder();
 }
