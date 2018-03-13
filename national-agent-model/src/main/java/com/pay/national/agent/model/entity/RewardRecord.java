@@ -24,6 +24,7 @@ public class RewardRecord extends  BaseEntity{
      */
     private String userNo;
 
+    private String lowerUserNo;
     /**
      * 奖励金额
      */
@@ -117,6 +118,33 @@ public class RewardRecord extends  BaseEntity{
         this.rewardTime = rewardTime;
     }
 
+    @Override
+    public String toString() {
+        return "RewardRecord{" +
+                "businessCode='" + businessCode + '\'' +
+                ", parentBusinessCode='" + parentBusinessCode + '\'' +
+                ", userNo='" + userNo + '\'' +
+                ", lowerUserNo='" + lowerUserNo + '\'' +
+                ", amount=" + amount +
+                ", status='" + status + '\'' +
+                ", rewardTime=" + rewardTime +
+                ", errorCode='" + errorCode + '\'' +
+                ", errorMsg='" + errorMsg + '\'' +
+                ", orderId=" + orderId +
+                ", ruleId=" + ruleId +
+                ", createTime=" + createTime +
+                ", lastUpdateTime=" + lastUpdateTime +
+                '}';
+    }
+
+    public String getLowerUserNo() {
+        return lowerUserNo;
+    }
+
+    public void setLowerUserNo(String lowerUserNo) {
+        this.lowerUserNo = lowerUserNo;
+    }
+
     public String getErrorCode() {
         return errorCode;
     }
@@ -165,21 +193,4 @@ public class RewardRecord extends  BaseEntity{
         this.lastUpdateTime = lastUpdateTime;
     }
 
-    @Override
-    public String toString() {
-        return super.toString()+"RewardRecord{" +
-                "businessCode='" + businessCode + '\'' +
-                ", parentBusinessCode='" + parentBusinessCode + '\'' +
-                ", userNo='" + userNo + '\'' +
-                ", amount=" + amount +
-                ", status='" + status + '\'' +
-                ", rewardTime=" + rewardTime +
-                ", errorCode='" + errorCode + '\'' +
-                ", errorMsg='" + errorMsg + '\'' +
-                ", orderId=" + orderId +
-                ", ruleId=" + ruleId +
-                ", createTime=" + createTime +
-                ", lastUpdateTime=" + lastUpdateTime +
-                '}';
-    }
 }

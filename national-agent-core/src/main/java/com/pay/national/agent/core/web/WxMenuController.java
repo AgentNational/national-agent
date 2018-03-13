@@ -42,6 +42,7 @@ public class WxMenuController {
                 sb.append(redirectUrl);
             }
         }catch (Exception e){
+            LogUtil.error("查询微信菜单重定向地址异常",e);
 
         }
         LogUtil.info("查询微信菜单重定向地址结束 menuNo:{},url:{}",menuNo,sb.toString());

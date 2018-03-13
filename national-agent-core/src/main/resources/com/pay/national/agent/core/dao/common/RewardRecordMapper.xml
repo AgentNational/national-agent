@@ -45,12 +45,12 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into reward_record (optimistic, business_code, parent_business_code,
-      user_no, amount, status,
+      user_no,lower_user_no, amount, status,
       reward_time, error_code, error_msg,
       order_id, rule_id, create_time,
       last_update_time)
     values (0, #{businessCode,jdbcType=VARCHAR}, #{parentBusinessCode,jdbcType=VARCHAR},
-      #{userNo,jdbcType=VARCHAR}, #{amount,jdbcType=DOUBLE}, #{status,jdbcType=VARCHAR},
+      #{userNo,jdbcType=VARCHAR},#{lowerUserNo,jdbcType=VARCHAR}, #{amount,jdbcType=DOUBLE}, #{status,jdbcType=VARCHAR},
       #{rewardTime,jdbcType=TIMESTAMP}, #{errorCode,jdbcType=VARCHAR}, #{errorMsg,jdbcType=VARCHAR},
       #{orderId,jdbcType=BIGINT}, #{ruleId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
       #{lastUpdateTime,jdbcType=TIMESTAMP})
