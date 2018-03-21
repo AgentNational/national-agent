@@ -41,4 +41,17 @@ public interface BusinessService {
      * @return
      */
     List<OrderMatchBean> matchRewardOrder();
+
+    /**
+     * 查询单个订单
+     * @param orderId
+     * @return
+     */
+    BusinessOrder findOrder(Long orderId);
+
+    /**
+     * 更新订单
+     * @param order
+     */
+    void updateOrder(BusinessOrder order);
 }

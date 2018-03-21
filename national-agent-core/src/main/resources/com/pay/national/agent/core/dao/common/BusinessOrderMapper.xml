@@ -19,6 +19,16 @@
     <result column="last_update_time" property="lastUpdateTime" jdbcType="TIMESTAMP" />
     <result column="receive_address" property="receiveAddress" jdbcType="VARCHAR" />
   </resultMap>
+
+  <resultMap id="matchOrderMap" type="com.pay.national.agent.model.beans.results.OrderMatchBean" >
+    <result column="order_id" property="orderId" jdbcType="BIGINT"/>
+    <result column="user_no" property="userNo" jdbcType="VARCHAR" />
+    <result column="business_code" property="businessCode" jdbcType="VARCHAR" />
+    <result column="parent_business_code" property="parentBusinessCode" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT"/>
+  </resultMap>
+
   <sql id="Base_Column_List" >
     id, optimistic, user_no, business_name, business_code, parent_business_code, status,
     customer_name, customer_phone, reward_amount, trans_amount, partner_business_name,
@@ -261,8 +271,55 @@
     WHERE business_code = 'AGENT_FEE'
     AND  user_no = #{userNo,jdbcType=VARCHAR}
   </select>
-  <select id="matchPUFA" resultType="java.util.Map">
 
+  <select id="matchPUFA" resultMap="matchOrderMap">
+    SELECT order_id,user_no,business_code,parent_business_code,status,user_id
+		FROM (
+				SELECT id user_id,status,phone_no,user_name FROM credit_card_user WHERE business_code = 'PUFA' AND status = 'INIT'
+			 ) ccu
+		INNER JOIN
+			(
+				SELECT id order_id,user_no,business_code,parent_business_code,customer_name,customer_phone FROM business_order WHERE business_code = 'PUFA' AND status = 'INIT'
+			) bo
+		ON ccu.phone_no = bo.customer_phone
+  </select>
+
+  <select id="matchJIAOTONG" resultMap="matchOrderMap">
+    SELECT order_id,user_no,business_code,parent_business_code,status,user_id
+    FROM (
+      SELECT id user_id,status,phone_no,user_name FROM credit_card_user WHERE business_code = 'JIAOTONG' AND status = 'INIT'
+    ) ccu
+    INNER JOIN
+    (
+      SELECT id order_id,user_no,business_code,parent_business_code,customer_name,customer_phone FROM business_order WHERE business_code = 'JIAOTONG' AND status = 'INIT'
+    ) bo
+    ON ccu.phone_no = CONCAT(LEFT(bo.customer_phone ,5),'**',RIGHT(bo.customer_phone ,4))
+  </select>
+
+  <select id="matchPINGAN" resultMap="matchOrderMap">
+    SELECT order_id,user_no,business_code,parent_business_code,status,user_id
+    FROM (
+    SELECT id user_id,status,phone_no,user_name FROM credit_card_user WHERE business_code = 'PINGAN' AND status = 'INIT'
+    ) ccu
+    INNER JOIN
+    (
+    SELECT id order_id,user_no,business_code,parent_business_code,customer_name,customer_phone FROM business_order WHERE business_code = 'PINGAN' AND status = 'INIT'
+    ) bo
+    ON  ccu.user_name = CONCAT(LEFT(bo.customer_name,1),'*',SUBSTRING(bo.customer_name,3))
+	AND ccu.phone_no = CONCAT(LEFT(bo.customer_phone ,3),'****',RIGHT(bo.customer_phone ,4))
+  </select>
+
+  <select id="matchXINGYE" resultMap="matchOrderMap">
+    SELECT order_id,user_no,business_code,parent_business_code,status,user_id
+    FROM (
+    SELECT id user_id,status,phone_no,user_name FROM credit_card_user WHERE business_code = 'XINGYE' AND status = 'INIT'
+    ) ccu
+    INNER JOIN
+    (
+    SELECT id order_id,user_no,business_code,parent_business_code,customer_name,customer_phone FROM business_order WHERE business_code = 'XINGYE' AND status = 'INIT'
+    ) bo
+    ON  ccu.user_name = bo.customer_name
+	AND ccu.phone_no = CONCAT(LEFT(bo.customer_phone ,3),'****',RIGHT(bo.customer_phone ,4))
   </select>
 
 </mapper>

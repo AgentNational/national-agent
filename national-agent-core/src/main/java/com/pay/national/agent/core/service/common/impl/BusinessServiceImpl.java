@@ -246,6 +246,25 @@ public class BusinessServiceImpl implements BusinessService{
     }
 
     /**
+     * 查询单个订单
+     * @param orderId
+     * @return
+     */
+    @Override
+    public BusinessOrder findOrder(Long orderId) {
+        return businessOrderMapper.selectByPrimaryKey(orderId);
+    }
+
+    /**
+     * 更新订单
+     * @param order
+     */
+    @Override
+    public void updateOrder(BusinessOrder order) {
+        businessOrderMapper.updateByPrimaryKey(order);
+    }
+
+    /**
      * 匹配需要奖励的信用卡订单
      * @return
      */
@@ -257,6 +276,10 @@ public class BusinessServiceImpl implements BusinessService{
         all.addAll(jiaotong);
         List<OrderMatchBean> pingan = businessOrderMapper.matchPINGAN();
         all.addAll(pingan);
+        List<OrderMatchBean> xingye = businessOrderMapper.matchXINGYE();
+        all.addAll(xingye);
         return all;
     }
+
+
 }

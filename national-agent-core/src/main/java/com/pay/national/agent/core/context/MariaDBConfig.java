@@ -24,6 +24,9 @@ public class MariaDBConfig {
 		ds.setJdbcUrl("jdbc:mysql://139.129.165.74:3306/nationalagent?useUnicode=true&autoReconnect=true&characterEncoding=utf8");//设置连接数据库的URL
 		ds.setUser("root");//设置连接数据库的用户名
 		ds.setPassword("123456abc");//设置连接数据库的密码
+		/*ds.setJdbcUrl("jdbc:mysql://localhost:3306/nationalagent?useUnicode=true&autoReconnect=true&characterEncoding=utf8");//设置连接数据库的URL
+		ds.setUser("root");//设置连接数据库的用户名
+		ds.setPassword("123456");//设置连接数据库的密码*/
 		ds.setMaxPoolSize(40);//设置连接池的最大连接数  
 		ds.setMinPoolSize(2);//设置连接池的最小连接数  
 		ds.setInitialPoolSize(10);//设置连接池的初始连接数  

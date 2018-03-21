@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.pay.national.agent.model.enums.ParentBusinessCode;
+import com.pay.national.agent.portal.service.common.BusinessService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +33,9 @@ import static com.pay.national.agent.model.enums.ParentBusinessCode.CREDIT_CARD;
 @Controller
 @RequestMapping("/custExcel")
 public class CustExcelController {
+
+    @Autowired
+    private BusinessService businessService;
 
 	@RequestMapping(value="/toUploadCreditCard.action")
 	public ModelAndView toUpload(ModelAndView model){
@@ -55,7 +60,7 @@ public class CustExcelController {
 				List<CreditCardUserModel> list = ExcelUtil.importExcel(CreditCardUserModel.class,file.getInputStream(),1);
 				String creditCardType = reqeust.getParameter("creditCardType");
 				view = "custExcel/creditCardExcel";
-				//creditCardUserService.importUser(list,creditCardType);
+                businessService.importUser(list,creditCardType);
 				break;
             default:
                 break;

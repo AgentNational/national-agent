@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration >
+
+  <classPathEntry location="H:\\repo\\mysql\\mysql-connector-java\\5.1.9\\mysql-connector-java-5.1.9.jar"/>
+  <context id="context1" defaultModelType="flat">
+  	<!-- 解决实体类字段注释中文乱码 -->
+    <property name="javaFileEncoding" value="UTF-8"/>
+    <plugin type="com.pay.common.persistence.MySQLPaginationPlugin" />
+   <!--  注释 -->
+    <commentGenerator type="com.pay.common.persistence.MyCommentGenerator">
+        <property name="suppressAllComments" value="true"/><!-- 是否取消注释 -->
+        <property name="suppressDate" value="true" /> <!-- 是否生成注释代时间戳 -->
+    </commentGenerator>
+    
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/nationalagent" userId="root" password="123456" />
+    <javaModelGenerator targetPackage="com.pay.national.agent.model.entity" targetProject="national-agent-model/src/main/java" />
+    <sqlMapGenerator targetPackage="com.pay.national.agent.portal.dao.common" targetProject="national-agent-portal/src/main/resources" />
+    <javaClientGenerator targetPackage="com.pay.national.agent.portal.dao.common" targetProject="national-agent-portal/src/main/java" type="XMLMAPPER" />
+
+    <!-- 不生成example类 -->
+	<table tableName="credit_card_user" enableCountByExample="false"
+            enableUpdateByExample="false"
+            enableDeleteByExample="false"
+            enableSelectByExample="false"
+            selectByExampleQueryId="false">
+	<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+    </table>
+  </context>
+
+</generatorConfiguration>

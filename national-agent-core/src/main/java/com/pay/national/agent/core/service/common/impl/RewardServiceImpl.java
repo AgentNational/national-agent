@@ -393,64 +393,61 @@ public class RewardServiceImpl implements RewardService {
     /**
      * 奖励
      * @param orderId 订单Id
-     * @param rewardAmount 奖励金额
      * @return
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+    @Override
     public RewardRecord reward(Long orderId,Double rewardAmount) {
         BusinessOrder order = businessOrderMapper.selectByPrimaryKey(orderId);
         //验证订单正确性
-        if (order == null || !"INIT".equals(order.getStatus())) {
+        if (order == null || !"INIT".equalsIgnoreCase(order.getStatus())) {
             throw new NationalAgentException(RetCodeConstants.FAIL, REWARD_FAIL_01);
         }
 
-        BusinessRewardRule rule = rule = businessRewardRuleMapper.selectByBusiness(order.getBusinessCode());
-        if (rewardAmount == null || rule == null || StatusConstants.ENABLE.equals(rule.getStatus())) {
-            throw new NationalAgentException(RetCodeConstants.FAIL, REWARD_FAIL_02);
-        } else {
-            if (rewardAmount <= 0.0) {
-                throw new NationalAgentException(RetCodeConstants.FAIL, REWARD_FAIL_03);
-            }
-            //计算奖励金额
-            String rewardType = rule.getRewardType();
-            if ("amount".equals(rewardType)) {
-                //固定
-                rewardAmount = rule.getRewardAmount();
-            } else if ("proportion".equals(rewardType)) {
-                //比例
-                double multiply = AmountUtils.multiply(order.getTransAmount(), rule.getRewardProportion());
-                BigDecimal decimal = new BigDecimal(multiply);
-                rewardAmount = decimal.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+        //计算奖励金额
+        BusinessRewardRule rule = null;
+        if(rewardAmount == null){
+            rule  = businessRewardRuleMapper.selectByBusiness(order.getBusinessCode());
+            if (rule == null || !StatusConstants.ENABLE.equals(rule.getStatus())) {
+                throw new NationalAgentException(RetCodeConstants.FAIL, REWARD_FAIL_02);
+            }else{
+                String rewardType = rule.getRewardType();
+                if ("amount".equalsIgnoreCase(rewardType)) {
+                    //固定
+                    rewardAmount = rule.getRewardAmount();
+                } else if ("proportion".equalsIgnoreCase(rewardType)) {
+                    //比例
+                    double multiply = AmountUtils.multiply(order.getTransAmount(), rule.getRewardProportion());
+                    BigDecimal decimal = new BigDecimal(multiply);
+                    rewardAmount = decimal.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                }
             }
         }
 
-            //TODO 奖励操作
-            //奖励操作
-            DepositParam depositParam = new DepositParam();
-            depositParam.setAccountNo(order.getUserNo());
-            depositParam.setAccountNo(order.getUserNo());
-            depositParam.setBusinessCode(order.getBusinessCode());
-            depositParam.setParentBusinessCode(order.getParentBusinessCode());
-            DepositBean depositBean = accountService.deposit(depositParam);
+        //奖励操作
+        DepositParam depositParam = new DepositParam();
+        depositParam.setAccountNo(order.getUserNo());
+        depositParam.setUserNo(order.getUserNo());
+        depositParam.setBusinessCode(order.getBusinessCode());
+        depositParam.setParentBusinessCode(order.getParentBusinessCode());
+        depositParam.setAmount(rewardAmount);
+        DepositBean depositBean = accountService.deposit(depositParam);
 
 
-            //生成奖励记录
-            RewardRecord rewardRecord = new RewardRecord();
-            rewardRecord.setStatus(StatusConstants.SUCCESS);
-            rewardRecord.setStatus(depositBean.getResult());
-            rewardRecord.setUserNo(order.getUserNo());
-            rewardRecord.setAmount(rewardAmount);
-            rewardRecord.setBusinessCode(order.getBusinessCode());
-            rewardRecord.setParentBusinessCode(order.getParentBusinessCode());
-            rewardRecord.setOrderId(order.getId());
-            rewardRecord.setRuleId(rule.getId());
-            rewardRecord.setRuleId(rule == null ? null : rule.getId());
-            rewardRecord.setCreateTime(new Date());
-            rewardRecord.setRewardTime(new Date());
+        //生成奖励记录
+        RewardRecord rewardRecord = new RewardRecord();
+        rewardRecord.setStatus(depositBean.getResult());
+        rewardRecord.setUserNo(order.getUserNo());
+        rewardRecord.setAmount(rewardAmount);
+        rewardRecord.setBusinessCode(order.getBusinessCode());
+        rewardRecord.setParentBusinessCode(order.getParentBusinessCode());
+        rewardRecord.setOrderId(order.getId());
+        rewardRecord.setRuleId(rule == null ? null : rule.getId());
+        rewardRecord.setCreateTime(new Date());
+        rewardRecord.setRewardTime(new Date());
 
-            rewardRecordMapper.insert(rewardRecord);
-            return rewardRecord;
-
+        rewardRecordMapper.insert(rewardRecord);
+        return rewardRecord;
     }
 
 

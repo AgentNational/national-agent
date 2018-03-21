@@ -29,7 +29,7 @@ public class OrderMatchBean {
     /**
      * 信用卡用户Id
      */
-    private Long creditCardUserId;
+    private Long userId;
 
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
@@ -52,7 +52,7 @@ public class OrderMatchBean {
     }
 
     public void setCreditCardUserId(Long creditCardUserId) {
-        this.creditCardUserId = creditCardUserId;
+        this.userId = creditCardUserId;
     }
 
     public Long getOrderId() {
@@ -76,7 +76,7 @@ public class OrderMatchBean {
     }
 
     public Long getCreditCardUserId() {
-        return creditCardUserId;
+        return userId;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class OrderMatchBean {
                 ", businessCode='" + businessCode + '\'' +
                 ", parentBusinessCode='" + parentBusinessCode + '\'' +
                 ", status='" + status + '\'' +
-                ", creditCardUserId=" + creditCardUserId +
+                ", userId=" + userId +
                 '}';
     }
 }

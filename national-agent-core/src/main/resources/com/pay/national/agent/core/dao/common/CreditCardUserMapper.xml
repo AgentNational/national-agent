@@ -2,39 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.pay.national.agent.core.dao.common.CreditCardUserMapper" >
   <resultMap id="BaseResultMap" type="com.pay.national.agent.model.entity.CreditCardUser" >
-    <id column="ID" property="id" jdbcType="BIGINT" />
-    <result column="OPTIMISTIC" property="optimistic" jdbcType="INTEGER" />
-    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
-    <result column="PHONE_NO" property="phoneNo" jdbcType="VARCHAR" />
-    <result column="CHILD_BUSINESS_CODE" property="childBusinessCode" jdbcType="VARCHAR" />
-    <result column="BUSINESS_CODE" property="businessCode" jdbcType="VARCHAR" />
-    <result column="STATUS" property="status" jdbcType="VARCHAR" />
-    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="LAST_UPDATE_TIME" property="lastUpdateTime" jdbcType="TIMESTAMP" />
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="optimistic" property="optimistic" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="phone_no" property="phoneNo" jdbcType="VARCHAR" />
+    <result column="business_code" property="businessCode" jdbcType="VARCHAR" />
+    <result column="parent_business_code" property="parentBusinessCode" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_update_time" property="lastUpdateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ID, OPTIMISTIC, USER_NAME, PHONE_NO, CHILD_BUSINESS_CODE, BUSINESS_CODE, STATUS,
-    CREATE_TIME, LAST_UPDATE_TIME
+    id, optimistic, user_name, phone_no, business_code, parent_business_code, status,
+    create_time, last_update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select
     <include refid="Base_Column_List" />
     from credit_card_user
-    where ID = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from credit_card_user
-    where ID = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.pay.national.agent.model.entity.CreditCardUser" >
     <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into credit_card_user (OPTIMISTIC, USER_NAME, PHONE_NO, 
-      CHILD_BUSINESS_CODE, BUSINESS_CODE, STATUS, 
-      CREATE_TIME, LAST_UPDATE_TIME)
-    values (0, #{userName,jdbcType=VARCHAR}, #{phoneNo,jdbcType=VARCHAR},
-      #{childBusinessCode,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+    insert into credit_card_user (optimistic, user_name, phone_no, 
+      business_code, parent_business_code, status, 
+      create_time, last_update_time)
+    values (#{optimistic,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{phoneNo,jdbcType=VARCHAR}, 
+      #{businessCode,jdbcType=VARCHAR}, #{parentBusinessCode,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.pay.national.agent.model.entity.CreditCardUser" >
@@ -44,33 +44,33 @@
     insert into credit_card_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="optimistic != null" >
-        OPTIMISTIC,
+        optimistic,
       </if>
       <if test="userName != null" >
-        USER_NAME,
+        user_name,
       </if>
       <if test="phoneNo != null" >
-        PHONE_NO,
-      </if>
-      <if test="childBusinessCode != null" >
-        CHILD_BUSINESS_CODE,
+        phone_no,
       </if>
       <if test="businessCode != null" >
-        BUSINESS_CODE,
+        business_code,
+      </if>
+      <if test="parentBusinessCode != null" >
+        parent_business_code,
       </if>
       <if test="status != null" >
-        STATUS,
+        status,
       </if>
       <if test="createTime != null" >
-        CREATE_TIME,
+        create_time,
       </if>
       <if test="lastUpdateTime != null" >
-        LAST_UPDATE_TIME,
+        last_update_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="optimistic != null" >
-        0,
+        #{optimistic,jdbcType=INTEGER},
       </if>
       <if test="userName != null" >
         #{userName,jdbcType=VARCHAR},
@@ -78,11 +78,11 @@
       <if test="phoneNo != null" >
         #{phoneNo,jdbcType=VARCHAR},
       </if>
-      <if test="childBusinessCode != null" >
-        #{childBusinessCode,jdbcType=VARCHAR},
-      </if>
       <if test="businessCode != null" >
         #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentBusinessCode != null" >
+        #{parentBusinessCode,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
         #{status,jdbcType=VARCHAR},
@@ -99,42 +99,42 @@
     update credit_card_user
     <set >
       <if test="optimistic != null" >
-        OPTIMISTIC = OPTIMISTIC+1,
+        optimistic = #{optimistic,jdbcType=INTEGER},
       </if>
       <if test="userName != null" >
-        USER_NAME = #{userName,jdbcType=VARCHAR},
+        user_name = #{userName,jdbcType=VARCHAR},
       </if>
       <if test="phoneNo != null" >
-        PHONE_NO = #{phoneNo,jdbcType=VARCHAR},
-      </if>
-      <if test="childBusinessCode != null" >
-        CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR},
+        phone_no = #{phoneNo,jdbcType=VARCHAR},
       </if>
       <if test="businessCode != null" >
-        BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
+        business_code = #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentBusinessCode != null" >
+        parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
-        STATUS = #{status,jdbcType=VARCHAR},
+        status = #{status,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null" >
-        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="lastUpdateTime != null" >
-        LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP},
+        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where ID = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.pay.national.agent.model.entity.CreditCardUser" >
     update credit_card_user
-    set OPTIMISTIC = OPTIMISTIC+1,
-      USER_NAME = #{userName,jdbcType=VARCHAR},
-      PHONE_NO = #{phoneNo,jdbcType=VARCHAR},
-      CHILD_BUSINESS_CODE = #{childBusinessCode,jdbcType=VARCHAR},
-      BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
-      STATUS = #{status,jdbcType=VARCHAR},
-      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
-      LAST_UPDATE_TIME = #{lastUpdateTime,jdbcType=TIMESTAMP}
-    where ID = #{id,jdbcType=BIGINT}
+    set optimistic = #{optimistic,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      phone_no = #{phoneNo,jdbcType=VARCHAR},
+      business_code = #{businessCode,jdbcType=VARCHAR},
+      parent_business_code = #{parentBusinessCode,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

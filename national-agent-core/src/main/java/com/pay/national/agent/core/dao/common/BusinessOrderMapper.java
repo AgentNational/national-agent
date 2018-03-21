@@ -40,4 +40,6 @@ public interface BusinessOrderMapper {
     List<OrderMatchBean> matchJIAOTONG();
 
     List<OrderMatchBean> matchPINGAN();
+
+    List<OrderMatchBean> matchXINGYE();
 }
